@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Home | Pages Service</title>
+    {{> styles}}
+    <link rel="stylesheet" href="/css/separate/pages/login.min.css">
+</head>
+<body>
+
+    <div class="page-center">
+        <div class="page-center-in">
+            <div class="container-fluid">
+                <form class="sign-box" action="/web/sign-in" method="post">
+                    <div class="sign-avatar">
+                        <img src="/img/avatar-sign.png" alt="">
+                    </div>
+                    <header class="sign-title">Hello World</header>
+
+                    <p style="color:red">Hello, {{name}}. Welcome to ISNode.</p>
+
+                </form>
+            </div>
+        </div>
+    </div><!--.page-center-->
+
+
+    {{> javascript}} 
+    <script>
+        $(function() {
+            $('.page-center').matchHeight({
+                target: $('html')
+            });
+
+            $(window).resize(function(){
+                setTimeout(function(){
+                    $('.page-center').matchHeight({ remove: true });
+                    $('.page-center').matchHeight({
+                        target: $('html')
+                    });
+                },100);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "cli": {
+    "mode": "console"
+  },
+  "errorhandler": {
+    "timeout": 5000
+  },
+  "interfaces": {
+    "http": {
+      "http": {
+        "enabled": true,
+        "ssl": false,
+        "port": 3003,
+        "requestTimeout": 60000,
+        "log": false,
+        "fileUploadPath": "./tmp/",
+        "maxUploadFileSizeMb": 50
+      }
+    }
+  },
+  "loader": {
+    "banner": "MediaHub Service",
+    "nodeId": "66689ht29aaaahg92hg92h255sadfbbb",
+    "maxObjectListeners": 100,
+    "startupModules": ["logger", "daemon", "cli"],
+    "timeouts": {
+      "loadDependencies": 5000,
+      "closeModules": 5000
+    }
+  },
+  "logger": {
+    "enabled": true,
+    "levels": ["startup", "shutdown", "warning", "error", "fatal"],
+    "logMetadataObjects": false,
+    "sinks": {
+      "console": {"enabled": true}
+    }
+  },
+  "router": {
+    "instances": {
+      "RouterOne": {
+        "interfaces": ["*"],
+        "services": ["*"]
+      }
+    }
+  },
+  "services": {
+    "allowShutdownFromControllers": false
+  }
+}
