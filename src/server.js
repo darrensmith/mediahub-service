@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /*!
-* isnode mediahub-service entry point
+* isnode entry point
 *
 * Copyright (c) 2019 Darren Smith
 */

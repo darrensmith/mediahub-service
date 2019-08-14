@@ -5,17 +5,17 @@
   "main": "server.js",
   "scripts": {"start": "node server.js"},
   "dependencies": {
-    "isnode-loader": "0.0.8",
-    "isnode-mod-cli": "0.0.8",
-    "isnode-mod-daemon": "0.0.8",
-    "isnode-mod-data": "0.0.8",
-    "isnode-mod-identity": "0.0.8",
-    "isnode-mod-interface-http": "0.0.8",
-    "isnode-mod-logger": "0.0.8",
-    "isnode-mod-mailer": "0.0.8",
-    "isnode-mod-router": "0.0.8",
-    "isnode-mod-services": "0.0.8",
-    "isnode-mod-utilities": "0.0.8"
+    "isnode-loader": "^0.0.8",
+    "isnode-mod-cli": "^0.0.8",
+    "isnode-mod-daemon": "^0.0.8",
+    "isnode-mod-data": "^0.0.8",
+    "isnode-mod-identity": "^0.0.8",
+    "isnode-mod-interface-http": "^0.0.8",
+    "isnode-mod-logger": "^0.0.8",
+    "isnode-mod-mailer": "^0.0.8",
+    "isnode-mod-router": "^0.0.8",
+    "isnode-mod-services": "^0.0.8",
+    "isnode-mod-utilities": "^0.0.8"
   },
   "author": {
     "name": "Darren Smith",
@@ -30,7 +30,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Industryswarm/mediahub-service.git"
+    "url": "https://git.home.darrensmith.com.au/r/IndustrySwarm/mediahub-service.git"
   },
   "engines": ["node"],
   "bin": {"isnode": "./server.js"}
