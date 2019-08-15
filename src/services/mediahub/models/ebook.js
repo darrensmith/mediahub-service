@@ -17,7 +17,9 @@
 		    title: 				{ type: schema.String, limit: 255 },
 		    author: 			{ type: schema.String, limit: 255 },
 		    shortDesc: 			{ type: schema.String, limit: 255 },
-		    longDesc: 			{ type: schema.String, limit: 255 }
+		    longDesc: 			{ type: schema.String, limit: 255 },
+		    filename: 			{ type: schema.String, limit: 255 },
+		    primaryCategoryKey: { type: schema.String, limit: 255 }
 		});
 	}
 
