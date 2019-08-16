@@ -13,7 +13,7 @@
 			key: 				{ type: schema.String, limit: 255 },
 		    dateCreated: 		{ type: schema.String, limit: 255 },
 		    dateLastModified: 	{ type: schema.String, limit: 255 },
-		    imageName: 			{ type: schema.String, limit: 255 },
+		    title: 				{ type: schema.String, limit: 255 },
 		    shortDesc: 			{ type: schema.String, limit: 255 },
 		    longDesc: 			{ type: schema.String, limit: 255 },
 		    filename: 			{ type: schema.String, limit: 255 }

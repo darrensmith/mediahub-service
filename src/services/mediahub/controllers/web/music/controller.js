@@ -9,6 +9,8 @@
 
 	var ctrl = {};
 	var isnode = null;
+	var service = null;
+	var SongModel = null;
 
 	/**
 	 * Initialises the controller
@@ -16,6 +18,8 @@
 	 */
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
+		service = isnode.module("services").service("mediahub");
+		SongModel = service.models.get("song");
 		return;
 	}
 
@@ -25,7 +29,11 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.get = function(req, res){
-		res.render("music.mustache");
+		var context = {};
+		SongModel.find({ "where": { }}, function(err, songs){
+			context.songs = songs;
+			res.render("music.mustache", context);
+		});
 		return;
 	}
 

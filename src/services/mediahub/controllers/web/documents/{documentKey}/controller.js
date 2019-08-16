@@ -1,5 +1,5 @@
 /*!
-* /web/movies/controller.js
+* /web/documents/{documentKey}/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -10,7 +10,7 @@
 	var ctrl = {};
 	var isnode = null;
 	var service = null;
-	var MovieModel = null;
+	var DocumentModel = null;
 
 	/**
 	 * Initialises the controller
@@ -19,7 +19,7 @@
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
-		MovieModel = service.models.get("movie");
+		DocumentModel = service.models.get("document");
 		return;
 	}
 
@@ -30,9 +30,9 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		MovieModel.find({ "where": { }}, function(err, movies){
-			context.movies = movies;
-			res.render("movies.mustache", context);
+		DocumentModel.find({ "where": { key: req.params.documentKey }}, function(err,documents){
+			context.document = documents[0];
+			res.render("document-details.mustache", context);
 		});
 		return;
 	}

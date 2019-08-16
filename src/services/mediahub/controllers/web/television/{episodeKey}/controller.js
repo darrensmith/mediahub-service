@@ -1,5 +1,5 @@
 /*!
-* /web/movies/controller.js
+* /web/television/{episodeKey}/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -19,7 +19,7 @@
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
-		MovieModel = service.models.get("movie");
+		EpisodeModel = service.models.get("episode");
 		return;
 	}
 
@@ -30,9 +30,9 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		MovieModel.find({ "where": { }}, function(err, movies){
-			context.movies = movies;
-			res.render("movies.mustache", context);
+		EpisodeModel.find({ "where": { key: req.params.episodeKey }}, function(err,episodes){
+			context.episode = episodes[0];
+			res.render("television-details.mustache", context);
 		});
 		return;
 	}

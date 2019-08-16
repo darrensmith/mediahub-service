@@ -18,20 +18,16 @@
 		</div>
 		<div class="main">
 			{{> leftbar}}
-			<div class="container">
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
-			</div>
+			<div class="container" id="container"></div>
 		</div>
 
-
-
 	</body>
+
+	<script>
+		var container = document.getElementById('container');
+		{{#songs}}
+			container.innerHTML += "<a href=\"/web/music/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 100px;\" src=\"/img/music-notes.jpg\"/><p class=\"font2\"> {{title}} </p></div></div> </a>";
+		{{/songs}}
+	</script>
 
 </html>

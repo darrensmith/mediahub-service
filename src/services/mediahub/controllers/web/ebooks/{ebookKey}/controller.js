@@ -1,5 +1,5 @@
 /*!
-* /web/movies/controller.js
+* /web/ebooks/{ebookKey}/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -10,7 +10,7 @@
 	var ctrl = {};
 	var isnode = null;
 	var service = null;
-	var MovieModel = null;
+	var eBookModel = null;
 
 	/**
 	 * Initialises the controller
@@ -19,7 +19,7 @@
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
-		MovieModel = service.models.get("movie");
+		eBookModel = service.models.get("ebook");
 		return;
 	}
 
@@ -30,9 +30,9 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		MovieModel.find({ "where": { }}, function(err, movies){
-			context.movies = movies;
-			res.render("movies.mustache", context);
+		eBookModel.find({ "where": { key: req.params.ebookKey }}, function(err,ebooks){
+			context.ebook = ebooks[0];
+			res.render("ebook-details.mustache", context);
 		});
 		return;
 	}

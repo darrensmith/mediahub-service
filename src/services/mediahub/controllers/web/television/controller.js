@@ -9,6 +9,8 @@
 
 	var ctrl = {};
 	var isnode = null;
+	var service = null;
+	var EpisodeModel = null;
 
 	/**
 	 * Initialises the controller
@@ -16,6 +18,8 @@
 	 */
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
+		service = isnode.module("services").service("mediahub");
+		EpisodeModel = service.models.get("episode");
 		return;
 	}
 
@@ -25,7 +29,11 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.get = function(req, res){
-		res.render("television.mustache");
+		var context = {};
+		EpisodeModel.find({ "where": { }}, function(err, episodes){
+			context.episodes = episodes;
+			res.render("television.mustache", context);
+		});
 		return;
 	}
 

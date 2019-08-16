@@ -13,6 +13,7 @@
 	var SettingModel = null;
 	var FolderModel = null;
 	var FileModel = null;
+	var interval = null;
 
 	/**
 	 * Initialises the controller
@@ -22,10 +23,12 @@
 		isnode = isnodeObj;
 		var router = isnode.module("router");
 		router.on('sync', function() { sync(); });
+		router.on('reset-sync', function() { resetSync(); });
 		service = isnode.module("services").service("mediahub");
 		SettingModel = service.models.get("setting");
 		FolderModel = service.models.get("folder");
 		FileModel = service.models.get("file");
+		startReindexLoop();
 		return;
 	}
 
@@ -45,6 +48,26 @@
 	 */
 	ctrl.shutdown = function(cb) {
 		cb();
+	}
+
+	/**
+	 * Resets the Sync Reindex Loop
+	 */
+	var resetSync = function() {
+		clearInterval(interval);
+		startReindexLoop();
+	}
+
+	/**
+	 * Starts the Reindex Loop
+	 */
+	var startReindexLoop = function() {
+		SettingModel.find({ "where": { "setting": "reindexFreq" }}, function(err,settings){
+			var reindexFreq = settings[0].value;
+			interval = setInterval(function(){
+				sync();
+			}, reindexFreq * 1000);
+		});
 	}
 
 	/**

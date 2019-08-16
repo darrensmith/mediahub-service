@@ -18,19 +18,15 @@
 		</div>
 		<div class="main">
 			{{> leftbar}}
-			<div class="container">
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/image.jpg"/><p class="font2"> Sample Image </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/image.jpg"/><p class="font2"> Sample Image </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/image.jpg"/><p class="font2"> Sample Image </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/image.jpg"/><p class="font2"> Sample Image </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/image.jpg"/><p class="font2"> Sample Image </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/image.jpg"/><p class="font2"> Sample Image </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/image.jpg"/><p class="font2"> Sample Image </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/image.jpg"/><p class="font2"> Sample Image </p></div></div> </a>
-			</div>
+			<div class="container" id="container"> </div>
 		</div>
 
-
+	<script>
+		var container = document.getElementById('container');
+		{{#images}}
+			container.innerHTML += "<a href=\"/web/images/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 100px;\" src=\"/img/image.jpg\"/><p class=\"font2\"> {{title}} </p></div></div> </a>";
+		{{/images}}
+	</script>
 
 	</body>
 

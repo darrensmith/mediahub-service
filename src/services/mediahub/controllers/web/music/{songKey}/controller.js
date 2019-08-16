@@ -1,5 +1,5 @@
 /*!
-* /web/movies/controller.js
+* /web/music/{songKey}/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -19,7 +19,7 @@
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
-		MovieModel = service.models.get("movie");
+		SongModel = service.models.get("song");
 		return;
 	}
 
@@ -30,9 +30,9 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		MovieModel.find({ "where": { }}, function(err, movies){
-			context.movies = movies;
-			res.render("movies.mustache", context);
+		SongModel.find({ "where": { key: req.params.songKey }}, function(err,songs){
+			context.song = songs[0];
+			res.render("music-details.mustache", context);
 		});
 		return;
 	}

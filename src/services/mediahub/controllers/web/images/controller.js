@@ -9,6 +9,8 @@
 
 	var ctrl = {};
 	var isnode = null;
+	var service = null;
+	var ImageModel = null;
 
 	/**
 	 * Initialises the controller
@@ -16,6 +18,8 @@
 	 */
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
+		service = isnode.module("services").service("mediahub");
+		ImageModel = service.models.get("image");
 		return;
 	}
 
@@ -25,7 +29,11 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.get = function(req, res){
-		res.render("images.mustache");
+		var context = {};
+		ImageModel.find({ "where": { }}, function(err, images){
+			context.images = images;
+			res.render("images.mustache", context);
+		});
 		return;
 	}
 

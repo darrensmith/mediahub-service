@@ -87,6 +87,8 @@
 					"dateCreated": currentDate,
 					"dateLastModified": currentDate
 				}, function(err, setting){
+					var router = isnode.module("router");
+					router.emit("reset-sync");
 					parametersUpdated ++;
 				});
 			}

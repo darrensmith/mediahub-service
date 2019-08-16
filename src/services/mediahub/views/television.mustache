@@ -18,20 +18,15 @@
 		</div>
 		<div class="main">
 			{{> leftbar}}
-			<div class="container">
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
-			</div>
+			<div class="container" id="container"></div>
 		</div>
-
-
-
 	</body>
+
+	<script>
+		var container = document.getElementById('container');
+		{{#episodes}}
+			container.innerHTML += "<a href=\"/web/television/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 100px;\" src=\"/img/television.jpg\"/><p class=\"font2\"> {{title}} </p></div></div> </a>";
+		{{/episodes}}
+	</script>
 
 </html>

@@ -1,5 +1,5 @@
 /*!
-* /web/movies/controller.js
+* /web/movies/{movieKey}/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -30,9 +30,9 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		MovieModel.find({ "where": { }}, function(err, movies){
-			context.movies = movies;
-			res.render("movies.mustache", context);
+		MovieModel.find({ "where": { key: req.params.movieKey }}, function(err,movies){
+			context.movie = movies[0];
+			res.render("movie-details.mustache", context);
 		});
 		return;
 	}
