@@ -41,6 +41,7 @@
   -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
   box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+  overflow: hidden;
 }
 
 .widebox {
@@ -318,7 +319,6 @@ a>.bigbox {
 }
 
 .save-button:hover {
-  background-color: hsla(0,0%,100%,.25);
   background-color: #dd7b19;
   cursor: pointer;
 }

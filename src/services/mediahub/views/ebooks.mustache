@@ -18,17 +18,15 @@
 		</div>
 		<div class="main">
 			{{> leftbar}}
-			<div class="container">
-				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
-				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
-				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
-				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
-				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
-				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
-				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
-				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
-			</div>
+			<div class="container" id="container"></div>
 		</div>
 	</body>
+
+	<script>
+		var container = document.getElementById('container');
+		{{#ebooks}}
+			container.innerHTML += "<a href=\"/web/ebooks/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img src=\"/img/book.jpg\"/><p class=\"font2\"> {{title}} <em>by</em> {{author}} </p></div></div> </a>";
+		{{/ebooks}}
+	</script>
 
 </html>

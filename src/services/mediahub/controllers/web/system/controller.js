@@ -30,13 +30,24 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		SettingModel.find({ "where": { "setting": "folder" }}, function(err,settings){
-			if(settings[0]) {
-				context.folder = settings[0].value;
-				res.render("system.mustache", context);
-			} else {
-				res.render("system.mustache");
+		SettingModel.find({ "where": {}}, function(err,settings){
+			for (var i = 0; i < settings.length; i++) {
+				if(settings[i].setting == "folder") {
+					context.folder = settings[i].value;
+				}
+				if(settings[i].setting == "reindexFreq") {
+					context.reindexFreq = settings[i].value;
+				}
+				if(settings[i].setting == "watch" && settings[i].value == "No") {
+					context.watchNoSelected = "selected";
+					context.watchYesSelected = "";
+				}
+				if(settings[i].setting == "watch" && settings[i].value == "Yes") {
+					context.watchNoSelected = "";
+					context.watchYesSelected = "selected";
+				}
 			}
+			res.render("system.mustache", context);
 		});
 		return;
 	}
@@ -48,24 +59,60 @@
 	 */
 	ctrl.post = function(req, res){
 		var context = {};
-		if(req.body.folder){
+		var parametersToUpdate = 0;
+		var parametersUpdated = 0;
+		if(req.body.folder) { parametersToUpdate ++; };
+		if(req.body.reindexFreq) { parametersToUpdate ++; };
+		if(req.body.watch) { parametersToUpdate ++; };
+		if(req.body.save == "true"){
 			var currentDate = isnode.module("utilities").getCurrentDateInISO();
-			SettingModel.updateOrCreate({ "setting": "folder" }, 
-			{
-				"key": isnode.module("utilities").uuid4(),
-				"setting": "folder",
-				"value": req.body.folder,
-				"dateCreated": currentDate,
-				"dateLastModified": currentDate
-			}, function(err, setting){
-				if(err){
-					res.redirect("/web/system?error=problem-updating-folder");
-				} else {
-					res.redirect("/web/system?success=folder-updated");
+			if(req.body.folder) {
+				SettingModel.updateOrCreate({ "setting": "folder" }, 
+				{
+					"key": isnode.module("utilities").uuid4(),
+					"setting": "folder",
+					"value": req.body.folder,
+					"dateCreated": currentDate,
+					"dateLastModified": currentDate
+				}, function(err, setting){
+					parametersUpdated ++;
+				});
+			}
+			if(req.body.reindexFreq) {
+				SettingModel.updateOrCreate({ "setting": "reindexFreq" }, 
+				{
+					"key": isnode.module("utilities").uuid4(),
+					"setting": "reindexFreq",
+					"value": req.body.reindexFreq,
+					"dateCreated": currentDate,
+					"dateLastModified": currentDate
+				}, function(err, setting){
+					parametersUpdated ++;
+				});
+			}
+			if(req.body.watch) {
+				SettingModel.updateOrCreate({ "setting": "watch" }, 
+				{
+					"key": isnode.module("utilities").uuid4(),
+					"setting": "watch",
+					"value": req.body.watch,
+					"dateCreated": currentDate,
+					"dateLastModified": currentDate
+				}, function(err, setting){
+					parametersUpdated ++;
+				});
+			}
+			var interval = setInterval(function(){
+				if(parametersUpdated >= parametersToUpdate) {
+					clearInterval(interval);
+					res.redirect("/web/system?message=update-processed");
 				}
-			});
-		} else {
-			res.redirect("/web/system");
+			}, 200);
+		} 
+		if (req.body.sync == "true") {
+			var router = isnode.module("router");
+			router.emit("sync");
+			res.redirect("/web/system?success=sync-started");
 		}
 		return;
 	}

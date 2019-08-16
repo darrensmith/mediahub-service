@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Files | Media Hub</title>
+		<meta name="description" content="Media Hub">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		{{> styles}}
+		{{> javascript}}
+	</head>
+
+	<body class="home">
+		{{> header}}
+		<div class="titlearea"> 
+		    <div class="lefttitle"> <p class="font lefttitletext"><strong>Media Centre</strong></p> </div>
+		    <div class="righttag font"> <span style="font-size: 16px;">Files</span> </div>
+		</div>
+		<div class="main">
+			{{> leftbar}}
+			<div class="container" id="container">
+			</div>
+		</div>
+	</body>
+
+	<script>
+		var container = document.getElementById('container');
+		{{#files}}
+			container.innerHTML += "<a href=\"/web/files/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 100px;\" src=\"/img/file.jpg\"/><p class=\"font2\"> {{filename}} </p></div></div> </a>";
+		{{/files}}
+	</script>
+
+</html>

@@ -18,17 +18,15 @@
 		</div>
 		<div class="main">
 			{{> leftbar}}
-			<div class="container">
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
-				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
-			</div>
+			<div class="container" id="container"></div>
 		</div>
 	</body>
+
+	<script>
+		var container = document.getElementById('container');
+		{{#documents}}
+			container.innerHTML += "<a href=\"/web/documents/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/document.jpg\"/><p class=\"font2\"> {{title}} <em>by</em> {{author}} </p></div></div> </a>";
+		{{/documents}}
+	</script>
 
 </html>

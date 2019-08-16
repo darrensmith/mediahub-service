@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Convert File To Object | Media Hub</title>
+		<meta name="description" content="Media Hub">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		{{> styles}}
+		{{> javascript}}
+	</head>
+
+	<body class="home">
+		{{> header}}
+		<div class="titlearea"> 
+		    <div class="lefttitle"> <p class="font lefttitletext"><strong>Media Centre</strong></p> </div>
+		    <div class="righttag font"> <span style="font-size: 16px;">Convert File To Object</span> </div>
+		</div>
+		<div class="main">
+			{{> leftbar}}
+			<div class="container2">
+				<div class="body-title"><strong>Convert File To Object</strong></div>
+				<div class="body-strip"></div>
+				<div class="body-form">
+					<form action="/web/files/{{fileKey}}" method="post">
+
+						<input type="hidden" name="fileKey" value="{{fileKey}}" />
+
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Filename:</div>
+								<div class="searchcontainer"><input class="search" name="filename" value="{{filename}}" disabled /></div>
+							</div>
+							<div class="form-field">
+								<div class="font">Path:</div>
+								<div class="searchcontainer"><input class="search" name="path" value="{{path}}" disabled /></div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Select Object</div>
+								<div class="searchcontainer">
+									<select id="objects" class="search" name="object">
+										<option value="file" {{fileSelected}}>File</option>
+										<option value="document" {{documentSelected}}>Document</option>
+										<option value="ebook" {{eBookSelected}}>eBook</option>
+										<option value="music" {{musicSelected}}>Music</option>
+										<option value="television" {{televisionSelected}}>Television Series</option>
+										<option value="movie" {{movieSelected}}>Movie</option>
+										<option value="image" {{imageSelected}}>Image</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="form-field fields document ebook music television image movie">
+								<div class="font">Title:</div>
+								<div class="searchcontainer"><input class="search" name="title" /></div>
+							</div>
+							<div class="form-field fields document ebook">
+								<div class="font">Author:</div>
+								<div class="searchcontainer"><input class="search" name="author" /></div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="form-field fields document ebook music television image movie">
+								<div class="font">Short Description:</div>
+								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="shortDesc" ></textarea></div>
+							</div>
+							<div class="form-field fields document ebook music television image movie">
+								<div class="font">Long Description:</div>
+								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="longDesc" ></textarea></div>
+							</div>
+						</div>
+
+						<div class="form-field">
+							<button class="save-button font" style="margin-right: 20px;" name="convert" value="true">CONVERT</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script>
+		$(".fields").hide();
+		$(".save-button").attr("disabled", true);
+		$(".save-button").css("background-color", "#555555");
+		$(".save-button").css("border-color", "#555555");
+		$(".save-button").css("cursor", "not-allowed");
+		$("#objects").change(function(){
+			if($('#objects').find(":selected").val() != "file"){
+				$(".save-button").attr("disabled", false);
+				$(".save-button").css("background-color", "#cc7b19");
+				$(".save-button").css("border-color", "#cc7b19");
+				$(".save-button").css("cursor", "pointer");
+				$(".save-button").hover(function() {
+					$(this).css("background-color","#dd7b19")
+				});
+			} else {
+				$(".save-button").attr("disabled", true);
+				$(".save-button").css("background-color", "#555555");
+				$(".save-button").css("border-color", "#555555");
+				$(".save-button").css("cursor", "not-allowed");
+			}
+			if($('#objects').find(":selected").val() == "document"){
+				$(".fields").hide();
+				$(".document").show();
+			}
+			if($('#objects').find(":selected").val() == "ebook"){
+				$(".fields").hide();
+				$(".ebook").show();
+			}
+			if($('#objects').find(":selected").val() == "music"){
+				$(".fields").hide();
+				$(".music").show();
+			}
+			if($('#objects').find(":selected").val() == "television"){
+				$(".fields").hide();
+				$(".television").show();
+			}
+			if($('#objects').find(":selected").val() == "movie"){
+				$(".fields").hide();
+				$(".movie").show();
+			}
+			if($('#objects').find(":selected").val() == "ebook"){
+				$(".fields").hide();
+				$(".ebook").show();
+			}
+			if($('#objects').find(":selected").val() == "image"){
+				$(".fields").hide();
+				$(".image").show();
+			}
+		});
+	</script>
+
+</html>

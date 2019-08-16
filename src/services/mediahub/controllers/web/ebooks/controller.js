@@ -9,6 +9,8 @@
 
 	var ctrl = {};
 	var isnode = null;
+	var service = null;
+	var eBookModel = null;
 
 	/**
 	 * Initialises the controller
@@ -16,6 +18,8 @@
 	 */
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
+		service = isnode.module("services").service("mediahub");
+		eBookModel = service.models.get("ebook");
 		return;
 	}
 
@@ -25,7 +29,11 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.get = function(req, res){
-		res.render("ebooks.mustache");
+		var context = {};
+		eBookModel.find({ "where": { }}, function(err,ebooks){
+			context.ebooks = ebooks;
+			res.render("ebooks.mustache", context);
+		});
 		return;
 	}
 
