@@ -1,48 +1,44 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-	<meta http-equiv="x-ua-compatible" content="ie=edge">
-	<title>Home | Pages Service</title>
-    {{> styles}}
-    <link rel="stylesheet" href="/css/separate/pages/login.min.css">
-</head>
-<body>
 
-    <div class="page-center">
-        <div class="page-center-in">
-            <div class="container-fluid">
-                <form class="sign-box" action="/web/sign-in" method="post">
-                    <div class="sign-avatar">
-                        <img src="/img/avatar-sign.png" alt="">
-                    </div>
-                    <header class="sign-title">Hello World</header>
+	<head>
+		<meta charset="utf-8">
+		<title>Media Hub</title>
+		<meta name="description" content="Media Hub">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		{{> styles}}
+		{{> javascript}}
+	</head>
 
-                    <p style="color:red">Hello, {{name}}. Welcome to ISNode.</p>
+	<body class="home">
+		{{> header}}
+		<div class="titlearea"> 
+		    <div class="lefttitle"> <p class="font lefttitletext"><strong>Media Centre</strong></p> </div>
+		    <div class="righttag font"> <span style="font-size: 16px;">Home</span> </div>
+		</div>
+		<div class="main">
+			{{> leftbar}}
+			<div class="container">
+				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
+				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
+				<a href="/web/read"> <div class="bigbox"><div class="logo"><img src="/img/book.jpg"/><p class="font2"> Test eBook </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 75px;" src="/img/document.jpg"/><p class="font2"> Test Document </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/television.jpg"/><p class="font2"> Sample Show </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/movie-clip.png"/><p class="font2"> Sample Movie </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/movie-clip.png"/><p class="font2"> Sample Movie </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/movie-clip.png"/><p class="font2"> Sample Movie </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
+				<a href="#"> <div class="bigbox"><div class="logo"><img style="width: 100px;" src="/img/music-notes.jpg"/><p class="font2"> Sample Song </p></div></div> </a>
+			</div>
+		</div>
 
-                </form>
-            </div>
-        </div>
-    </div><!--.page-center-->
 
 
-    {{> javascript}} 
-    <script>
-        $(function() {
-            $('.page-center').matchHeight({
-                target: $('html')
-            });
+	</body>
 
-            $(window).resize(function(){
-                setTimeout(function(){
-                    $('.page-center').matchHeight({ remove: true });
-                    $('.page-center').matchHeight({
-                        target: $('html')
-                    });
-                },100);
-            });
-        });
-    </script>
-</body>
 </html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>System Settings | Media Hub</title>
+		<meta name="description" content="Media Hub">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		{{> styles}}
+		{{> javascript}}
+	</head>
+
+	<body class="home">
+		{{> header}}
+		<div class="titlearea"> 
+		    <div class="lefttitle"> <p class="font lefttitletext"><strong>Media Centre</strong></p> </div>
+		    <div class="righttag font"> <span style="font-size: 16px;">System Settings</span> </div>
+		</div>
+		<div class="main">
+			{{> leftbar}}
+			<div class="container2">
+				<div class="body-title"><strong>Settings</strong></div>
+				<div class="body-strip"></div>
+				<div class="body-form">
+					<form action="/web/system" method="post">
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Name:</div>
+								<div class="searchcontainer"><input class="search" name="name" /></div>
+							</div>
+							<div class="form-field">
+								<div class="font">Options:</div>
+								<div class="searchcontainer">
+									<select class="search" name="options">
+										<option>test 1</option>
+										<option>test 2</option>
+										<option>test 3</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Name:</div>
+								<div class="searchcontainer"><input class="search" name="name" /></div>
+							</div>
+							<div class="form-field">
+								<div class="font">Options:</div>
+								<div class="searchcontainer">
+									<select class="search" name="options">
+										<option>test 1</option>
+										<option>test 2</option>
+										<option>test 3</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="form-field">
+							<button class="save-button font">SAVE CHANGES</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+
+	</body>
+
+</html>
