@@ -1,5 +1,5 @@
 /*!
-* connector/models/episode.js
+* connector/models/setting.js
 *
 * Copyright (c) 2019 Darren Smith and Zip Co
 */
@@ -9,16 +9,12 @@
 	var model = function() {}
 
 	model.define = function(isnode, schema) {
-		return schema.define('Episode', {
+		return schema.define('Setting', {
 			key: 				{ type: schema.String, limit: 255 },
 		    dateCreated: 		{ type: schema.String, limit: 255 },
 		    dateLastModified: 	{ type: schema.String, limit: 255 },
-		    showKey: 			{ type: schema.String, limit: 255 },
-		    seasonKey: 			{ type: schema.String, limit: 255 },
-		    episodeName: 		{ type: schema.String, limit: 255 },
-		    shortDesc: 			{ type: schema.String, limit: 255 },
-		    longDesc: 			{ type: schema.String, limit: 255 },
-		    filename: 			{ type: schema.String, limit: 255 }
+		    setting: 			{ type: schema.String, limit: 255 },
+		    value: 				{ type: schema.String, limit: 255 }
 		});
 	}
 

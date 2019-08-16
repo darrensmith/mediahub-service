@@ -20,5 +20,42 @@
   "routing": "auto",
   "routes": {},
   "supportsMultipleApps": false,
-  "defaultAppId": "90ec827c-dac0-ffff-b151-353b0c30a03e"
+  "defaultAppId": "90ec827c-dac0-ffff-b151-353b0c30a03e",
+  "databaseConnections": [
+    {
+      "name"       : "mediahub",
+      "driver"     : "mysql",
+      "host"       : "localhost",
+      "port"       : "3306",
+      "username"   : "root",
+      "password"   : "password",
+      "database"   : "mediahub"
+    }
+  ],
+  "identity": {
+    "enabled": true,
+    "access": "local",
+    "databaseConnections": [
+      {
+        "name"       : "mediahub_identity",
+        "driver"     : "mysql",
+        "host"       : "localhost",
+        "port"       : "3306",
+        "username"   : "root",
+        "password"   : "password",
+        "database"   : "mediahub_identity"
+      }
+    ],
+    "app": {
+      "client_id": "5kcATxFTClNvPYWnxE7p3f871Vibg0c3JduA",
+      "label": "IndustrySwarm Auth Service",
+      "redirect_uri": "http://localhost:3020/web/auth"
+    },
+    "admin": {
+      "email": "darren.smith@industryswarm.com"
+    },
+    "organisation": {
+      "name": "IndustrySwarm"
+    }
+  }
 }

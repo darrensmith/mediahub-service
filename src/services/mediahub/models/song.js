@@ -16,6 +16,7 @@
 		    dateLastModified: 	{ type: schema.String, limit: 255 },
 		    title: 				{ type: schema.String, limit: 255 },
 		    artistKey: 			{ type: schema.String, limit: 255 },
+		    albumKey: 			{ type: schema.String, limit: 255 },
 		    shortDesc: 			{ type: schema.String, limit: 255 },
 		    longDesc: 			{ type: schema.String, limit: 255 },
 		    filename: 			{ type: schema.String, limit: 255 },

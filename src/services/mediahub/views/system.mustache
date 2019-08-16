@@ -25,38 +25,28 @@
 					<form action="/web/system" method="post">
 						<div class="form-group">
 							<div class="form-field">
-								<div class="font">Name:</div>
-								<div class="searchcontainer"><input class="search" name="name" /></div>
-							</div>
-							<div class="form-field">
-								<div class="font">Options:</div>
-								<div class="searchcontainer">
-									<select class="search" name="options">
-										<option>test 1</option>
-										<option>test 2</option>
-										<option>test 3</option>
-									</select>
-								</div>
+								<div class="font">Folder Path:</div>
+								<div class="searchcontainer" style="width: 830px;"><input style="width: 830px;" class="search" name="folder" value="{{folder}}" /></div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-field">
-								<div class="font">Name:</div>
-								<div class="searchcontainer"><input class="search" name="name" /></div>
+								<div class="font">Reindex Frequency:</div>
+								<div class="searchcontainer"><input class="search" name="reindexFreq" value="{{reindexFreq}}" /></div>
 							</div>
 							<div class="form-field">
-								<div class="font">Options:</div>
+								<div class="font">Watch Filesystem for Changes</div>
 								<div class="searchcontainer">
-									<select class="search" name="options">
-										<option>test 1</option>
-										<option>test 2</option>
-										<option>test 3</option>
+									<select class="search" name="watch">
+										<option {{yesWatchSelected}}>Yes</option>
+										<option {{noWatchSelected}}>No</option>
 									</select>
 								</div>
 							</div>
 						</div>
 						<div class="form-field">
-							<button class="save-button font">SAVE CHANGES</button>
+							<button class="save-button font" style="margin-right: 20px;" name="save" value="true">SAVE CHANGES</button>
+							<button class="save-button font" name="sync" value="true">SYNC NOW</button>
 						</div>
 					</form>
 				</div>
