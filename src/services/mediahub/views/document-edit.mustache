@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Edit Document | Media Hub</title>
+		<meta name="description" content="Media Hub">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		{{> styles}}
+		{{> javascript}}
+	</head>
+
+	<body class="home">
+		{{> header}}
+		<div class="titlearea"> 
+		    <div class="lefttitle"> <p class="font lefttitletext"><strong>Media Centre</strong></p> </div>
+		    <div class="righttag font"> <span style="font-size: 16px;">Edit Document</span> </div>
+		</div>
+		<div class="main">
+			{{> leftbar}}
+			<div class="container2">
+				<div class="body-title"><strong>Edit Document</strong></div>
+				<div class="body-strip"></div>
+				<div class="body-form">
+					<form action="/web/documents/{{document.key}}/edit" method="post">
+
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Title:</div>
+								<div class="searchcontainer"><input class="search" name="title" value="{{document.title}}" /></div>
+							</div>
+							<div class="form-field">
+								<div class="font">Author:</div>
+								<div class="searchcontainer"><input class="search" name="author" value="{{document.author}}" /></div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Short Description:</div>
+								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="shortDesc">{{document.shortDesc}}</textarea></div>
+							</div>
+							<div class="form-field">
+								<div class="font">Long Description:</div>
+								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="longDesc" >{{document.longDesc}}</textarea></div>
+							</div>
+						</div>
+
+						<div class="form-field">
+							<button class="save-button font" style="margin-right: 20px;" name="convert" value="true">Update</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

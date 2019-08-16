@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var MovieModel = null;
+	var FileModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		EpisodeModel = service.models.get("episode");
+		FileModel = service.models.get("file");
 		return;
 	}
 
@@ -33,6 +35,50 @@
 		EpisodeModel.find({ "where": { key: req.params.episodeKey }}, function(err,episodes){
 			context.episode = episodes[0];
 			res.render("television-details.mustache", context);
+		});
+		return;
+	}
+
+	/**
+	 * POST
+	 * @param {object} req - Request object
+	 * @param {object} res - Response object
+	 */
+	ctrl.post = function(req, res){
+		var context = {};
+		EpisodeModel.find({ "where": { key: req.params.episodeKey }}, function(err1, episodes){
+			if(!episodes || err1 || !episodes[0]){
+				res.redirect("/web/television");
+				return;
+			}
+			FileModel.find({ "where": { key: episodes[0].fileKey }}, function(err2, files){
+				if(!files || err2 || !files[0]){
+					res.redirect("/web/television");
+					return;
+				}
+				if(req.body.revert == "true"){
+					var completed = 0;
+					episodes[0].destroy(function(err3, deletedEpisode){
+						completed ++;
+					});
+					FileModel.update({ 
+						where: { key: episodes[0].fileKey } 
+					}, {
+						objectType: null,
+						objectKey: null
+					}, function(err4, updatedFile){
+						completed ++;
+					});
+					var interval = setInterval(function(){
+						if(completed >= 2){
+							clearInterval(interval);
+							res.redirect("/web/files");
+						}
+					}, 200);
+				} else if (req.body.edit == "true") {
+					res.redirect("/web/television/" + req.params.episodeKey + "/edit");
+				}			
+			});
 		});
 		return;
 	}

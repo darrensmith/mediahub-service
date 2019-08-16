@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var eBookModel = null;
+	var FileModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		eBookModel = service.models.get("ebook");
+		FileModel = service.models.get("file");
 		return;
 	}
 
@@ -33,6 +35,50 @@
 		eBookModel.find({ "where": { key: req.params.ebookKey }}, function(err,ebooks){
 			context.ebook = ebooks[0];
 			res.render("ebook-details.mustache", context);
+		});
+		return;
+	}
+
+	/**
+	 * POST
+	 * @param {object} req - Request object
+	 * @param {object} res - Response object
+	 */
+	ctrl.post = function(req, res){
+		var context = {};
+		eBookModel.find({ "where": { key: req.params.ebookKey }}, function(err1, ebooks){
+			if(!ebooks || err1 || !ebooks[0]){
+				res.redirect("/web/ebooks");
+				return;
+			}
+			FileModel.find({ "where": { key: ebooks[0].fileKey }}, function(err2, files){
+				if(!files || err2 || !files[0]){
+					res.redirect("/web/ebooks");
+					return;
+				}
+				if(req.body.revert == "true"){
+					var completed = 0;
+					ebooks[0].destroy(function(err3, deletedEBook){
+						completed ++;
+					});
+					FileModel.update({ 
+						where: { key: ebooks[0].fileKey } 
+					}, {
+						objectType: null,
+						objectKey: null
+					}, function(err4, updatedFile){
+						completed ++;
+					});
+					var interval = setInterval(function(){
+						if(completed >= 2){
+							clearInterval(interval);
+							res.redirect("/web/files");
+						}
+					}, 200);
+				} else if (req.body.edit == "true") {
+					res.redirect("/web/ebooks/" + req.params.ebookKey + "/edit");
+				}			
+			});
 		});
 		return;
 	}

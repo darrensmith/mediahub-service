@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var ImageModel = null;
+	var FileModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		ImageModel = service.models.get("image");
+		FileModel = service.models.get("file");
 		return;
 	}
 
@@ -33,6 +35,50 @@
 		ImageModel.find({ "where": { key: req.params.imageKey }}, function(err,images){
 			context.image = images[0];
 			res.render("image-details.mustache", context);
+		});
+		return;
+	}
+
+	/**
+	 * POST
+	 * @param {object} req - Request object
+	 * @param {object} res - Response object
+	 */
+	ctrl.post = function(req, res){
+		var context = {};
+		ImageModel.find({ "where": { key: req.params.imageKey }}, function(err1, images){
+			if(!images || err1 || !images[0]){
+				res.redirect("/web/images");
+				return;
+			}
+			FileModel.find({ "where": { key: images[0].fileKey }}, function(err2, files){
+				if(!files || err2 || !files[0]){
+					res.redirect("/web/images");
+					return;
+				}
+				if(req.body.revert == "true"){
+					var completed = 0;
+					images[0].destroy(function(err3, deletedImage){
+						completed ++;
+					});
+					FileModel.update({ 
+						where: { key: images[0].fileKey } 
+					}, {
+						objectType: null,
+						objectKey: null
+					}, function(err4, updatedFile){
+						completed ++;
+					});
+					var interval = setInterval(function(){
+						if(completed >= 2){
+							clearInterval(interval);
+							res.redirect("/web/files");
+						}
+					}, 200);
+				} else if (req.body.edit == "true") {
+					res.redirect("/web/images/" + req.params.ebookKey + "/edit");
+				}			
+			});
 		});
 		return;
 	}

@@ -28,6 +28,7 @@
 		SettingModel = service.models.get("setting");
 		FolderModel = service.models.get("folder");
 		FileModel = service.models.get("file");
+		sync();
 		startReindexLoop();
 		return;
 	}

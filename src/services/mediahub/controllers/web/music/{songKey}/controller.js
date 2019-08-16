@@ -10,7 +10,8 @@
 	var ctrl = {};
 	var isnode = null;
 	var service = null;
-	var MovieModel = null;
+	var SongModel = null;
+	var FileModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		SongModel = service.models.get("song");
+		FileModel = service.models.get("file");
 		return;
 	}
 
@@ -33,6 +35,50 @@
 		SongModel.find({ "where": { key: req.params.songKey }}, function(err,songs){
 			context.song = songs[0];
 			res.render("music-details.mustache", context);
+		});
+		return;
+	}
+
+	/**
+	 * POST
+	 * @param {object} req - Request object
+	 * @param {object} res - Response object
+	 */
+	ctrl.post = function(req, res){
+		var context = {};
+		SongModel.find({ "where": { key: req.params.songKey }}, function(err1, songs){
+			if(!songs || err1 || !songs[0]){
+				res.redirect("/web/music");
+				return;
+			}
+			FileModel.find({ "where": { key: songs[0].fileKey }}, function(err2, files){
+				if(!files || err2 || !files[0]){
+					res.redirect("/web/music");
+					return;
+				}
+				if(req.body.revert == "true"){
+					var completed = 0;
+					songs[0].destroy(function(err3, deletedSong){
+						completed ++;
+					});
+					FileModel.update({ 
+						where: { key: songs[0].fileKey } 
+					}, {
+						objectType: null,
+						objectKey: null
+					}, function(err4, updatedFile){
+						completed ++;
+					});
+					var interval = setInterval(function(){
+						if(completed >= 2){
+							clearInterval(interval);
+							res.redirect("/web/files");
+						}
+					}, 200);
+				} else if (req.body.edit == "true") {
+					res.redirect("/web/music/" + req.params.songKey + "/edit");
+				}			
+			});
 		});
 		return;
 	}

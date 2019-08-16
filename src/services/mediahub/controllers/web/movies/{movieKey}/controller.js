@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var MovieModel = null;
+	var FileModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		MovieModel = service.models.get("movie");
+		FileModel = service.models.get("file");
 		return;
 	}
 
@@ -33,6 +35,50 @@
 		MovieModel.find({ "where": { key: req.params.movieKey }}, function(err,movies){
 			context.movie = movies[0];
 			res.render("movie-details.mustache", context);
+		});
+		return;
+	}
+
+	/**
+	 * POST
+	 * @param {object} req - Request object
+	 * @param {object} res - Response object
+	 */
+	ctrl.post = function(req, res){
+		var context = {};
+		MovieModel.find({ "where": { key: req.params.movieKey }}, function(err1, movies){
+			if(!movies || err1 || !movies[0]){
+				res.redirect("/web/movies");
+				return;
+			}
+			FileModel.find({ "where": { key: movies[0].fileKey }}, function(err2, files){
+				if(!files || err2 || !files[0]){
+					res.redirect("/web/movies");
+					return;
+				}
+				if(req.body.revert == "true"){
+					var completed = 0;
+					movies[0].destroy(function(err3, deletedMovie){
+						completed ++;
+					});
+					FileModel.update({ 
+						where: { key: movies[0].fileKey } 
+					}, {
+						objectType: null,
+						objectKey: null
+					}, function(err4, updatedFile){
+						completed ++;
+					});
+					var interval = setInterval(function(){
+						if(completed >= 2){
+							clearInterval(interval);
+							res.redirect("/web/files");
+						}
+					}, 200);
+				} else if (req.body.edit == "true") {
+					res.redirect("/web/movies/" + req.params.movieKey + "/edit");
+				}			
+			});
 		});
 		return;
 	}
