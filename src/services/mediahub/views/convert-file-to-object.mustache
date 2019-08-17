@@ -49,6 +49,7 @@
 										<option value="television" {{televisionSelected}}>Television Series</option>
 										<option value="movie" {{movieSelected}}>Movie</option>
 										<option value="documentary" {{documentarySelected}}>Documentary</option>
+										<option value="musicVideo" {{musicVideoSelected}}>Music Video</option>
 										<option value="image" {{imageSelected}}>Image</option>
 									</select>
 								</div>
@@ -56,7 +57,7 @@
 						</div>
 
 						<div class="form-group">
-							<div class="form-field fields document ebook music television image movie soundByte documentary">
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo">
 								<div class="font">Title:</div>
 								<div class="searchcontainer"><input class="search" name="title" /></div>
 							</div>
@@ -67,11 +68,11 @@
 						</div>
 
 						<div class="form-group">
-							<div class="form-field fields document ebook music television image movie soundByte documentary">
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo">
 								<div class="font">Short Description:</div>
 								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="shortDesc" ></textarea></div>
 							</div>
-							<div class="form-field fields document ebook music television image movie soundByte documentary">
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo">
 								<div class="font">Long Description:</div>
 								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="longDesc" ></textarea></div>
 							</div>
@@ -134,6 +135,10 @@
 			if($('#objects').find(":selected").val() == "documentary"){
 				$(".fields").hide();
 				$(".documentary").show();
+			}
+			if($('#objects').find(":selected").val() == "musicVideo"){
+				$(".fields").hide();
+				$(".musicVideo").show();
 			}
 			if($('#objects').find(":selected").val() == "ebook"){
 				$(".fields").hide();

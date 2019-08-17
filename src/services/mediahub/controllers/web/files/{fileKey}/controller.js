@@ -19,6 +19,7 @@
 	var ImageModel = null;
 	var SoundByteModel = null;
 	var DocumentaryModel = null;
+	var MusicVideoModel = null;
 
 	/**
 	 * Initialises the controller
@@ -36,6 +37,7 @@
 		MovieModel = service.models.get("movie");
 		ImageModel = service.models.get("image");
 		DocumentaryModel = service.models.get("documentary");
+		MusicVideoModel = service.models.get("musicVideo");
 		return;
 	}
 
@@ -226,6 +228,28 @@
 							where: { key: fileKey } 
 						}, {
 							objectType: "documentary",
+							objectKey: newObjKey
+						}, function(err2, updatedFile){
+							res.redirect("/web/files?message=file-converted-successfully");
+						});
+					});
+					break;
+				case "musicVideo":
+					MusicVideoModel.create({
+						key: newObjKey,
+						dateCreated: currentDate,
+						dateLastModified: currentDate,
+						fileKey: fileKey,
+						title: title,
+						shortDesc: shortDesc,
+						longDesc: longDesc,
+						filename: filename,
+						primaryCategoryKey: null
+					}, function(err2, musicVideo){
+						FileModel.update({ 
+							where: { key: fileKey } 
+						}, {
+							objectType: "musicVideo",
 							objectKey: newObjKey
 						}, function(err2, updatedFile){
 							res.redirect("/web/files?message=file-converted-successfully");
