@@ -17,6 +17,7 @@
 	var EpisodeModel = null;
 	var MovieModel = null;
 	var ImageModel = null;
+	var SoundByteModel = null;
 
 	/**
 	 * Initialises the controller
@@ -29,6 +30,7 @@
 		DocumentModel = service.models.get("document");
 		eBookModel = service.models.get("ebook");
 		SongModel = service.models.get("song");
+		SoundByteModel = service.models.get("soundByte");
 		EpisodeModel = service.models.get("episode");
 		MovieModel = service.models.get("movie");
 		ImageModel = service.models.get("image");
@@ -140,6 +142,28 @@
 						});
 					});
 					break;
+				case "soundByte":
+					SoundByteModel.create({
+						key: newObjKey,
+						dateCreated: currentDate,
+						dateLastModified: currentDate,
+						fileKey: fileKey,
+						title: title,
+						shortDesc: shortDesc,
+						longDesc: longDesc,
+						filename: filename,
+						primaryCategoryKey: null
+					}, function(err2, soundByte){
+						FileModel.update({ 
+							where: { key: fileKey } 
+						}, {
+							objectType: "soundByte",
+							objectKey: newObjKey
+						}, function(err2, updatedFile){
+							res.redirect("/web/files?message=file-converted-successfully");
+						});
+					});
+					break;
 				case "television":
 					EpisodeModel.create({
 						key: newObjKey,
@@ -205,6 +229,9 @@
 							res.redirect("/web/files?message=file-converted-successfully");
 						});
 					});
+					break;
+				default:
+					res.redirect("/web/files?message=invalid-object-type");
 					break;
 			}
 		});
