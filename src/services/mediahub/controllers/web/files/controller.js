@@ -32,6 +32,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web";
 		FileModel.find({ "where": { objectKey: null }}, function(err,files){
 			context.files = files;
 			res.render("files.mustache", context);

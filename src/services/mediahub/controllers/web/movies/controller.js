@@ -30,6 +30,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web";
 		MovieModel.find({ "where": { }}, function(err, movies){
 			context.movies = movies;
 			res.render("movies.mustache", context);

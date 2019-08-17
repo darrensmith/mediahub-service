@@ -25,7 +25,8 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.get = function(req, res){
-		res.render("home.mustache");
+		var context = { backButtonLink: "/web" };
+		res.render("home.mustache", context);
 		return;
 	}
 

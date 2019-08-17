@@ -32,6 +32,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web/television";
 		EpisodeModel.find({ "where": { key: req.params.episodeKey }}, function(err,episodes){
 			context.episode = episodes[0];
 			res.render("television-details.mustache", context);

@@ -30,6 +30,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web";
 		SongModel.find({ "where": { }}, function(err, songs){
 			context.songs = songs;
 			res.render("music.mustache", context);

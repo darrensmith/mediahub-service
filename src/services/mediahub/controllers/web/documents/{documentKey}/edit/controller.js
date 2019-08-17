@@ -30,6 +30,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web/documents/" + req.params.documentKey;
 		DocumentModel.find({ "where": { key: req.params.documentKey }}, function(err, documents){
 			context.document = documents[0];
 			res.render("document-edit.mustache", context);

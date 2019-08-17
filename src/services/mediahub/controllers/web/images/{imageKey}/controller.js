@@ -32,6 +32,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web/images";
 		ImageModel.find({ "where": { key: req.params.imageKey }}, function(err,images){
 			context.image = images[0];
 			res.render("image-details.mustache", context);

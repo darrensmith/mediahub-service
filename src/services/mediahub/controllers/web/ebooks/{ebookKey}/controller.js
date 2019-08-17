@@ -32,6 +32,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web/ebooks";
 		eBookModel.find({ "where": { key: req.params.ebookKey }}, function(err,ebooks){
 			context.ebook = ebooks[0];
 			res.render("ebook-details.mustache", context);

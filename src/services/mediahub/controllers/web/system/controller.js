@@ -30,6 +30,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web";
 		SettingModel.find({ "where": {}}, function(err,settings){
 			for (var i = 0; i < settings.length; i++) {
 				if(settings[i].setting == "folder") {

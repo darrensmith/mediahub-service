@@ -30,6 +30,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web";
 		eBookModel.find({ "where": { }}, function(err,ebooks){
 			context.ebooks = ebooks;
 			res.render("ebooks.mustache", context);

@@ -42,6 +42,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web/files";
 		FileModel.find({ "where": { key: req.params.fileKey}}, function(err,files){
 			context.filename = files[0].filename;
 			context.path = files[0].path;

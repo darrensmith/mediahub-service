@@ -30,6 +30,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web";
 		ImageModel.find({ "where": { }}, function(err, images){
 			context.images = images;
 			res.render("images.mustache", context);

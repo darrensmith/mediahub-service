@@ -30,6 +30,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.backButtonLink = "/web";
 		EpisodeModel.find({ "where": { }}, function(err, episodes){
 			context.episodes = episodes;
 			res.render("television.mustache", context);
