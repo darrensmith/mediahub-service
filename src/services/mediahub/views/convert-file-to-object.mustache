@@ -50,6 +50,7 @@
 										<option value="movie" {{movieSelected}}>Movie</option>
 										<option value="documentary" {{documentarySelected}}>Documentary</option>
 										<option value="musicVideo" {{musicVideoSelected}}>Music Video</option>
+										<option value="karaokeClip" {{karaokeClipSelected}}>Karaoke Clip</option>
 										<option value="image" {{imageSelected}}>Image</option>
 									</select>
 								</div>
@@ -57,7 +58,7 @@
 						</div>
 
 						<div class="form-group">
-							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo">
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip">
 								<div class="font">Title:</div>
 								<div class="searchcontainer"><input class="search" name="title" /></div>
 							</div>
@@ -68,11 +69,11 @@
 						</div>
 
 						<div class="form-group">
-							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo">
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip">
 								<div class="font">Short Description:</div>
 								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="shortDesc" ></textarea></div>
 							</div>
-							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo">
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip">
 								<div class="font">Long Description:</div>
 								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="longDesc" ></textarea></div>
 							</div>
@@ -140,9 +141,9 @@
 				$(".fields").hide();
 				$(".musicVideo").show();
 			}
-			if($('#objects').find(":selected").val() == "ebook"){
+			if($('#objects').find(":selected").val() == "karaokeClip"){
 				$(".fields").hide();
-				$(".ebook").show();
+				$(".karaokeClip").show();
 			}
 			if($('#objects').find(":selected").val() == "image"){
 				$(".fields").hide();
