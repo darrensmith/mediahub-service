@@ -78,6 +78,7 @@
 				res.redirect("/web/files?message=cannot-find-file");
 			}
 			var filename = files[0].filename;
+			var md5hash = files[0].md5hash;
 			var newObjKey = isnode.module("utilities").uuid4();
 			switch(object) {
 				case "document":
@@ -91,6 +92,7 @@
 						shortDesc: shortDesc,
 						longDesc: longDesc,
 						filename: filename,
+						md5hash: md5hash,
 						primaryCategoryKey: null
 					}, function(err2, document){
 						FileModel.update({ 
@@ -114,6 +116,7 @@
 						shortDesc: shortDesc,
 						longDesc: longDesc,
 						filename: filename,
+						md5hash: md5hash,
 						primaryCategoryKey: null
 					}, function(err2, ebook){
 						FileModel.update({ 
@@ -136,6 +139,7 @@
 						shortDesc: shortDesc,
 						longDesc: longDesc,
 						filename: filename,
+						md5hash: md5hash,
 						primaryCategoryKey: null
 					}, function(err2, song){
 						FileModel.update({ 
@@ -158,6 +162,7 @@
 						shortDesc: shortDesc,
 						longDesc: longDesc,
 						filename: filename,
+						md5hash: md5hash,
 						primaryCategoryKey: null
 					}, function(err2, soundByte){
 						FileModel.update({ 
@@ -180,6 +185,7 @@
 						shortDesc: shortDesc,
 						longDesc: longDesc,
 						filename: filename,
+						md5hash: md5hash,
 						primaryCategoryKey: null
 					}, function(err2, episode){
 						FileModel.update({ 
@@ -202,6 +208,7 @@
 						shortDesc: shortDesc,
 						longDesc: longDesc,
 						filename: filename,
+						md5hash: md5hash,
 						primaryCategoryKey: null
 					}, function(err2, movie){
 						FileModel.update({ 
@@ -224,6 +231,7 @@
 						shortDesc: shortDesc,
 						longDesc: longDesc,
 						filename: filename,
+						md5hash: md5hash,
 						primaryCategoryKey: null
 					}, function(err2, documentary){
 						FileModel.update({ 
@@ -246,6 +254,7 @@
 						shortDesc: shortDesc,
 						longDesc: longDesc,
 						filename: filename,
+						md5hash: md5hash,
 						primaryCategoryKey: null
 					}, function(err2, musicVideo){
 						FileModel.update({ 
@@ -268,6 +277,7 @@
 						shortDesc: shortDesc,
 						longDesc: longDesc,
 						filename: filename,
+						md5hash: md5hash,
 						primaryCategoryKey: null
 					}, function(err2, karaokeClip){
 						FileModel.update({ 
@@ -290,6 +300,7 @@
 						shortDesc: shortDesc,
 						longDesc: longDesc,
 						filename: filename,
+						md5hash: md5hash,
 						primaryCategoryKey: null
 					}, function(err2, image){
 						FileModel.update({ 
