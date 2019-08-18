@@ -183,6 +183,8 @@
 		var fullPath = base + "/" + file;
 		var fileSplit = file.split("/");
 		var name = fileSplit[fileSplit.length-1];
+		var extSplit = name.split(".");
+		var ext = extSplit[extSplit.length-1];
 		if(name == ".DS_Store")
 			return;
 		FileModel.find({ "where": { path: fullPath }}, function(err, files){
@@ -192,6 +194,7 @@
 				FileModel.create({
 					key : isnode.module("utilities").uuid4(),
 					path : fullPath,
+					type: ext,
 					filename: name,
 					parentFolderKey: null,
 					md5hash: hash,
