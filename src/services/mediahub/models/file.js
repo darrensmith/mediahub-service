@@ -16,6 +16,7 @@
 		    parentFolderKey:  	{ type: schema.String, limit: 255 },
 		    dateCreated: 		{ type: schema.String, limit: 255 },
 		    dateLastModified: 	{ type: schema.String, limit: 255 },
+		    md5hash: 			{ type: schema.String, limit: 255 },
 		    objectType: 		{ type: schema.String, limit: 255 },
 		    objectKey: 			{ type: schema.String, limit: 255 }
 		});

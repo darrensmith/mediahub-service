@@ -11,9 +11,9 @@
 	var isnode = null;
 	var service = null;
 	var SettingModel = null;
-	var FolderModel = null;
-	var FileModel = null;
 	var interval = null;
+	var FileModel = null;
+	var FolderModel = null;
 
 	/**
 	 * Initialises the controller
@@ -26,8 +26,8 @@
 		router.on('reset-sync', function() { resetSync(); });
 		service = isnode.module("services").service("mediahub");
 		SettingModel = service.models.get("setting");
-		FolderModel = service.models.get("folder");
 		FileModel = service.models.get("file");
+		FolderModel = service.models.get("folder");
 		sync();
 		startReindexLoop();
 		return;
@@ -89,6 +89,7 @@
 		SettingModel.find({ "where": { "setting": "folder" }}, function(err,settings){
 			if(!err && settings[0]) {
 				var filewalker = require("../lib/filewalker.js");
+				var createHash = require('crypto').createHash;
 				filewalker(settings[0].value)
 				  .on('dir', function(p) {
 				  	var fullPath = settings[0].value + "/" + p;
@@ -101,16 +102,23 @@
 				    	}
 				    });
 				  })
-				  .on('file', function(p, s) {
-				  	var fullPath = settings[0].value + "/" + p;
-				  	files[fullPath] = true;
-				    checkAndCreateFile(settings[0].value, p, function(err2, res){
-				    	if(err2){
-				    		createFiles.failed = createFiles.failed + 1;
-				    	} else {
-				    		createFiles.success = createFiles.success + 1;
-				    	}
-				    });
+				  .on('stream', function(rs, p, s, completePath) {
+				  	var hash = createHash('md5');
+				  	rs.on('data', function(data) {
+				  		hash.update(data);
+				  	});
+				  	rs.on('end', function(data) {
+				  		var completeHash = hash.digest('hex');
+					  	var fullPath = settings[0].value + "/" + p;
+					  	files[fullPath] = true;
+					    checkAndCreateFile(settings[0].value, p, completeHash, function(err2, res){
+					    	if(err2){
+					    		createFiles.failed = createFiles.failed + 1;
+					    	} else {
+					    		createFiles.success = createFiles.success + 1;
+					    	}
+					    });
+				  	});
 				  })
 				  .on('error', function(err) {
 				    console.error(err);
@@ -168,15 +176,15 @@
 	 * @param {string} base - The base path
 	 * @param {string} file - The name of the file
 	 */
-	var checkAndCreateFile = function(base, file, cb){
+	var checkAndCreateFile = function(base, file, hash, cb){
 		var currentDate = isnode.module("utilities").getCurrentDateInISO();
 		var fullPath = base + "/" + file;
 		var fileSplit = file.split("/");
 		var name = fileSplit[fileSplit.length-1];
 		if(name == ".DS_Store")
 			return;
-		FileModel.find({ where: { path: fullPath}}, function(err, files){
-			if(files && files[0] && files[0].path) {
+		FileModel.find({ "where": { path: fullPath }}, function(err, files){
+			if(files && files[0] && files[0].path == fullPath) {
 				cb({error: "File Already Exists in DB"}, null);
 			} else {
 				FileModel.create({
@@ -184,6 +192,7 @@
 					path : fullPath,
 					filename: name,
 					parentFolderKey: null,
+					md5hash: hash,
 					dateCreated: currentDate,
 					dateLastModified: currentDate
 				}, function(err, newFile){
