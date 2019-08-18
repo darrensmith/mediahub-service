@@ -14,6 +14,16 @@
 	var interval = null;
 	var FileModel = null;
 	var FolderModel = null;
+	var DocumentModel = null;
+	var eBookModel = null;
+	var SongModel = null;
+	var EpisodeModel = null;
+	var MovieModel = null;
+	var ImageModel = null;
+	var SoundByteModel = null;
+	var DocumentaryModel = null;
+	var MusicVideoModel = null;
+	var KaraokeClipModel = null;
 	var log = null;
 
 	/**
@@ -30,6 +40,16 @@
 		SettingModel = service.models.get("setting");
 		FileModel = service.models.get("file");
 		FolderModel = service.models.get("folder");
+		DocumentModel = service.models.get("document");
+		eBookModel = service.models.get("ebook");
+		SongModel = service.models.get("song");
+		SoundByteModel = service.models.get("soundByte");
+		EpisodeModel = service.models.get("episode");
+		MovieModel = service.models.get("movie");
+		ImageModel = service.models.get("image");
+		DocumentaryModel = service.models.get("documentary");
+		MusicVideoModel = service.models.get("musicVideo");
+		KaraokeClipModel = service.models.get("karaokeClip");
 		sync();
 		startReindexLoop();
 		return;
@@ -189,6 +209,17 @@
 			return;
 		FileModel.find({ "where": { path: fullPath }}, function(err, files){
 			if(files && files[0] && files[0].path == fullPath) {
+				if(files[0].md5hash != hash){
+					FileModel.update({ 
+						where: { path: fullPath }
+					}, {
+						md5hash: hash
+					}, function(err, updatedFile){
+						if(file[0].objectType != null && file[0].objectKey != null) {
+							updateHashOnObject(file[0].objectType, file[0].objectKey, hash);
+						}
+					});
+				}
 				cb({error: "File Already Exists in DB"}, null);
 			} else {
 				FileModel.create({
@@ -209,6 +240,60 @@
 				});
 			}
 		});
+	}
+
+	/**
+	 * Check if File Exists in DB and Create if Not
+	 * @param {string} objectType - Type of Object
+	 * @param {string} objectKey - Key of Object Record
+	 * @param {string} hash - MD5 Hash from File to Set Against Object
+	 */
+	var updateHashOnObject = function(objectType, objectKey, hash){
+		var model = null;
+		switch(objectType) {
+			case "document":
+				model = DocumentModel;
+				break;
+			case "ebook":
+				model = eBookModel;
+				break;
+			case "song":
+				model = SongModel;
+				break;
+			case "soundByte":
+				model = SoundByteModel;
+				break;
+			case "episode":
+				model = EpisodeModel;
+				break;
+			case "movie":
+				model = MovieModel;
+				break;
+			case "documentary":
+				model = DocumentaryModel
+				break;
+			case "musicVideo":
+				model = MusicVideoModel;
+				break;
+			case "karaokeClip":
+				model = KaraokeClipModel;
+				break;
+			case "image":
+				model = ImageModel;
+				break;
+			default:
+				break;
+		}
+		if(model){
+			model.update({
+				where: { key: objectKey }
+			}, {
+				md5hash: hash
+			}, function (err, updatedObj){
+				null;
+			});
+		}
+		return;
 	}
 
 	/**
