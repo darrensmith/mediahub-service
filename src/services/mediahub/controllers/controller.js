@@ -14,6 +14,7 @@
 	var interval = null;
 	var FileModel = null;
 	var FolderModel = null;
+	var log = null;
 
 	/**
 	 * Initialises the controller
@@ -21,6 +22,7 @@
 	 */
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
+		log = isnode.module("logger").log;
 		var router = isnode.module("router");
 		router.on('sync', function() { sync(); });
 		router.on('reset-sync', function() { resetSync(); });
@@ -75,7 +77,7 @@
 	 * Synchronises the Filesystem w/ the Database
 	 */
 	var sync = function(){
-		console.log("Synchronising Filesystem w/ Database...");
+		log("debug","MediaHub Filesystem Sync > Synchronising Filesystem w/ Database...");
 		var files = {};
 		var folders = {};
 		var createFiles = {
@@ -121,18 +123,18 @@
 				  	});
 				  })
 				  .on('error', function(err) {
-				    console.error(err);
+				  	log("error","MediaHub Filesystem Sync > " + err);
 				  })
 				  .on('done', function() {
-				    console.log("Folders - " + createFolders.success + " created successfully, " + createFolders.failed + " failed.");
-				    console.log("Files - " + createFiles.success + " created successfully, " + createFiles.failed + " failed.");
+				  	log("debug","MediaHub Filesystem Sync > Folders - " + createFolders.success + " created successfully, " + createFolders.failed + " failed.");
+				    log("debug","MediaHub Filesystem Sync > Files - " + createFiles.success + " created successfully, " + createFiles.failed + " failed.");
 				  	removeDeletedFoldersFromDB(folders);
 				  	removeDeletedFilesFromDB(files);
-				    console.log('%d dirs, %d files, %d bytes', this.dirs, this.files, this.bytes);
+				  	log("debug","MediaHub Filesystem Sync > " + this.dirs + " dirs, " + this.files + " files, " + this.bytes + " bytes");
 				  })
 				.walk();
 			} else {
-				console.log("Error: Cannot find folder setting...");
+				log("error","MediaHub Filesystem Sync > Cannot find folder setting...");
 				return;
 			}
 		});
