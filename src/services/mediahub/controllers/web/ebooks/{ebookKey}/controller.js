@@ -35,7 +35,10 @@
 		context.backButtonLink = "/web/ebooks";
 		eBookModel.find({ "where": { key: req.params.ebookKey }}, function(err,ebooks){
 			context.ebook = ebooks[0];
-			res.render("ebook-details.mustache", context);
+			var leftnav = require("../../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("ebook-details.mustache", cxt);
+			});
 		});
 		return;
 	}

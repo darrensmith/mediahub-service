@@ -33,7 +33,10 @@
 		context.backButtonLink = "/web";
 		eBookModel.find({ "where": { }}, function(err,ebooks){
 			context.ebooks = ebooks;
-			res.render("ebooks.mustache", context);
+			var leftnav = require("../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("ebooks.mustache", cxt);
+			});
 		});
 		return;
 	}

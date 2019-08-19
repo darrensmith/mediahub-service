@@ -41,17 +41,7 @@
 								<div class="font">Select Object</div>
 								<div class="searchcontainer">
 									<select id="objects" class="search" name="object">
-										<option value="file" {{fileSelected}}>File</option>
-										<option value="document" {{documentSelected}}>Document</option>
-										<option value="ebook" {{eBookSelected}}>eBook</option>
-										<option value="music" {{musicSelected}}>Music</option>
-										<option value="soundByte" {{soundByteSelected}}>Sound Byte</option>
-										<option value="television" {{televisionSelected}}>Television Series</option>
-										<option value="movie" {{movieSelected}}>Movie</option>
-										<option value="documentary" {{documentarySelected}}>Documentary</option>
-										<option value="musicVideo" {{musicVideoSelected}}>Music Video</option>
-										<option value="karaokeClip" {{karaokeClipSelected}}>Karaoke Clip</option>
-										<option value="image" {{imageSelected}}>Image</option>
+										{{{objectList}}}
 									</select>
 								</div>
 							</div>
@@ -156,6 +146,10 @@
 				$(".save-button").css("background-color", "#555555");
 				$(".save-button").css("border-color", "#555555");
 				$(".save-button").css("cursor", "not-allowed");
+			}
+			if($('#objects').find(":selected").val() == "file"){
+				$(".fields").hide();
+				$(".file").show();
 			}
 			if($('#objects').find(":selected").val() == "document"){
 				$(".fields").hide();

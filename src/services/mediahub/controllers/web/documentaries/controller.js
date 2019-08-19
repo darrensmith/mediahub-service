@@ -33,7 +33,10 @@
 		context.backButtonLink = "/web";
 		DocumentaryModel.find({ "where": { }}, function(err, documentaries){
 			context.documentaries = documentaries;
-			res.render("documentaries.mustache", context);
+			var leftnav = require("../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("documentaries.mustache", cxt);
+			});
 		});
 		return;
 	}

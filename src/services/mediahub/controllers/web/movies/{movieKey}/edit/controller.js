@@ -33,7 +33,10 @@
 		context.backButtonLink = "/web/movies/" + req.params.movieKey;
 		MovieModel.find({ "where": { key: req.params.movieKey }}, function(err, movies){
 			context.movie = movies[0];
-			res.render("movie-edit.mustache", context);
+			var leftnav = require("../../../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("movie-edit.mustache", cxt);
+			});
 		});
 		return;
 	}

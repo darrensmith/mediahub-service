@@ -33,7 +33,10 @@
 		context.backButtonLink = "/web/documents/" + req.params.documentKey;
 		DocumentModel.find({ "where": { key: req.params.documentKey }}, function(err, documents){
 			context.document = documents[0];
-			res.render("document-edit.mustache", context);
+			var leftnav = require("../../../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("document-edit.mustache", cxt);
+			});
 		});
 		return;
 	}

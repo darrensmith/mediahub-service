@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var SettingModel = null;
+	var objects = ["documents", "ebooks", "music", "soundBytes", "television", "movies", "documentaries", "musicVideos", "karaokeClips", "videoClips", "applications", "games", "operatingSystems", "physibles", "images"];
 
 	/**
 	 * Initialises the controller
@@ -36,6 +37,9 @@
 			context.fifty = "";
 			context.hundred = "";
 			context.twofifty = "";
+			for (var i = 0; i < objects.length; i++) {
+				context[objects[i] + "Selected"] = "";
+			}
 			for (var i = 0; i < settings.length; i++) {
 				if(settings[i].setting == "folder") {
 					context.folder = settings[i].value;
@@ -59,6 +63,15 @@
 					context.pageSizeSet = true;
 					context.twofifty = "selected";
 				}
+				if(settings[i].setting == "showObjectTypes") {
+					context.objectTypesReturned = true;
+					var objectTypes = settings[i].value.split(" ");
+					for (var i = 0; i < objects.length; i++) {
+						if(objectTypes.includes(objects[i])){
+							context[objects[i] + "Selected"] = "checked";
+						}
+					}
+				}
 				/*
 				if(settings[i].setting == "watch" && settings[i].value == "No") {
 					context.watchNoSelected = "selected";
@@ -73,7 +86,15 @@
 			if(!context.pageSizeSet) {
 				context.twenty = "selected";
 			}
-			res.render("system.mustache", context);
+			if(!context.objectTypesReturned){
+				for (var i = 0; i < objects.length; i++) {
+					context[objects[i] + "Selected"] = "checked";
+				}
+			}
+			var leftnav = require("../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("system.mustache", cxt);
+			});
 		});
 		return;
 	}
@@ -90,6 +111,14 @@
 		if(req.body.folder) { parametersToUpdate ++; };
 		if(req.body.reindexFreq) { parametersToUpdate ++; };
 		if(req.body.defaultPageSize) { parametersToUpdate ++; };
+		var showObjectTypes = "";
+		for (var i = 0; i < objects.length; i++) {
+			if(req.body[objects[i]]) {
+				showObjectTypes += objects[i] + " ";
+			}
+		}
+		showObjectTypes = showObjectTypes.trim();
+		parametersToUpdate ++;
 		/*if(req.body.watch) { parametersToUpdate ++; };*/
 		if(req.body.save == "true"){
 			var currentDate = isnode.module("utilities").getCurrentDateInISO();
@@ -131,6 +160,16 @@
 					parametersUpdated ++;
 				});
 			}
+			SettingModel.updateOrCreate({ "setting": "showObjectTypes" }, 
+			{
+				"key": isnode.module("utilities").uuid4(),
+				"setting": "showObjectTypes",
+				"value": showObjectTypes,
+				"dateCreated": currentDate,
+				"dateLastModified": currentDate
+			}, function(err, setting){
+				parametersUpdated ++;
+			});
 			/*if(req.body.watch) {
 				SettingModel.updateOrCreate({ "setting": "watch" }, 
 				{

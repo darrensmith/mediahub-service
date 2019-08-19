@@ -33,7 +33,10 @@
 		context.backButtonLink = "/web";
 		SoundByteModel.find({ "where": { }}, function(err, soundBytes){
 			context.soundBytes = soundBytes;
-			res.render("sound-bytes.mustache", context);
+			var leftnav = require("../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("sound-bytes.mustache", cxt);
+			});
 		});
 		return;
 	}

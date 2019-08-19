@@ -33,7 +33,10 @@
 		context.backButtonLink = "/web";
 		MusicVideoModel.find({ "where": { }}, function(err, musicVideos){
 			context.musicVideos = musicVideos;
-			res.render("music-videos.mustache", context);
+			var leftnav = require("../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("music-videos.mustache", cxt);
+			});
 		});
 		return;
 	}

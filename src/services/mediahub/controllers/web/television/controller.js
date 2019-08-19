@@ -33,7 +33,10 @@
 		context.backButtonLink = "/web";
 		EpisodeModel.find({ "where": { }}, function(err, episodes){
 			context.episodes = episodes;
-			res.render("television.mustache", context);
+			var leftnav = require("../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("television.mustache", cxt);
+			});
 		});
 		return;
 	}

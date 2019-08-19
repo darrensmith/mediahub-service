@@ -33,7 +33,10 @@
 		context.backButtonLink = "/web/music/" + req.params.songKey;
 		SongModel.find({ "where": { key: req.params.songKey }}, function(err, songs){
 			context.song = songs[0];
-			res.render("song-edit.mustache", context);
+			var leftnav = require("../../../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("song-edit.mustache", cxt);
+			});
 		});
 		return;
 	}

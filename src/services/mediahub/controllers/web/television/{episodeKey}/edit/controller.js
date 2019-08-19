@@ -33,7 +33,10 @@
 		context.backButtonLink = "/web/television/" + req.params.episodeKey;
 		EpisodeModel.find({ "where": { key: req.params.episodeKey }}, function(err, episodes){
 			context.episode = episodes[0];
-			res.render("episode-edit.mustache", context);
+			var leftnav = require("../../../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("television-edit.mustache", cxt);
+			});
 		});
 		return;
 	}

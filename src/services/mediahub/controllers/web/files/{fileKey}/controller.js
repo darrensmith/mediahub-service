@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var FileModel = null;
+	var SettingModel = null;
 	var DocumentModel = null;
 	var eBookModel = null;
 	var SongModel = null;
@@ -30,6 +31,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		FileModel = service.models.get("file");
+		SettingModel = service.models.get("setting");
 		DocumentModel = service.models.get("document");
 		eBookModel = service.models.get("ebook");
 		SongModel = service.models.get("song");
@@ -52,10 +54,48 @@
 		var context = {};
 		context.backButtonLink = "/web/files";
 		FileModel.find({ "where": { key: req.params.fileKey}}, function(err,files){
-			context.filename = files[0].filename;
-			context.path = files[0].path;
-			context.fileKey = req.params.fileKey;
-			res.render("convert-file-to-object.mustache", context);
+			SettingModel.find({ where: { setting: "showObjectTypes"}}, function(err, settings) {
+				context.filename = files[0].filename;
+				context.path = files[0].path;
+				context.fileKey = req.params.fileKey;
+				context.objectList = "<option value=\"file\" selected>File</option>";
+				var setting = settings[0].value;
+				var objects = setting.split(" ");
+				if(objects.includes("documents"))
+					context.objectList += "<option value=\"document\">Document</option>";
+				if(objects.includes("ebooks"))
+					context.objectList += "<option value=\"ebook\">eBook</option>";
+				if(objects.includes("music"))
+					context.objectList += "<option value=\"music\">Music</option>";
+				if(objects.includes("soundBytes"))
+					context.objectList += "<option value=\"soundByte\">Sound Byte</option>";
+				if(objects.includes("television"))
+					context.objectList += "<option value=\"television\">Television</option>";
+				if(objects.includes("movies"))
+					context.objectList += "<option value=\"movie\">Movie</option>";
+				if(objects.includes("documentaries"))
+					context.objectList += "<option value=\"documentary\">Documentary</option>";
+				if(objects.includes("musicVideos"))
+					context.objectList += "<option value=\"musicVideo\">Music Video</option>";
+				if(objects.includes("karaokeClips"))
+					context.objectList += "<option value=\"karaokeClip\">Karaoke Clip</option>";
+				if(objects.includes("videoClips"))
+					context.objectList += "<option value=\"videoClip\">Video Clip</option>";
+				if(objects.includes("applications"))
+					context.objectList += "<option value=\"application\">Application</option>";
+				if(objects.includes("games"))
+					context.objectList += "<option value=\"game\">Game</option>";
+				if(objects.includes("operatingSystems"))
+					context.objectList += "<option value=\"operatingSystem\">Operating System</option>";
+				if(objects.includes("physibles"))
+					context.objectList += "<option value=\"physible\">Physible</option>";
+				if(objects.includes("images"))
+					context.objectList += "<option value=\"image\">Image</option>";
+				var leftnav = require("../../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("convert-file-to-object.mustache", cxt);
+				});
+			});
 		});
 		return;
 	}

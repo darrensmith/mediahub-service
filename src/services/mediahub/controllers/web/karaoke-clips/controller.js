@@ -33,7 +33,10 @@
 		context.backButtonLink = "/web";
 		KaraokeClipModel.find({ "where": { }}, function(err, karaokeClips){
 			context.karaokeClips = karaokeClips;
-			res.render("karaoke-clips.mustache", context);
+			var leftnav = require("../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("karaoke-clips.mustache", cxt);
+			});
 		});
 		return;
 	}

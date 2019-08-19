@@ -26,7 +26,10 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = { backButtonLink: "/web" };
-		res.render("home.mustache", context);
+		var leftnav = require("../../lib/leftnav.js");
+		leftnav(isnode, context, function(err, cxt){
+			res.render("home.mustache", cxt);
+		});
 		return;
 	}
 

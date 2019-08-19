@@ -35,7 +35,10 @@
 		context.backButtonLink = "/web/images";
 		ImageModel.find({ "where": { key: req.params.imageKey }}, function(err,images){
 			context.image = images[0];
-			res.render("image-details.mustache", context);
+			var leftnav = require("../../../../lib/leftnav.js");
+			leftnav(isnode, context, function(err, cxt){
+				res.render("image-details.mustache", cxt);
+			});
 		});
 		return;
 	}
