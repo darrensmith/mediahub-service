@@ -199,6 +199,7 @@
 	 * @param {string} file - The name of the file
 	 */
 	var checkAndCreateFile = function(base, file, stats, hash, cb){
+		var fs = require("fs");
 		var currentDate = isnode.module("utilities").getCurrentDateInISO();
 		var fullPath = base + "/" + file;
 		var fileSplit = file.split("/");
@@ -217,40 +218,86 @@
 						size: stats.size
 					}, function(err, updatedFile){
 						if(file[0].objectType != null && file[0].objectKey != null) {
-							updateHashOnObject(file[0].objectType, file[0].objectKey, hash);
+							updateHashAndSizeOnObject(file[0].objectType, file[0].objectKey, hash, stats.size);
 						}
 					});
 				}
 				cb({error: "File Already Exists in DB"}, null);
 			} else {
-				FileModel.create({
-					key : isnode.module("utilities").uuid4(),
-					path : fullPath,
-					type: ext,
-					filename: name,
-					parentFolderKey: null,
-					md5hash: hash,
-					size: stats.size,
-					dateCreated: currentDate,
-					dateLastModified: currentDate
-				}, function(err, newFile){
-			    	if(err || !newFile) {
-			    		cb({error: err}, null);
-			    	} else {
-			    		cb(null, {success: newFile});
-			    	}
+				FileModel.find({ "where": { md5hash: hash, size: stats.size, type: ext }}, function(err2, files2){
+					if(!files2[0]) {
+						FileModel.create({
+							key : isnode.module("utilities").uuid4(),
+							path : fullPath,
+							type: ext,
+							filename: name,
+							parentFolderKey: null,
+							md5hash: hash,
+							size: stats.size,
+							dateCreated: currentDate,
+							dateLastModified: currentDate
+						}, function(err, newFile){
+					    	if(err || !newFile) {
+					    		cb({error: err}, null);
+					    	} else {
+					    		cb(null, {success: newFile});
+					    	}
+						});
+					} else {
+						var missing = null;
+						for (var i = 0; i < files2.length; i++) {
+							try {
+							  if (!fs.existsSync(files2[i].path)) {
+							  	missing = files2[i].key;
+							  	break;
+							  }
+							} catch(err) {
+							  	missing = files2[i].key;
+							  	break;
+							}
+						}
+						if(missing) {
+							FileModel.update({
+								key: missing
+							}, {
+								path: fullPath,
+								filename: name
+							}, function(err3, updatedFile) {
+								null;
+							});
+						} else {
+							FileModel.create({
+								key : isnode.module("utilities").uuid4(),
+								path : fullPath,
+								type: ext,
+								filename: name,
+								parentFolderKey: null,
+								md5hash: hash,
+								size: stats.size,
+								dateCreated: currentDate,
+								dateLastModified: currentDate
+							}, function(err, newFile){
+						    	if(err || !newFile) {
+						    		cb({error: err}, null);
+						    	} else {
+						    		cb(null, {success: newFile});
+						    	}
+							});
+						}
+					}
 				});
 			}
 		});
 	}
 
 	/**
-	 * Check if File Exists in DB and Create if Not
+	 * Update Hash and Size on Object
 	 * @param {string} objectType - Type of Object
 	 * @param {string} objectKey - Key of Object Record
 	 * @param {string} hash - MD5 Hash from File to Set Against Object
+	 * @param {number} size - Size of file associated with this object
 	 */
-	var updateHashOnObject = function(objectType, objectKey, hash){
+	var updateHashAndSizeOnObject = function(objectType, objectKey, hash, size){
 		var model = null;
 		switch(objectType) {
 			case "document":
@@ -290,7 +337,8 @@
 			model.update({
 				where: { key: objectKey }
 			}, {
-				md5hash: hash
+				md5hash: hash,
+				size: size
 			}, function (err, updatedObj){
 				null;
 			});
