@@ -32,6 +32,10 @@
 		var context = {};
 		context.backButtonLink = "/web";
 		SettingModel.find({ "where": {}}, function(err,settings){
+			context.twenty = "";
+			context.fifty = "";
+			context.hundred = "";
+			context.twofifty = "";
 			for (var i = 0; i < settings.length; i++) {
 				if(settings[i].setting == "folder") {
 					context.folder = settings[i].value;
@@ -39,6 +43,23 @@
 				if(settings[i].setting == "reindexFreq") {
 					context.reindexFreq = settings[i].value;
 				}
+				if(settings[i].setting == "defaultPageSize" && settings[i].value == "20") {
+					context.pageSizeSet = true;
+					context.twenty = "selected";
+				}
+				if(settings[i].setting == "defaultPageSize" && settings[i].value == "50") {
+					context.pageSizeSet = true;
+					context.fifty = "selected";
+				}
+				if(settings[i].setting == "defaultPageSize" && settings[i].value == "100") {
+					context.pageSizeSet = true;
+					context.hundred = "selected";
+				}
+				if(settings[i].setting == "defaultPageSize" && settings[i].value == "250") {
+					context.pageSizeSet = true;
+					context.twofifty = "selected";
+				}
+				/*
 				if(settings[i].setting == "watch" && settings[i].value == "No") {
 					context.watchNoSelected = "selected";
 					context.watchYesSelected = "";
@@ -47,6 +68,10 @@
 					context.watchNoSelected = "";
 					context.watchYesSelected = "selected";
 				}
+				*/
+			}
+			if(!context.pageSizeSet) {
+				context.twenty = "selected";
 			}
 			res.render("system.mustache", context);
 		});
@@ -64,7 +89,8 @@
 		var parametersUpdated = 0;
 		if(req.body.folder) { parametersToUpdate ++; };
 		if(req.body.reindexFreq) { parametersToUpdate ++; };
-		if(req.body.watch) { parametersToUpdate ++; };
+		if(req.body.defaultPageSize) { parametersToUpdate ++; };
+		/*if(req.body.watch) { parametersToUpdate ++; };*/
 		if(req.body.save == "true"){
 			var currentDate = isnode.module("utilities").getCurrentDateInISO();
 			if(req.body.folder) {
@@ -93,7 +119,19 @@
 					parametersUpdated ++;
 				});
 			}
-			if(req.body.watch) {
+			if(req.body.defaultPageSize) {
+				SettingModel.updateOrCreate({ "setting": "defaultPageSize" }, 
+				{
+					"key": isnode.module("utilities").uuid4(),
+					"setting": "defaultPageSize",
+					"value": req.body.defaultPageSize,
+					"dateCreated": currentDate,
+					"dateLastModified": currentDate
+				}, function(err, setting){
+					parametersUpdated ++;
+				});
+			}
+			/*if(req.body.watch) {
 				SettingModel.updateOrCreate({ "setting": "watch" }, 
 				{
 					"key": isnode.module("utilities").uuid4(),
@@ -104,7 +142,7 @@
 				}, function(err, setting){
 					parametersUpdated ++;
 				});
-			}
+			}*/
 			var interval = setInterval(function(){
 				if(parametersUpdated >= parametersToUpdate) {
 					clearInterval(interval);
