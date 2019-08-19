@@ -22,6 +22,7 @@
 	var DocumentaryModel = null;
 	var MusicVideoModel = null;
 	var KaraokeClipModel = null;
+	var VideoClipModel = null;
 
 	/**
 	 * Initialises the controller
@@ -42,6 +43,7 @@
 		DocumentaryModel = service.models.get("documentary");
 		MusicVideoModel = service.models.get("musicVideo");
 		KaraokeClipModel = service.models.get("karaokeClip");
+		VideoClipModel = service.models.get("videoClip");
 		return;
 	}
 
@@ -342,6 +344,29 @@
 							where: { key: fileKey } 
 						}, {
 							objectType: "karaokeClip",
+							objectKey: newObjKey
+						}, function(err2, updatedFile){
+							res.redirect("/web/files?message=file-converted-successfully");
+						});
+					});
+					break;
+				case "videoClip":
+					VideoClipModel.create({
+						key: newObjKey,
+						dateCreated: currentDate,
+						dateLastModified: currentDate,
+						fileKey: fileKey,
+						title: title,
+						shortDesc: shortDesc,
+						longDesc: longDesc,
+						size: size,
+						md5hash: md5hash,
+						primaryCategoryKey: null
+					}, function(err2, videoClip){
+						FileModel.update({ 
+							where: { key: fileKey } 
+						}, {
+							objectType: "videoClip",
 							objectKey: newObjKey
 						}, function(err2, updatedFile){
 							res.redirect("/web/files?message=file-converted-successfully");
