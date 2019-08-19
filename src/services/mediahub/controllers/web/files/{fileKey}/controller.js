@@ -70,6 +70,16 @@
 		var author = req.body.author;
 		var shortDesc = req.body.shortDesc;
 		var longDesc = req.body.longDesc;
+
+		var publisher = req.body.publisher;
+		var datePublished = req.body.datePublished;
+		var series = req.body.series;
+		var volumeNumber = req.body.volumeNumber;
+		var ISBN10 = req.body.ISBN10;
+		var ISBN13 = req.body.ISBN13;
+		var mobiAsin = req.body.mobiAsin;
+		var language = req.body.language;
+
 		var object = req.body.object;
 		var fileKey = req.body.fileKey;
 		var currentDate = isnode.module("utilities").getCurrentDateInISO();
@@ -115,6 +125,14 @@
 						author: author,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						publisher: publisher,
+						datePublished: datePublished,
+						series: series,
+						volumeNumber: volumeNumber,
+						ISBN10: ISBN10,
+						ISBN13: ISBN13,
+						mobiAsin: mobiAsin,
+						language: language,
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
