@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Applications | Media Hub</title>
+		<meta name="description" content="Media Hub">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		{{> styles}}
+		{{> javascript}}
+	</head>
+
+	<body class="home">
+		{{> header}}
+		<div class="titlearea"> 
+		    {{> title}}
+		    <div class="righttag font"> <span style="font-size: 16px;">Applications</span> </div>
+		</div>
+		<div class="main">
+			{{> leftbar}}
+			<div class="container" id="container"></div>
+		</div>
+	</body>
+
+	<script>
+		var container = document.getElementById('container');
+		{{#applications}}
+			container.innerHTML += "<a href=\"/web/applications/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/document.jpg\"/><p class=\"font2\"> {{title}} </p></div></div> </a>";
+		{{/applications}}
+	</script>
+
+</html>
