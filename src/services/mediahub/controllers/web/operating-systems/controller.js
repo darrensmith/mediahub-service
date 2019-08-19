@@ -1,5 +1,5 @@
 /*!
-* /web/applications/controller.js
+* /web/operating-systems/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -19,7 +19,7 @@
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
-		ApplicationModel = service.models.get("application");
+		OperatingSystemModel = service.models.get("operatingSystem");
 		return;
 	}
 
@@ -31,11 +31,11 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web";
-		ApplicationModel.find({ "where": { }}, function(err, applications){
-			context.applications = applications;
+		OperatingSystemModel.find({ "where": { }}, function(err, operatingSystems){
+			context.operatingSystems = operatingSystems;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("applications.mustache", cxt);
+				res.render("operating-systems.mustache", cxt);
 			});
 		});
 		return;

@@ -25,6 +25,7 @@
 	var VideoClipModel = null;
 	var ApplicationModel = null;
 	var GameModel = null;
+	var OperatingSystemModel = null;
 
 	/**
 	 * Initialises the controller
@@ -48,6 +49,7 @@
 		VideoClipModel = service.models.get("videoClip");
 		ApplicationModel = service.models.get("application");
 		GameModel = service.models.get("game");
+		OperatingSystemModel = service.models.get("operatingSystem");
 		return;
 	}
 
@@ -417,6 +419,29 @@
 							where: { key: fileKey } 
 						}, {
 							objectType: "game",
+							objectKey: newObjKey
+						}, function(err2, updatedFile){
+							res.redirect("/web/files?message=file-converted-successfully");
+						});
+					});
+					break;
+				case "operatingSystem":
+					OperatingSystemModel.create({
+						key: newObjKey,
+						dateCreated: currentDate,
+						dateLastModified: currentDate,
+						fileKey: fileKey,
+						title: title,
+						shortDesc: shortDesc,
+						longDesc: longDesc,
+						size: size,
+						md5hash: md5hash,
+						primaryCategoryKey: null
+					}, function(err2, operatingSystem){
+						FileModel.update({ 
+							where: { key: fileKey } 
+						}, {
+							objectType: "operatingSystem",
 							objectKey: newObjKey
 						}, function(err2, updatedFile){
 							res.redirect("/web/files?message=file-converted-successfully");
