@@ -48,7 +48,7 @@
 						</div>
 
 						<div class="form-group">
-							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip videoClip application">
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip videoClip application game">
 								<div class="font">Title:</div>
 								<div class="searchcontainer"><input class="search" name="title" /></div>
 							</div>
@@ -59,11 +59,11 @@
 						</div>
 
 						<div class="form-group">
-							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip videoClip application">
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip videoClip application game">
 								<div class="font">Short Description:</div>
 								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="shortDesc" ></textarea></div>
 							</div>
-							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip videoClip application">
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip videoClip application game">
 								<div class="font">Long Description:</div>
 								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="longDesc" ></textarea></div>
 							</div>
@@ -194,6 +194,10 @@
 			if($('#objects').find(":selected").val() == "application"){
 				$(".fields").hide();
 				$(".application").show();
+			}
+			if($('#objects').find(":selected").val() == "game"){
+				$(".fields").hide();
+				$(".game").show();
 			}
 			if($('#objects').find(":selected").val() == "image"){
 				$(".fields").hide();

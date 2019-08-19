@@ -24,6 +24,7 @@
 	var KaraokeClipModel = null;
 	var VideoClipModel = null;
 	var ApplicationModel = null;
+	var GameModel = null;
 
 	/**
 	 * Initialises the controller
@@ -46,6 +47,7 @@
 		KaraokeClipModel = service.models.get("karaokeClip");
 		VideoClipModel = service.models.get("videoClip");
 		ApplicationModel = service.models.get("application");
+		GameModel = service.models.get("game");
 		return;
 	}
 
@@ -392,6 +394,29 @@
 							where: { key: fileKey } 
 						}, {
 							objectType: "application",
+							objectKey: newObjKey
+						}, function(err2, updatedFile){
+							res.redirect("/web/files?message=file-converted-successfully");
+						});
+					});
+					break;
+				case "game":
+					GameModel.create({
+						key: newObjKey,
+						dateCreated: currentDate,
+						dateLastModified: currentDate,
+						fileKey: fileKey,
+						title: title,
+						shortDesc: shortDesc,
+						longDesc: longDesc,
+						size: size,
+						md5hash: md5hash,
+						primaryCategoryKey: null
+					}, function(err2, game){
+						FileModel.update({ 
+							where: { key: fileKey } 
+						}, {
+							objectType: "game",
 							objectKey: newObjKey
 						}, function(err2, updatedFile){
 							res.redirect("/web/files?message=file-converted-successfully");

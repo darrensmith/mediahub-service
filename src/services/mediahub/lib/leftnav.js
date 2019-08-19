@@ -69,9 +69,9 @@
 				if(objects.includes("applications"))
 					context.leftnav += "<p><i class=\"fas fa-tablet-alt\"></i><a href=\"/web/applications\">Applications</a></p>\n";
 				if(objects.includes("games"))
-					context.leftnav += "<p><i class\"fas fa-gamepad\"></i><a href=\"/web/games\">Games</a></p>\n";
+					context.leftnav += "<p><i class=\"fas fa-gamepad\"></i><a href=\"/web/games\">Games</a></p>\n";
 				if(objects.includes("operatingSystems"))
-					context.leftnav += "<p><i class=\"fas fa-ubuntu\"></i><a href=\"/web/operating-systems\">Operating Systems</a></p>\n";
+					context.leftnav += "<p><i class=\"fab fa-ubuntu\"></i>&nbsp;&nbsp;<a href=\"/web/operating-systems\">Operating Systems</a></p>\n";
 			}
 
 			if(objects.includes("physibles")){
