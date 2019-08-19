@@ -133,7 +133,7 @@
 				  		var completeHash = hash.digest('hex');
 					  	var fullPath = settings[0].value + "/" + p;
 					  	files[fullPath] = true;
-					    checkAndCreateFile(settings[0].value, p, completeHash, function(err2, res){
+					    checkAndCreateFile(settings[0].value, p, s, completeHash, function(err2, res){
 					    	if(err2){
 					    		createFiles.failed = createFiles.failed + 1;
 					    	} else {
@@ -198,7 +198,7 @@
 	 * @param {string} base - The base path
 	 * @param {string} file - The name of the file
 	 */
-	var checkAndCreateFile = function(base, file, hash, cb){
+	var checkAndCreateFile = function(base, file, stats, hash, cb){
 		var currentDate = isnode.module("utilities").getCurrentDateInISO();
 		var fullPath = base + "/" + file;
 		var fileSplit = file.split("/");
@@ -209,11 +209,12 @@
 			return;
 		FileModel.find({ "where": { path: fullPath }}, function(err, files){
 			if(files && files[0] && files[0].path == fullPath) {
-				if(files[0].md5hash != hash){
+				if(files[0].md5hash != hash || files[0].size != stats.size){
 					FileModel.update({ 
 						where: { path: fullPath }
 					}, {
-						md5hash: hash
+						md5hash: hash,
+						size: stats.size
 					}, function(err, updatedFile){
 						if(file[0].objectType != null && file[0].objectKey != null) {
 							updateHashOnObject(file[0].objectType, file[0].objectKey, hash);
@@ -229,6 +230,7 @@
 					filename: name,
 					parentFolderKey: null,
 					md5hash: hash,
+					size: stats.size,
 					dateCreated: currentDate,
 					dateLastModified: currentDate
 				}, function(err, newFile){
