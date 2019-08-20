@@ -10,7 +10,7 @@
 	var ctrl = {};
 	var isnode = null;
 	var service = null;
-	var GameModel = null;
+	var PhysibleModel = null;
 
 	/**
 	 * Initialises the controller

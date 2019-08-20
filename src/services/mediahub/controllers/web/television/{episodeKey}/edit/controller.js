@@ -10,7 +10,7 @@
 	var ctrl = {};
 	var isnode = null;
 	var service = null;
-	var SongModel = null;
+	var EpisodeModel = null;
 
 	/**
 	 * Initialises the controller

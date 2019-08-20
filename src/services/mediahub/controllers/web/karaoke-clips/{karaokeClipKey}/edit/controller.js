@@ -1,5 +1,5 @@
 /*!
-* /web/documentaries/{documentaryKey}/edit/controller.js
+* /web/karaoke-clips/{karaokeClipKey}/edit/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -10,7 +10,7 @@
 	var ctrl = {};
 	var isnode = null;
 	var service = null;
-	var DocumentaryModel = null;
+	var KaraokeClipModel = null;
 
 	/**
 	 * Initialises the controller
@@ -19,7 +19,7 @@
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
-		DocumentaryModel = service.models.get("documentary");
+		KaraokeClipModel = service.models.get("karaokeClip");
 		return;
 	}
 
@@ -30,12 +30,12 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		context.backButtonLink = "/web/documentaries/" + req.params.documentaryKey;
-		DocumentaryModel.find({ "where": { key: req.params.documentaryKey }}, function(err, documentaries){
-			context.documentary = documentaries[0];
+		context.backButtonLink = "/web/karaoke-clips/" + req.params.karaokeClipKey;
+		KaraokeClipModel.find({ "where": { key: req.params.karaokeClipKey }}, function(err, karaokeClips){
+			context.karaokeClip = karaokeClips[0];
 			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("documentary-edit.mustache", cxt);
+				res.render("karaoke-clip-edit.mustache", cxt);
 			});
 		});
 		return;
@@ -47,7 +47,7 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/web/documentaries/" + req.params.documentaryKey + "/edit");
+		res.redirect("/web/karaoke-clips/" + req.params.karaokeClipKey + "/edit");
 		return;
 	}
 

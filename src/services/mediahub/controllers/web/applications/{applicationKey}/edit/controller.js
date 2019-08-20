@@ -10,7 +10,7 @@
 	var ctrl = {};
 	var isnode = null;
 	var service = null;
-	var DocumentModel = null;
+	var ApplicationModel = null;
 
 	/**
 	 * Initialises the controller
