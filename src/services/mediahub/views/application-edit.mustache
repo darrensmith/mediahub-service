@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Edit Sound Byte | Media Hub</title>
+		<title>Edit Application | Media Hub</title>
 		<meta name="description" content="Media Hub">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		{{> styles}}
@@ -14,31 +14,31 @@
 		{{> header}}
 		<div class="titlearea"> 
 		    {{> title}}
-		    <div class="righttag font"> <span style="font-size: 16px;">Edit Sound Byte</span> </div>
+		    <div class="righttag font"> <span style="font-size: 16px;">Edit Application</span> </div>
 		</div>
 		<div class="main">
 			{{> leftbar}}
 			<div class="container2">
-				<div class="body-title"><strong>Edit Sound Byte</strong></div>
+				<div class="body-title"><strong>Edit Application</strong></div>
 				<div class="body-strip"></div>
 				<div class="body-form">
-					<form action="/web/sound-bytes/{{soundByte.key}}/edit" method="post">
+					<form action="/web/applications/{{application.key}}/edit" method="post">
 
 						<div class="form-group">
 							<div class="form-field">
 								<div class="font">Title:</div>
-								<div class="searchcontainer"><input class="search" name="title" value="{{soundByte.title}}" /></div>
+								<div class="searchcontainer"><input class="search" name="title" value="{{application.title}}" /></div>
 							</div>
 						</div>
 
 						<div class="form-group">
 							<div class="form-field">
 								<div class="font">Short Description:</div>
-								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="shortDesc">{{soundByte.shortDesc}}</textarea></div>
+								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="shortDesc">{{application.shortDesc}}</textarea></div>
 							</div>
 							<div class="form-field">
 								<div class="font">Long Description:</div>
-								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="longDesc" >{{soundByte.longDesc}}</textarea></div>
+								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="longDesc" >{{application.longDesc}}</textarea></div>
 							</div>
 						</div>
 
