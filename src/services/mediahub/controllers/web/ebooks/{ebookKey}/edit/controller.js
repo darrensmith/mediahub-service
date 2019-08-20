@@ -47,7 +47,7 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/ebooks/" + req.params.ebookKey + "/edit");
+		res.redirect("/web/ebooks/" + req.params.ebookKey + "/edit");
 		return;
 	}
 

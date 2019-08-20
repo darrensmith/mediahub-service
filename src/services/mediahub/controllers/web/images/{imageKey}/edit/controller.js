@@ -47,7 +47,7 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/images/" + req.params.imageKey + "/edit");
+		res.redirect("/web/images/" + req.params.imageKey + "/edit");
 		return;
 	}
 

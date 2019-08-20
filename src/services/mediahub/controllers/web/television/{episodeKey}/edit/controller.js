@@ -47,7 +47,7 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/television/" + req.params.episodeKey + "/edit");
+		res.redirect("/web/television/" + req.params.episodeKey + "/edit");
 		return;
 	}
 

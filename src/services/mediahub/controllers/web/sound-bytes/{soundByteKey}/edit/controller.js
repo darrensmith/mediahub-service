@@ -1,5 +1,5 @@
 /*!
-* /web/documents/{documentKey}/edit/controller.js
+* /web/sound-bytes/{soundByteKey}/edit/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -10,7 +10,7 @@
 	var ctrl = {};
 	var isnode = null;
 	var service = null;
-	var DocumentModel = null;
+	var SongModel = null;
 
 	/**
 	 * Initialises the controller
@@ -19,7 +19,7 @@
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
-		DocumentModel = service.models.get("document");
+		SoundByteModel = service.models.get("soundByte");
 		return;
 	}
 
@@ -30,12 +30,12 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		context.backButtonLink = "/web/documents/" + req.params.documentKey;
-		DocumentModel.find({ "where": { key: req.params.documentKey }}, function(err, documents){
-			context.document = documents[0];
+		context.backButtonLink = "/web/sound-bytes/" + req.params.soundByteKey;
+		SoundByteModel.find({ "where": { key: req.params.soundByteKey }}, function(err, soundBytes){
+			context.soundByte = soundBytes[0];
 			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("document-edit.mustache", cxt);
+				res.render("sound-byte-edit.mustache", cxt);
 			});
 		});
 		return;
@@ -47,7 +47,7 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/web/documents/" + req.params.documentKey + "/edit");
+		res.redirect("/web/sound-bytes/" + req.params.soundByteKey + "/edit");
 		return;
 	}
 

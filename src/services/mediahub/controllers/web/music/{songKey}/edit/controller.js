@@ -47,7 +47,7 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/music/" + req.params.songKey + "/edit");
+		res.redirect("/web/music/" + req.params.songKey + "/edit");
 		return;
 	}
 

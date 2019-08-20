@@ -47,7 +47,7 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/movies/" + req.params.movieKey + "/edit");
+		res.redirect("/web/movies/" + req.params.movieKey + "/edit");
 		return;
 	}
 
