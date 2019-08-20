@@ -29,6 +29,7 @@
 			var setting = "";
 			var hideSystemSettings = "no";
 			var hideSignOutLink = "no";
+			var hideFilesLink = "no";
 			for (var i = 0; i < settings.length; i++) {
 				if(settings[i].setting == "showObjectTypes"){
 					setting = settings[i].value;
@@ -38,6 +39,9 @@
 				}
 				if(settings[i].setting == "hideSignOutLink"){
 					hideSignOutLink = settings[i].value;
+				}
+				if(settings[i].setting == "hideFilesLink"){
+					hideFilesLink = settings[i].value;
 				}				
 			}
 
@@ -98,8 +102,14 @@
 				context.leftnav += "<p><i class=\"fas fa-images\"></i><a href=\"/web/images\">Images</a></p>\n";
 			}
 
-			context.leftnav += "<p style=\"margin-top:50px;\"><strong>System</strong></p>\n";
-			context.leftnav += "<p><i class=\"fas fa-file\"></i><a href=\"/web/files\">Files</a></p>\n";
+			if(hideFilesLink == "yes" && hideSystemSettings == "yes" && hideSignOutLink == "yes") {
+				null;
+			} else {
+				context.leftnav += "<p style=\"margin-top:50px;\"><strong>System</strong></p>\n";
+			}
+			if(hideFilesLink == "no") {
+				context.leftnav += "<p><i class=\"fas fa-file\"></i><a href=\"/web/files\">Files</a></p>\n";
+			}
 			if(hideSystemSettings == "no") {
 				context.leftnav += "<p><i class=\"fas fa-cogs\"></i><a href=\"/web/system\">System Settings</a></p>\n";
 			}
