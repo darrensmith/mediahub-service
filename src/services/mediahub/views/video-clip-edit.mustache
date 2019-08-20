@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Edit Video Clip | Media Hub</title>
+		<meta name="description" content="Media Hub">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		{{> styles}}
+		{{> javascript}}
+	</head>
+
+	<body class="home">
+		{{> header}}
+		<div class="titlearea"> 
+		    {{> title}}
+		    <div class="righttag font"> <span style="font-size: 16px;">Edit Video Clip</span> </div>
+		</div>
+		<div class="main">
+			{{> leftbar}}
+			<div class="container2">
+				<div class="body-title"><strong>Edit Video Clip</strong></div>
+				<div class="body-strip"></div>
+				<div class="body-form">
+					<form action="/web/video-clips/{{videoClip.key}}/edit" method="post">
+
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Title:</div>
+								<div class="searchcontainer"><input class="search" name="title" value="{{videoClip.title}}" /></div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Short Description:</div>
+								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="shortDesc">{{videoClip.shortDesc}}</textarea></div>
+							</div>
+							<div class="form-field">
+								<div class="font">Long Description:</div>
+								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="longDesc" >{{videoClip.longDesc}}</textarea></div>
+							</div>
+						</div>
+
+						<div class="form-field">
+							<button class="save-button font" style="margin-right: 20px;" name="convert" value="true">Update</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
