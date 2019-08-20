@@ -28,12 +28,16 @@
 		SettingModel.find({ where: {}}, function(err, settings) {
 			var setting = "";
 			var hideSystemSettings = "no";
+			var hideSignOutLink = "no";
 			for (var i = 0; i < settings.length; i++) {
 				if(settings[i].setting == "showObjectTypes"){
 					setting = settings[i].value;
 				}
 				if(settings[i].setting == "hideSystemSettings"){
 					hideSystemSettings = settings[i].value;
+				}
+				if(settings[i].setting == "hideSignOutLink"){
+					hideSignOutLink = settings[i].value;
 				}				
 			}
 
@@ -99,8 +103,9 @@
 			if(hideSystemSettings == "no") {
 				context.leftnav += "<p><i class=\"fas fa-cogs\"></i><a href=\"/web/system\">System Settings</a></p>\n";
 			}
-			context.leftnav += "<p><i class=\"fas fa-sign-out-alt\"></i><a href=\"/web/sign-out\">Sign Out</a></p>\n";
-
+			if(hideSignOutLink == "no") {
+				context.leftnav += "<p><i class=\"fas fa-sign-out-alt\"></i><a href=\"/web/sign-out\">Sign Out</a></p>\n";
+			}
 			cb(null, context);
 
 		});

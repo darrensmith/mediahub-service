@@ -39,6 +39,8 @@
 			context.twofifty = "";
 			context.hideSystemSettingsYesSelected = "";
 			context.hideSystemSettingsNoSelected = "";
+			context.hideSignOutLinkYesSelected = "";
+			context.hideSignOutLinkNoSelected = "";
 			for (var j = 0; j < objects.length; j++) {
 				context[objects[j] + "Selected"] = "";
 			}
@@ -82,6 +84,14 @@
 					context.hideSystemSettingsYesSelected = "selected";
 					context.hideSystemSettingsNoSelected = "";
 				}
+				if(settings[i] && settings[i].setting == "hideSignOutLink" && (settings[i].value == "no" || settings[i].value == "")) {
+					context.hideSignOutLinkYesSelected = "";
+					context.hideSignOutLinkNoSelected = "selected";
+				}
+				if(settings[i] && settings[i].setting == "hideSignOutLink" && settings[i].value == "yes") {
+					context.hideSignOutLinkYesSelected = "selected";
+					context.hideSignOutLinkNoSelected = "";
+				}
 				/*
 				if(settings[i].setting == "watch" && settings[i].value == "No") {
 					context.watchNoSelected = "selected";
@@ -123,6 +133,7 @@
 		if(req.body.reindexFreq) { parametersToUpdate ++; };
 		if(req.body.defaultPageSize) { parametersToUpdate ++; };
 		if(req.body.hideSystemSettings) { parametersToUpdate ++; };
+		if(req.body.hideSignOutLink) { parametersToUpdate ++; };
 		var showObjectTypes = "";
 		for (var i = 0; i < objects.length; i++) {
 			if(req.body[objects[i]]) {
@@ -178,6 +189,18 @@
 					"key": isnode.module("utilities").uuid4(),
 					"setting": "hideSystemSettings",
 					"value": req.body.hideSystemSettings,
+					"dateCreated": currentDate,
+					"dateLastModified": currentDate
+				}, function(err, setting){
+					parametersUpdated ++;
+				});
+			}
+			if(req.body.hideSignOutLink) {
+				SettingModel.updateOrCreate({ "setting": "hideSignOutLink" }, 
+				{
+					"key": isnode.module("utilities").uuid4(),
+					"setting": "hideSignOutLink",
+					"value": req.body.hideSignOutLink,
 					"dateCreated": currentDate,
 					"dateLastModified": currentDate
 				}, function(err, setting){

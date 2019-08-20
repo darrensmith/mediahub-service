@@ -35,11 +35,13 @@
 								<div class="searchcontainer"><input class="search" name="reindexFreq" value="{{reindexFreq}}" /></div>
 							</div>
 							<div class="form-field">
-								<div class="font">Hide System Settings From Nav</div>
+								<div class="font">Default Page Size</div>
 								<div class="searchcontainer">
-									<select class="search" name="hideSystemSettings">
-										<option {{hideSystemSettingsNoSelected}} value="no">No</option>
-										<option {{hideSystemSettingsYesSelected}} value="yes">Yes</option>
+									<select id="objects" class="search" name="defaultPageSize">
+										<option value="20" {{twenty}}>20</option>
+										<option value="50" {{fifty}}>50</option>
+										<option value="100" {{hundred}}>100</option>
+										<option value="250" {{twofifty}}>250</option>
 									</select>
 								</div>
 							</div>
@@ -77,13 +79,20 @@
 						</div>
 						<div class="form-group">
 							<div class="form-field">
-								<div class="font">Default Page Size</div>
+								<div class="font">Hide System Settings From Nav</div>
 								<div class="searchcontainer">
-									<select id="objects" class="search" name="defaultPageSize">
-										<option value="20" {{twenty}}>20</option>
-										<option value="50" {{fifty}}>50</option>
-										<option value="100" {{hundred}}>100</option>
-										<option value="250" {{twofifty}}>250</option>
+									<select class="search" name="hideSystemSettings">
+										<option {{hideSystemSettingsNoSelected}} value="no">No</option>
+										<option {{hideSystemSettingsYesSelected}} value="yes">Yes</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-field">
+								<div class="font">Hide Sign Out Link From Nav</div>
+								<div class="searchcontainer">
+									<select class="search" name="hideSignOutLink">
+										<option {{hideSignOutLinkNoSelected}} value="no">No</option>
+										<option {{hideSignOutLinkYesSelected}} value="yes">Yes</option>
 									</select>
 								</div>
 							</div>
