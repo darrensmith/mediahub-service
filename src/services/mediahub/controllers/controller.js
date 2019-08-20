@@ -384,6 +384,24 @@
 	}
 
 	/**
+	 * Sets Parent Folder on Folders
+	 *
+	 * @param {array} files - Array of files in filesystem
+	 */
+	var setParentFolderOnFolders = function(){
+		return;
+	}
+
+	/**
+	 * Sets Parent Folder on Files
+	 *
+	 * @param {array} files - Array of files in filesystem
+	 */
+	var setParentFolderOnFiles = function(){
+		return;
+	}
+
+	/**
 	 * (ENTRY POINT FOR EXECUTION)
 	 *
 	 * Alter module behaviour based on execution use case: 

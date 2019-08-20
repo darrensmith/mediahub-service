@@ -25,13 +25,23 @@
 		service = isnode.module("services").service("mediahub");
 		SettingModel = service.models.get("setting");
 
-		SettingModel.find({ where: { setting: "showObjectTypes"}}, function(err, settings) {
+		SettingModel.find({ where: {}}, function(err, settings) {
+			var setting = "";
+			var hideSystemSettings = "no";
+			for (var i = 0; i < settings.length; i++) {
+				if(settings[i].setting == "showObjectTypes"){
+					setting = settings[i].value;
+				}
+				if(settings[i].setting == "hideSystemSettings"){
+					hideSystemSettings = settings[i].value;
+				}				
+			}
+
+			var objects = setting.split(" ");
 
 			context.leftnav  = "";
 			context.leftnav += "<p><i class=\"fas fa-home\"></i><a href=\"/web\">Home</a></p>\n";
-
-			var setting = settings[0].value;
-			var objects = setting.split(" ");
+			
 			if(objects.includes("documents") || objects.includes("ebooks")){
 				context.leftnav += "<p style=\"margin-top:50px;\"><strong>Reading Material</strong></p>\n";
 				if(objects.includes("documents"))
@@ -86,7 +96,9 @@
 
 			context.leftnav += "<p style=\"margin-top:50px;\"><strong>System</strong></p>\n";
 			context.leftnav += "<p><i class=\"fas fa-file\"></i><a href=\"/web/files\">Files</a></p>\n";
-			context.leftnav += "<p><i class=\"fas fa-cogs\"></i><a href=\"/web/system\">System Settings</a></p>\n";
+			if(hideSystemSettings == "no") {
+				context.leftnav += "<p><i class=\"fas fa-cogs\"></i><a href=\"/web/system\">System Settings</a></p>\n";
+			}
 			context.leftnav += "<p><i class=\"fas fa-sign-out-alt\"></i><a href=\"/web/sign-out\">Sign Out</a></p>\n";
 
 			cb(null, context);

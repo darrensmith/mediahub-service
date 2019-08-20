@@ -34,6 +34,15 @@
 								<div class="font">Reindex Frequency:</div>
 								<div class="searchcontainer"><input class="search" name="reindexFreq" value="{{reindexFreq}}" /></div>
 							</div>
+							<div class="form-field">
+								<div class="font">Hide System Settings From Nav</div>
+								<div class="searchcontainer">
+									<select class="search" name="hideSystemSettings">
+										<option {{hideSystemSettingsNoSelected}} value="no">No</option>
+										<option {{hideSystemSettingsYesSelected}} value="yes">Yes</option>
+									</select>
+								</div>
+							</div>
 							<!-- <div class="form-field">
 								<div class="font">Watch Filesystem for Changes</div>
 								<div class="searchcontainer">
@@ -43,19 +52,6 @@
 									</select>
 								</div>
 							</div> -->
-						</div>
-						<div class="form-group">
-							<div class="form-field">
-								<div class="font">Default Page Size</div>
-								<div class="searchcontainer">
-									<select id="objects" class="search" name="defaultPageSize">
-										<option value="20" {{twenty}}>20</option>
-										<option value="50" {{fifty}}>50</option>
-										<option value="100" {{hundred}}>100</option>
-										<option value="250" {{twofifty}}>250</option>
-									</select>
-								</div>
-							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-field">
@@ -76,6 +72,19 @@
 									<p><input type="checkbox" name="operatingSystems" value="1" {{operatingSystemsSelected}}/> &nbsp;&nbsp; Operating Systems</p>
 									<p><input type="checkbox" name="physibles" value="1" {{physiblesSelected}}/> &nbsp;&nbsp; Physibles</p>
 									<p><input type="checkbox" name="images" value="1" {{imagesSelected}}/> &nbsp;&nbsp; Images</p>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Default Page Size</div>
+								<div class="searchcontainer">
+									<select id="objects" class="search" name="defaultPageSize">
+										<option value="20" {{twenty}}>20</option>
+										<option value="50" {{fifty}}>50</option>
+										<option value="100" {{hundred}}>100</option>
+										<option value="250" {{twofifty}}>250</option>
+									</select>
 								</div>
 							</div>
 						</div>

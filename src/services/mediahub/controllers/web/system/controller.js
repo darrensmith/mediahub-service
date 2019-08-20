@@ -37,40 +37,50 @@
 			context.fifty = "";
 			context.hundred = "";
 			context.twofifty = "";
-			for (var i = 0; i < objects.length; i++) {
-				context[objects[i] + "Selected"] = "";
+			context.hideSystemSettingsYesSelected = "";
+			context.hideSystemSettingsNoSelected = "";
+			for (var j = 0; j < objects.length; j++) {
+				context[objects[j] + "Selected"] = "";
 			}
-			for (var i = 0; i < settings.length; i++) {
-				if(settings[i].setting == "folder") {
+			for (var i = 0; i < settings.length + 1; i++) {
+				if(settings[i] && settings[i].setting == "folder") {
 					context.folder = settings[i].value;
 				}
-				if(settings[i].setting == "reindexFreq") {
+				if(settings[i] && settings[i].setting == "reindexFreq") {
 					context.reindexFreq = settings[i].value;
 				}
-				if(settings[i].setting == "defaultPageSize" && settings[i].value == "20") {
+				if(settings[i] && settings[i].setting == "defaultPageSize" && settings[i].value == "20") {
 					context.pageSizeSet = true;
 					context.twenty = "selected";
 				}
-				if(settings[i].setting == "defaultPageSize" && settings[i].value == "50") {
+				if(settings[i] && settings[i].setting == "defaultPageSize" && settings[i].value == "50") {
 					context.pageSizeSet = true;
 					context.fifty = "selected";
 				}
-				if(settings[i].setting == "defaultPageSize" && settings[i].value == "100") {
+				if(settings[i] && settings[i].setting == "defaultPageSize" && settings[i].value == "100") {
 					context.pageSizeSet = true;
 					context.hundred = "selected";
 				}
-				if(settings[i].setting == "defaultPageSize" && settings[i].value == "250") {
+				if(settings[i] && settings[i].setting == "defaultPageSize" && settings[i].value == "250") {
 					context.pageSizeSet = true;
 					context.twofifty = "selected";
 				}
-				if(settings[i].setting == "showObjectTypes") {
+				if(settings[i] && settings[i].setting == "showObjectTypes") {
 					context.objectTypesReturned = true;
 					var objectTypes = settings[i].value.split(" ");
-					for (var i = 0; i < objects.length; i++) {
-						if(objectTypes.includes(objects[i])){
-							context[objects[i] + "Selected"] = "checked";
+					for (var k = 0; k < objects.length; k++) {
+						if(objectTypes.includes(objects[k])){
+							context[objects[k] + "Selected"] = "checked";
 						}
 					}
+				}
+				if(settings[i] && settings[i].setting == "hideSystemSettings" && (settings[i].value == "no" || settings[i].value == "")) {
+					context.hideSystemSettingsYesSelected = "";
+					context.hideSystemSettingsNoSelected = "selected";
+				}
+				if(settings[i] && settings[i].setting == "hideSystemSettings" && settings[i].value == "yes") {
+					context.hideSystemSettingsYesSelected = "selected";
+					context.hideSystemSettingsNoSelected = "";
 				}
 				/*
 				if(settings[i].setting == "watch" && settings[i].value == "No") {
@@ -83,6 +93,7 @@
 				}
 				*/
 			}
+
 			if(!context.pageSizeSet) {
 				context.twenty = "selected";
 			}
@@ -111,6 +122,7 @@
 		if(req.body.folder) { parametersToUpdate ++; };
 		if(req.body.reindexFreq) { parametersToUpdate ++; };
 		if(req.body.defaultPageSize) { parametersToUpdate ++; };
+		if(req.body.hideSystemSettings) { parametersToUpdate ++; };
 		var showObjectTypes = "";
 		for (var i = 0; i < objects.length; i++) {
 			if(req.body[objects[i]]) {
@@ -154,6 +166,18 @@
 					"key": isnode.module("utilities").uuid4(),
 					"setting": "defaultPageSize",
 					"value": req.body.defaultPageSize,
+					"dateCreated": currentDate,
+					"dateLastModified": currentDate
+				}, function(err, setting){
+					parametersUpdated ++;
+				});
+			}
+			if(req.body.hideSystemSettings) {
+				SettingModel.updateOrCreate({ "setting": "hideSystemSettings" }, 
+				{
+					"key": isnode.module("utilities").uuid4(),
+					"setting": "hideSystemSettings",
+					"value": req.body.hideSystemSettings,
 					"dateCreated": currentDate,
 					"dateLastModified": currentDate
 				}, function(err, setting){
