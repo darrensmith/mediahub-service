@@ -45,12 +45,22 @@
 			context.hideFilesLinkNoSelected = "";
 			context.hideRevertToFileYesSelected = "";
 			context.hideRevertToFileNoSelected = "";
+			context.systemSettingsPassword = "";
 			for (var j = 0; j < objects.length; j++) {
 				context[objects[j] + "Selected"] = "";
 			}
 			for (var i = 0; i < settings.length + 1; i++) {
+				if(settings[i] && settings[i].setting == "systemSettingsPassword") {
+					if(settings[i].value != "" && (!req.body.password || settings[i].value != req.body.password)) {
+						res.redirect("/web/system/authorise");
+						return;
+					}
+				}
 				if(settings[i] && settings[i].setting == "folder") {
 					context.folder = settings[i].value;
+				}
+				if(settings[i] && settings[i].setting == "systemSettingsPassword") {
+					context.systemSettingsPassword = settings[i].value;
 				}
 				if(settings[i] && settings[i].setting == "reindexFreq") {
 					context.reindexFreq = settings[i].value;
@@ -134,6 +144,8 @@
 			}
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
+				if(req.body.password)
+					cxt.password = req.body.password;
 				res.render("system.mustache", cxt);
 			});
 		});
@@ -146,148 +158,171 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		var context = {};
-		var parametersToUpdate = 0;
-		var parametersUpdated = 0;
-		if(req.body.folder) { parametersToUpdate ++; };
-		if(req.body.reindexFreq) { parametersToUpdate ++; };
-		if(req.body.defaultPageSize) { parametersToUpdate ++; };
-		if(req.body.hideSystemSettings) { parametersToUpdate ++; };
-		if(req.body.hideSignOutLink) { parametersToUpdate ++; };
-		if(req.body.hideFilesLink) { parametersToUpdate ++; };
-		if(req.body.hideRevertToFile) { parametersToUpdate ++; };
-		var showObjectTypes = "";
-		for (var i = 0; i < objects.length; i++) {
-			if(req.body[objects[i]]) {
-				showObjectTypes += objects[i] + " ";
-			}
-		}
-		showObjectTypes = showObjectTypes.trim();
-		parametersToUpdate ++;
-		/*if(req.body.watch) { parametersToUpdate ++; };*/
-		if(req.body.save == "true"){
-			var currentDate = isnode.module("utilities").getCurrentDateInISO();
-			if(req.body.folder) {
-				SettingModel.updateOrCreate({ "setting": "folder" }, 
-				{
-					"key": isnode.module("utilities").uuid4(),
-					"setting": "folder",
-					"value": req.body.folder,
-					"dateCreated": currentDate,
-					"dateLastModified": currentDate
-				}, function(err, setting){
-					parametersUpdated ++;
-				});
-			}
-			if(req.body.reindexFreq) {
-				SettingModel.updateOrCreate({ "setting": "reindexFreq" }, 
-				{
-					"key": isnode.module("utilities").uuid4(),
-					"setting": "reindexFreq",
-					"value": req.body.reindexFreq,
-					"dateCreated": currentDate,
-					"dateLastModified": currentDate
-				}, function(err, setting){
-					var router = isnode.module("router");
-					router.emit("reset-sync");
-					parametersUpdated ++;
-				});
-			}
-			if(req.body.defaultPageSize) {
-				SettingModel.updateOrCreate({ "setting": "defaultPageSize" }, 
-				{
-					"key": isnode.module("utilities").uuid4(),
-					"setting": "defaultPageSize",
-					"value": req.body.defaultPageSize,
-					"dateCreated": currentDate,
-					"dateLastModified": currentDate
-				}, function(err, setting){
-					parametersUpdated ++;
-				});
-			}
-			if(req.body.hideSystemSettings) {
-				SettingModel.updateOrCreate({ "setting": "hideSystemSettings" }, 
-				{
-					"key": isnode.module("utilities").uuid4(),
-					"setting": "hideSystemSettings",
-					"value": req.body.hideSystemSettings,
-					"dateCreated": currentDate,
-					"dateLastModified": currentDate
-				}, function(err, setting){
-					parametersUpdated ++;
-				});
-			}
-			if(req.body.hideSignOutLink) {
-				SettingModel.updateOrCreate({ "setting": "hideSignOutLink" }, 
-				{
-					"key": isnode.module("utilities").uuid4(),
-					"setting": "hideSignOutLink",
-					"value": req.body.hideSignOutLink,
-					"dateCreated": currentDate,
-					"dateLastModified": currentDate
-				}, function(err, setting){
-					parametersUpdated ++;
-				});
-			}
-			if(req.body.hideFilesLink) {
-				SettingModel.updateOrCreate({ "setting": "hideFilesLink" }, 
-				{
-					"key": isnode.module("utilities").uuid4(),
-					"setting": "hideFilesLink",
-					"value": req.body.hideFilesLink,
-					"dateCreated": currentDate,
-					"dateLastModified": currentDate
-				}, function(err, setting){
-					parametersUpdated ++;
-				});
-			}
-			if(req.body.hideRevertToFile) {
-				SettingModel.updateOrCreate({ "setting": "hideRevertToFile" }, 
-				{
-					"key": isnode.module("utilities").uuid4(),
-					"setting": "hideRevertToFile",
-					"value": req.body.hideRevertToFile,
-					"dateCreated": currentDate,
-					"dateLastModified": currentDate
-				}, function(err, setting){
-					parametersUpdated ++;
-				});
-			}
-			SettingModel.updateOrCreate({ "setting": "showObjectTypes" }, 
-			{
-				"key": isnode.module("utilities").uuid4(),
-				"setting": "showObjectTypes",
-				"value": showObjectTypes,
-				"dateCreated": currentDate,
-				"dateLastModified": currentDate
-			}, function(err, setting){
-				parametersUpdated ++;
-			});
-			/*if(req.body.watch) {
-				SettingModel.updateOrCreate({ "setting": "watch" }, 
-				{
-					"key": isnode.module("utilities").uuid4(),
-					"setting": "watch",
-					"value": req.body.watch,
-					"dateCreated": currentDate,
-					"dateLastModified": currentDate
-				}, function(err, setting){
-					parametersUpdated ++;
-				});
-			}*/
-			var interval = setInterval(function(){
-				if(parametersUpdated >= parametersToUpdate) {
-					clearInterval(interval);
-					res.redirect("/web/system?message=update-processed");
+		SettingModel.find({ where: { setting: "systemSettingsPassword"}}, function(err,settings){
+			if(!settings || !settings[0] || settings[0].value == "" || (req.body.password && req.body.password == settings[0].value)){
+				var context = {};
+				var parametersToUpdate = 0;
+				var parametersUpdated = 0;
+				if(req.body.folder) { parametersToUpdate ++; };
+				if(req.body.reindexFreq) { parametersToUpdate ++; };
+				if(req.body.defaultPageSize) { parametersToUpdate ++; };
+				if(req.body.hideSystemSettings) { parametersToUpdate ++; };
+				if(req.body.hideSignOutLink) { parametersToUpdate ++; };
+				if(req.body.hideFilesLink) { parametersToUpdate ++; };
+				if(req.body.hideRevertToFile) { parametersToUpdate ++; };
+				if(req.body.systemSettingsPassword) { parametersToUpdate ++; };
+				var showObjectTypes = "";
+				for (var i = 0; i < objects.length; i++) {
+					if(req.body[objects[i]]) {
+						showObjectTypes += objects[i] + " ";
+					}
 				}
-			}, 200);
-		} 
-		if (req.body.sync == "true") {
-			var router = isnode.module("router");
-			router.emit("sync");
-			res.redirect("/web/system?success=sync-started");
-		}
-		return;
+				showObjectTypes = showObjectTypes.trim();
+				parametersToUpdate ++;
+				/*if(req.body.watch) { parametersToUpdate ++; };*/
+				if(req.body.save == "true"){
+					var currentDate = isnode.module("utilities").getCurrentDateInISO();
+					if(req.body.folder) {
+						SettingModel.updateOrCreate({ "setting": "folder" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "folder",
+							"value": req.body.folder,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.reindexFreq) {
+						SettingModel.updateOrCreate({ "setting": "reindexFreq" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "reindexFreq",
+							"value": req.body.reindexFreq,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							var router = isnode.module("router");
+							router.emit("reset-sync");
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.defaultPageSize) {
+						SettingModel.updateOrCreate({ "setting": "defaultPageSize" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "defaultPageSize",
+							"value": req.body.defaultPageSize,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.hideSystemSettings) {
+						SettingModel.updateOrCreate({ "setting": "hideSystemSettings" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "hideSystemSettings",
+							"value": req.body.hideSystemSettings,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.hideSignOutLink) {
+						SettingModel.updateOrCreate({ "setting": "hideSignOutLink" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "hideSignOutLink",
+							"value": req.body.hideSignOutLink,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.hideFilesLink) {
+						SettingModel.updateOrCreate({ "setting": "hideFilesLink" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "hideFilesLink",
+							"value": req.body.hideFilesLink,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.hideRevertToFile) {
+						SettingModel.updateOrCreate({ "setting": "hideRevertToFile" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "hideRevertToFile",
+							"value": req.body.hideRevertToFile,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.hideRevertToFile) {
+						SettingModel.updateOrCreate({ "setting": "systemSettingsPassword" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "systemSettingsPassword",
+							"value": req.body.systemSettingsPassword,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					SettingModel.updateOrCreate({ "setting": "showObjectTypes" }, 
+					{
+						"key": isnode.module("utilities").uuid4(),
+						"setting": "showObjectTypes",
+						"value": showObjectTypes,
+						"dateCreated": currentDate,
+						"dateLastModified": currentDate
+					}, function(err, setting){
+						parametersUpdated ++;
+					});
+					/*if(req.body.watch) {
+						SettingModel.updateOrCreate({ "setting": "watch" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "watch",
+							"value": req.body.watch,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}*/
+					var interval = setInterval(function(){
+						if(parametersUpdated >= parametersToUpdate) {
+							clearInterval(interval);
+							ctrl.get(req, res);
+						}
+					}, 200);
+				} else if (req.body.sync == "true") {
+					var router = isnode.module("router");
+					router.emit("sync");
+					ctrl.get(req, res);
+					return;
+				} else {
+					ctrl.get(req, res);
+					return;
+				}
+				return;
+			} else {
+				res.redirect("/web/system/authorise");
+				return;
+			}
+		});
 	}
 
 	/**

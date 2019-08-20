@@ -23,6 +23,7 @@
 				<div class="body-strip"></div>
 				<div class="body-form">
 					<form action="/web/system" method="post">
+						<input type="hidden" name="password" value="{{password}}"/>
 						<div class="form-group">
 							<div class="form-field">
 								<div class="font">Folder Path:</div>
@@ -115,6 +116,12 @@
 										<option {{hideRevertToFileYesSelected}} value="yes">Yes</option>
 									</select>
 								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">System Settings Password:</div>
+								<div class="searchcontainer"><input style="width: 830px;" class="search" name="systemSettingsPassword" value="{{systemSettingsPassword}}" /></div>
 							</div>
 						</div>
 						<div class="form-field">
