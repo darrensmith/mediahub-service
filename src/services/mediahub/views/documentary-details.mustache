@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Documentary Details | Media Hub</title>
+		<meta name="description" content="Media Hub">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		{{> styles}}
+		{{> javascript}}
+	</head>
+
+	<body class="home">
+		{{> header}}
+		<div class="titlearea"> 
+		    {{> title}}
+		    <div class="righttag font"> <span style="font-size: 16px;">Documentary Details</span> </div>
+		</div>
+		<div class="main">
+			{{> leftbar}}
+			<div class="container2">
+				<iframe style="margin-left: 30px; width: 90%; height: 90%" src="/ViewerJS/index.html#../files/ebooks/audio/dj.pdf" allowfullscreen webkitallowfullscreen></iframe>
+				<div class="body-form">
+					<form action="/web/documentaries/{{documentary.key}}" method="post">
+						<div class="form-field">
+							<button class="save-button font" style="margin-right: 20px;" name="revert" value="true">REVERT TO FILE</button>
+							<button class="save-button font" name="edit" value="true">EDIT</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+	</body>
+
+</html>
