@@ -35,7 +35,7 @@
 			context.song = songs[0];
 			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("song-edit.mustache", cxt);
+				res.render("music-edit.mustache", cxt);
 			});
 		});
 		return;
