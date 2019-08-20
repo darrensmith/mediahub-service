@@ -26,6 +26,7 @@
 	var ApplicationModel = null;
 	var GameModel = null;
 	var OperatingSystemModel = null;
+	var PhysibleModel = null;
 
 	/**
 	 * Initialises the controller
@@ -50,6 +51,7 @@
 		ApplicationModel = service.models.get("application");
 		GameModel = service.models.get("game");
 		OperatingSystemModel = service.models.get("operatingSystem");
+		PhysibleModel = service.models.get("physible");
 		return;
 	}
 
@@ -448,6 +450,28 @@
 						});
 					});
 					break;
+				case "physible":
+					PhysibleModel.create({
+						key: newObjKey,
+						dateCreated: currentDate,
+						dateLastModified: currentDate,
+						fileKey: fileKey,
+						title: title,
+						shortDesc: shortDesc,
+						longDesc: longDesc,
+						size: size,
+						md5hash: md5hash,
+						primaryCategoryKey: null
+					}, function(err2, physible){
+						FileModel.update({ 
+							where: { key: fileKey } 
+						}, {
+							objectType: "physible",
+							objectKey: newObjKey
+						}, function(err2, updatedFile){
+							res.redirect("/web/files?message=file-converted-successfully");
+						});
+					});
 				case "image":
 					ImageModel.create({
 						key: newObjKey,
