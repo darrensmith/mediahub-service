@@ -23,7 +23,9 @@
 				<div class="body-form">
 					<form action="/web/documentaries/{{documentary.key}}" method="post">
 						<div class="form-field">
+							{{#showRevertToFile}}
 							<button class="save-button font" style="margin-right: 20px;" name="revert" value="true">REVERT TO FILE</button>
+							{{/showRevertToFile}}
 							<button class="save-button font" name="edit" value="true">EDIT</button>
 						</div>
 					</form>

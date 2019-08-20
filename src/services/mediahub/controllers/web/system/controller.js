@@ -43,6 +43,8 @@
 			context.hideSignOutLinkNoSelected = "";
 			context.hideFilesLinkYesSelected = "";
 			context.hideFilesLinkNoSelected = "";
+			context.hideRevertToFileYesSelected = "";
+			context.hideRevertToFileNoSelected = "";
 			for (var j = 0; j < objects.length; j++) {
 				context[objects[j] + "Selected"] = "";
 			}
@@ -102,6 +104,14 @@
 					context.hideFilesLinkYesSelected = "selected";
 					context.hideFilesLinkNoSelected = "";
 				}
+				if(settings[i] && settings[i].setting == "hideRevertToFile" && (settings[i].value == "no" || settings[i].value == "")) {
+					context.hideRevertToFileYesSelected = "";
+					context.hideRevertToFileNoSelected = "selected";
+				}
+				if(settings[i] && settings[i].setting == "hideRevertToFile" && settings[i].value == "yes") {
+					context.hideRevertToFileYesSelected = "selected";
+					context.hideRevertToFileNoSelected = "";
+				}
 				/*
 				if(settings[i].setting == "watch" && settings[i].value == "No") {
 					context.watchNoSelected = "selected";
@@ -145,6 +155,7 @@
 		if(req.body.hideSystemSettings) { parametersToUpdate ++; };
 		if(req.body.hideSignOutLink) { parametersToUpdate ++; };
 		if(req.body.hideFilesLink) { parametersToUpdate ++; };
+		if(req.body.hideRevertToFile) { parametersToUpdate ++; };
 		var showObjectTypes = "";
 		for (var i = 0; i < objects.length; i++) {
 			if(req.body[objects[i]]) {
@@ -224,6 +235,18 @@
 					"key": isnode.module("utilities").uuid4(),
 					"setting": "hideFilesLink",
 					"value": req.body.hideFilesLink,
+					"dateCreated": currentDate,
+					"dateLastModified": currentDate
+				}, function(err, setting){
+					parametersUpdated ++;
+				});
+			}
+			if(req.body.hideRevertToFile) {
+				SettingModel.updateOrCreate({ "setting": "hideRevertToFile" }, 
+				{
+					"key": isnode.module("utilities").uuid4(),
+					"setting": "hideRevertToFile",
+					"value": req.body.hideRevertToFile,
 					"dateCreated": currentDate,
 					"dateLastModified": currentDate
 				}, function(err, setting){

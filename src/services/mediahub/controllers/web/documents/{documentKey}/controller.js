@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var DocumentModel = null;
+	var SettingModel = null;
 	var FileModel = null;
 
 	/**
@@ -21,6 +22,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		DocumentModel = service.models.get("document");
+		SettingModel = service.models.get("setting");
 		FileModel = service.models.get("file");
 		return;
 	}
@@ -37,7 +39,13 @@
 			context.document = documents[0];
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("document-details.mustache", cxt);
+				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
+					if(!settings || !settings[0] || settings[0].value == "no")
+						cxt.showRevertToFile = true;
+					else
+						cxt.showRevertToFile = false;
+					res.render("document-details.mustache", cxt);
+				});
 			});
 		});
 		return;
