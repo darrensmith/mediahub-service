@@ -13,7 +13,7 @@
 			key: 				{ type: schema.String, limit: 255 },
 		    path: 				{ type: schema.String, limit: 255 },
 		    folderName: 		{ type: schema.String, limit: 255 },
-		    parentFolderKey: 	{ type: schema.String, limit: 255 },
+		    parentFolder: 		{ type: schema.String, limit: 255 },
 		    dateCreated: 		{ type: schema.String, limit: 255 },
 		    dateLastModified: 	{ type: schema.String, limit: 255 }
 		});

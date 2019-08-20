@@ -170,7 +170,8 @@
 		var currentDate = isnode.module("utilities").getCurrentDateInISO();
 		var fullPath = base + "/" + folder;
 		var folderSplit = folder.split("/");
-		var name = folderSplit[folderSplit.length-1];
+		var name = folderSplit.pop();
+		var parentFolder = folderSplit.join("/");
 		FolderModel.find({ where: { path: fullPath}}, function(err, folders){
 			if(folders && folders[0] && folders[0].path) {
 				cb({error: "Folder Already Exists in DB"}, null);
@@ -179,7 +180,7 @@
 					key : isnode.module("utilities").uuid4(),
 					path : fullPath,
 					folderName: name,
-					parentFolderKey: null,
+					parentFolder: parentFolder,
 					dateCreated: currentDate,
 					dateLastModified: currentDate
 			    }, function(err, newFolder){
