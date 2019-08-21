@@ -326,3 +326,25 @@ a>.bigbox {
 select:hover {
   cursor: pointer;
 }
+
+.announcement {
+  color:white; 
+  margin-left:40%;
+  position:absolute;
+  right:10px;
+  padding-right:10px;
+  margin-top:15px;
+  padding-top:3px;
+  padding-bottom:5px;
+  z-index:20;
+  font-size: 14px;
+  font-family: Open Sans Semibold,Helvetica Neue,Helvetica,Arial,sans-serif;
+  border-color: #777;
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.announcement>a, .announcement>a:hover, .announcement>a:active, .announcement:visited>a {
+   color:white; 
+}

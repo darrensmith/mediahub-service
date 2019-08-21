@@ -46,6 +46,7 @@
 			context.hideRevertToFileYesSelected = "";
 			context.hideRevertToFileNoSelected = "";
 			context.systemSettingsPassword = "";
+			context.announcement = "";
 			for (var j = 0; j < objects.length; j++) {
 				context[objects[j] + "Selected"] = "";
 			}
@@ -58,6 +59,9 @@
 				}
 				if(settings[i] && settings[i].setting == "folder") {
 					context.folder = settings[i].value;
+				}
+				if(settings[i] && settings[i].setting == "announcement") {
+					context.announcement = settings[i].value;
 				}
 				if(settings[i] && settings[i].setting == "systemSettingsPassword") {
 					context.systemSettingsPassword = settings[i].value;
@@ -171,6 +175,7 @@
 				if(req.body.hideFilesLink) { parametersToUpdate ++; };
 				if(req.body.hideRevertToFile) { parametersToUpdate ++; };
 				if(req.body.systemSettingsPassword) { parametersToUpdate ++; };
+				if(req.body.announcement) { parametersToUpdate ++; };
 				var showObjectTypes = "";
 				for (var i = 0; i < objects.length; i++) {
 					if(req.body[objects[i]]) {
@@ -268,12 +273,24 @@
 							parametersUpdated ++;
 						});
 					}
-					if(req.body.hideRevertToFile) {
+					if(req.body.systemSettingsPassword) {
 						SettingModel.updateOrCreate({ "setting": "systemSettingsPassword" }, 
 						{
 							"key": isnode.module("utilities").uuid4(),
 							"setting": "systemSettingsPassword",
 							"value": req.body.systemSettingsPassword,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.announcement) {
+						SettingModel.updateOrCreate({ "setting": "announcement" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "announcement",
+							"value": req.body.announcement,
 							"dateCreated": currentDate,
 							"dateLastModified": currentDate
 						}, function(err, setting){

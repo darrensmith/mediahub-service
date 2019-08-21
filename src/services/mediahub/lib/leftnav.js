@@ -30,6 +30,7 @@
 			var hideSystemSettings = "no";
 			var hideSignOutLink = "no";
 			var hideFilesLink = "no";
+			var announcement = "";
 			for (var i = 0; i < settings.length; i++) {
 				if(settings[i].setting == "showObjectTypes"){
 					setting = settings[i].value;
@@ -42,7 +43,14 @@
 				}
 				if(settings[i].setting == "hideFilesLink"){
 					hideFilesLink = settings[i].value;
-				}				
+				}
+				if(settings[i].setting == "announcement"){
+					announcement = settings[i].value;
+				}			
+			}
+
+			if(announcement) {
+				context.announcement = announcement;
 			}
 
 			var objects = setting.split(" ");
