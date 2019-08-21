@@ -32,15 +32,27 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		context.backButtonLink = "/web";
 		var files = [];
 		var folders = [];
 		var responseCount = 0;
-		FileModel.find({ "where": { objectKey: null, parentFolderKey: null }}, function(err,filesReturned){
+		var parentFolderKey = null;
+		if(req.query.folder)
+			parentFolderKey = req.query.folder;
+		if(!parentFolderKey) {
+			context.backButtonLink = "/web";
+		} else {
+			FolderModel.find({ "where": { objectKey: null, key: parentFolderKey }}, function(err,foldersReturned){
+				if(!foldersReturned || !foldersReturned[0] || !foldersReturned[0].parentFolderKey)
+					context.backButtonLink = "/web/files";
+				else
+					context.backButtonLink = "/web/files?folder=" + foldersReturned[0].parentFolderKey;
+			});
+		}
+		FileModel.find({ "where": { objectKey: null, parentFolderKey: parentFolderKey }}, function(err,filesReturned){
 			responseCount ++;
 			files = filesReturned;
 		});
-		FolderModel.find({ "where": { objectKey: null, parentFolderKey: null }}, function(err,foldersReturned){
+		FolderModel.find({ "where": { objectKey: null, parentFolderKey: parentFolderKey }}, function(err,foldersReturned){
 			responseCount ++;
 			folders = foldersReturned;
 		});
