@@ -33,13 +33,28 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web";
-		FileModel.find({ "where": { objectKey: null }}, function(err,files){
-			context.files = files;
-			var leftnav = require("../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("files.mustache", cxt);
-			});
+		var files = [];
+		var folders = [];
+		var responseCount = 0;
+		FileModel.find({ "where": { objectKey: null, parentFolderKey: null }}, function(err,filesReturned){
+			responseCount ++;
+			files = filesReturned;
 		});
+		FolderModel.find({ "where": { objectKey: null, parentFolderKey: null }}, function(err,foldersReturned){
+			responseCount ++;
+			folders = foldersReturned;
+		});
+		var interval = setInterval(function(){
+			if(responseCount >= 2){
+				clearInterval(interval);
+				context.files = files;
+				context.folders = folders;
+				var leftnav = require("../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("files.mustache", cxt);
+				});				
+			}
+		}, 100);
 		return;
 	}
 

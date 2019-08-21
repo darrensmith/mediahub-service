@@ -115,11 +115,12 @@
 				filewalker(settings[0].value)
 				  .on('dir', function(p) {
 				  	var fullPath = settings[0].value + "/" + p;
-				  	folders[fullPath] = true;
 				    checkAndCreateFolder(settings[0].value, p, function(err2, res){
 				    	if(err2){
+				    		folders[fullPath] = err2.key;
 				    		createFolders.failed = createFolders.failed + 1;
 				    	} else {
+				    		folders[fullPath] = res.key;
 				    		createFolders.success = createFolders.success + 1;
 				    	}
 				    });
@@ -132,11 +133,12 @@
 				  	rs.on('end', function(data) {
 				  		var completeHash = hash.digest('hex');
 					  	var fullPath = settings[0].value + "/" + p;
-					  	files[fullPath] = true;
 					    checkAndCreateFile(settings[0].value, p, s, completeHash, function(err2, res){
 					    	if(err2){
+					    		files[fullPath] = err2.key;
 					    		createFiles.failed = createFiles.failed + 1;
 					    	} else {
+					    		files[fullPath] = res.key;
 					    		createFiles.success = createFiles.success + 1;
 					    	}
 					    });
@@ -146,11 +148,23 @@
 				  	log("error","MediaHub Filesystem Sync > " + err);
 				  })
 				  .on('done', function() {
-				  	log("debug","MediaHub Filesystem Sync > Folders - " + createFolders.success + " created successfully, " + createFolders.failed + " failed.");
-				    log("debug","MediaHub Filesystem Sync > Files - " + createFiles.success + " created successfully, " + createFiles.failed + " failed.");
-				  	removeDeletedFoldersFromDB(folders);
-				  	removeDeletedFilesFromDB(files);
-				  	log("debug","MediaHub Filesystem Sync > " + this.dirs + " dirs, " + this.files + " files, " + this.bytes + " bytes");
+				  	var folderCount = createFolders.success + createFolders.failed;
+				  	var fileCount = createFiles.success + createFiles.failed;
+				  	var interval = setInterval(function(){
+				  		if((createFolders.success + createFolders.failed) > folderCount || (createFiles.success + createFiles.failed) > fileCount) {
+				  			folderCount = createFolders.success + createFolders.failed;
+				  			fileCount = createFiles.success + createFiles.failed;
+				  		} else {
+				  			clearInterval(interval);
+						  	log("debug","MediaHub Filesystem Sync > Folders - " + createFolders.success + " created successfully, " + createFolders.failed + " failed.");
+						    log("debug","MediaHub Filesystem Sync > Files - " + createFiles.success + " created successfully, " + createFiles.failed + " failed.");
+						  	removeDeletedFoldersFromDB(folders);
+						  	removeDeletedFilesFromDB(files);
+						  	setParentFolderOnFolders(folders);
+						  	setParentFolderOnFiles(files, folders);
+						  	log("debug","MediaHub Filesystem Sync > " + this.dirs + " dirs, " + this.files + " files, " + this.bytes + " bytes");
+				  		}
+				  	}, 500);
 				  })
 				.walk();
 			} else {
@@ -174,10 +188,11 @@
 		var parentFolder = folderSplit.join("/");
 		FolderModel.find({ where: { path: fullPath}}, function(err, folders){
 			if(folders && folders[0] && folders[0].path) {
-				cb({error: "Folder Already Exists in DB"}, null);
+				cb({error: "Folder Already Exists in DB", key: folders[0].key}, null);
 			} else {
+				var key = isnode.module("utilities").uuid4();
 				FolderModel.create({
-					key : isnode.module("utilities").uuid4(),
+					key : key,
 					path : fullPath,
 					folderName: name,
 					parentFolder: parentFolder,
@@ -185,9 +200,12 @@
 					dateLastModified: currentDate
 			    }, function(err, newFolder){
 			    	if(err || !newFolder) {
-			    		cb({error: err}, null);
+			    		cb({error: err, key: key}, null);
 			    	} else {
-			    		cb(null, {success: newFolder});
+			    		cb(null, {
+			    			success: newFolder,
+			    			key: key
+			    		});
 			    	}
 				});
 			}
@@ -223,12 +241,13 @@
 						}
 					});
 				}
-				cb({error: "File Already Exists in DB"}, null);
+				cb({error: "File Already Exists in DB", key: files[0].key}, null);
 			} else {
 				FileModel.find({ "where": { md5hash: hash, size: stats.size, type: ext }}, function(err2, files2){
 					if(!files2[0]) {
+						var key = isnode.module("utilities").uuid4();
 						FileModel.create({
-							key : isnode.module("utilities").uuid4(),
+							key : key,
 							path : fullPath,
 							type: ext,
 							filename: name,
@@ -239,9 +258,12 @@
 							dateLastModified: currentDate
 						}, function(err, newFile){
 					    	if(err || !newFile) {
-					    		cb({error: err}, null);
+					    		cb({error: err, key: key}, null);
 					    	} else {
-					    		cb(null, {success: newFile});
+					    		cb(null, {
+					    			success: newFile,
+					    			key: key
+					    		});
 					    	}
 						});
 					} else {
@@ -264,11 +286,19 @@
 								path: fullPath,
 								filename: name
 							}, function(err3, updatedFile) {
-								null;
+						    	if(err || !updatedFile) {
+						    		cb({error: err, key: missing}, null);
+						    	} else {
+						    		cb(null, {
+						    			success: updatedFile,
+						    			key: missing
+						    		});
+						    	}
 							});
 						} else {
+							var key = isnode.module("utilities").uuid4();
 							FileModel.create({
-								key : isnode.module("utilities").uuid4(),
+								key : key,
 								path : fullPath,
 								type: ext,
 								filename: name,
@@ -279,9 +309,12 @@
 								dateLastModified: currentDate
 							}, function(err, newFile){
 						    	if(err || !newFile) {
-						    		cb({error: err}, null);
+						    		cb({error: err, key: key}, null);
 						    	} else {
-						    		cb(null, {success: newFile});
+						    		cb(null, {
+						    			success: newFile,
+						    			key: key
+						    		});
 						    	}
 							});
 						}
@@ -388,7 +421,20 @@
 	 *
 	 * @param {array} files - Array of files in filesystem
 	 */
-	var setParentFolderOnFolders = function(){
+	var setParentFolderOnFolders = function(folders){
+		for(var path in folders) {
+			var pathSplit = path.split("/");
+			pathSplit.pop();
+			var parentFolder = pathSplit.join("/");
+			var parentFolderKey = folders[parentFolder];
+			FolderModel.update({ 
+				where: { key: folders[path] }
+			}, {
+				parentFolderKey: parentFolderKey
+			}, function(err, updatedFolder){
+				null;
+			});
+		}
 		return;
 	}
 
@@ -397,7 +443,20 @@
 	 *
 	 * @param {array} files - Array of files in filesystem
 	 */
-	var setParentFolderOnFiles = function(){
+	var setParentFolderOnFiles = function(files, folders){
+		for(var path in files) {
+			var pathSplit = path.split("/");
+			pathSplit.pop();
+			var parentFolder = pathSplit.join("/");
+			var parentFolderKey = folders[parentFolder];
+			FileModel.update({ 
+				where: { key: files[path] }
+			}, {
+				parentFolderKey: parentFolderKey
+			}, function(err, updatedFile){
+				null;
+			});
+		}
 		return;
 	}
 

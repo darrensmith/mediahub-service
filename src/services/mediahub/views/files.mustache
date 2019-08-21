@@ -25,6 +25,9 @@
 
 	<script>
 		var container = document.getElementById('container');
+		{{#folders}}
+			container.innerHTML += "<a href=\"/web/files?folder={{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 100px;\" src=\"/img/folder.png\"/><p class=\"font2\"> {{folderName}} </p></div></div> </a>";
+		{{/folders}}
 		{{#files}}
 			container.innerHTML += "<a href=\"/web/files/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 100px;\" src=\"/img/file.jpg\"/><p class=\"font2\"> {{filename}} </p></div></div> </a>";
 		{{/files}}
