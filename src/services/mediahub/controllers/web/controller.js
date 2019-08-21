@@ -9,6 +9,7 @@
 
 	var ctrl = {};
 	var isnode = null;
+	var SettingModel = null;
 
 	/**
 	 * Initialises the controller
@@ -16,6 +17,8 @@
 	 */
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
+		service = isnode.module("services").service("mediahub");
+		SettingModel = service.models.get("setting");
 		return;
 	}
 
@@ -27,8 +30,15 @@
 	ctrl.get = function(req, res){
 		var context = { backButtonLink: "/web" };
 		var leftnav = require("../../lib/leftnav.js");
-		leftnav(isnode, context, function(err, cxt){
-			res.render("home.mustache", cxt);
+		SettingModel.find({ where: { setting: "homepageContent" } }, function(err, settings) {
+			if(!settings || !settings[0]) {
+				context.homepageContent = "";
+			} else {
+				context.homepageContent = settings[0].value;
+			}
+			leftnav(isnode, context, function(err, cxt){
+				res.render("home.mustache", cxt);
+			});
 		});
 		return;
 	}

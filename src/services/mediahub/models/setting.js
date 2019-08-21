@@ -14,7 +14,7 @@
 		    dateCreated: 		{ type: schema.String, limit: 255 },
 		    dateLastModified: 	{ type: schema.String, limit: 255 },
 		    setting: 			{ type: schema.String, limit: 255 },
-		    value: 				{ type: schema.String, limit: 255 }
+		    value: 				{ type: schema.String, limit: 2000 }
 		});
 	}
 
