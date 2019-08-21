@@ -10,7 +10,36 @@
 		{{> javascript}}
 	</head>
 
+	<style>
+		.bground {
+			padding: 0px;
+			background-image: url("/img/ebook-background.jpg") !important;
+			width: 100%;
+			height:140%;
+			position:absolute;
+		}
+		.trans {
+			padding: 0px;
+			background-color: black;
+			width: 100%;
+			height:140%;
+			position:absolute;
+			opacity:0.8;
+		}
+		.main {
+			background:transparent;
+		}
+		.titlearea {
+			opacity:0.8;
+		}
+		.leftbar {
+			opacity:0.8;
+		}
+	</style>
+
 	<body class="home">
+		<div class="bground"></div>
+		<div class="trans"></div>
 		{{> header}}
 		<div class="titlearea"> 
 		    {{> title}}
@@ -19,6 +48,10 @@
 		<div class="main">
 			{{> leftbar}}
 			<div class="container2">
+				<div style="margin-top:30px; margin-left:30px;">
+					<h2 style="color:white;">{{ebook.title}}</h2>
+					<p class="font" style="color:white; margin-bottom: 50px;">{{ebook.shortDesc}}</p>
+				</div>
 				<iframe style="margin-left: 30px; width: 90%; height: 90%" src="/ViewerJS/index.html#../files/ebooks/audio/dj.pdf" allowfullscreen webkitallowfullscreen></iframe>
 				<div class="body-form">
 					<form action="/web/ebooks/{{ebook.key}}" method="post">

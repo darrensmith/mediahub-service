@@ -2,6 +2,7 @@
 	background: #44555E;
   margin-left: 0px;
   margin-right: 0px;
+  overflow-x:hidden;
 }
 
 .container {
@@ -284,8 +285,9 @@ a>.bigbox {
 }
 
 .body-form {
-  margin-left: 25px;
-  width: 90%;
+  margin-left: -12px;
+  padding-left: 40px;
+  width: 100%;
   display: block;
   position: relative;
   clear: both;
