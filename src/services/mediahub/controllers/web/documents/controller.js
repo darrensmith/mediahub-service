@@ -31,7 +31,7 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web";
-		DocumentModel.find({ "where": { }}, function(err,documents){
+		DocumentModel.find({ where: { status: "active" }}, function(err,documents){
 			context.documents = documents;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){

@@ -27,6 +27,7 @@
 	var GameModel = null;
 	var OperatingSystemModel = null;
 	var PhysibleModel = null;
+	var ObjectStatsModel = null;
 
 	/**
 	 * Initialises the controller
@@ -52,6 +53,7 @@
 		GameModel = service.models.get("game");
 		OperatingSystemModel = service.models.get("operatingSystem");
 		PhysibleModel = service.models.get("physible");
+		ObjectStatsModel = service.models.get("objectStats");
 		return;
 	}
 
@@ -140,6 +142,16 @@
 			var size = files[0].size;
 			var md5hash = files[0].md5hash;
 			var newObjKey = isnode.module("utilities").uuid4();
+			ObjectStatsModel.create({
+				key: isnode.module("utilities").uuid4(),
+				objectType: object,
+				objectKey: newObjKey,
+				size: size,
+				md5hash: md5hash,
+				dateCreated: currentDate,
+				dateLastModified: currentDate,
+				status: "active"
+			}, function(err3, objectStatObj) {});
 			switch(object) {
 				case "document":
 					DocumentModel.create({
@@ -151,6 +163,7 @@
 						author: author,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -175,6 +188,7 @@
 						author: author,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						publisher: publisher,
 						datePublished: datePublished,
 						series: series,
@@ -206,6 +220,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -229,6 +244,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -252,6 +268,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -275,6 +292,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -298,6 +316,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -321,6 +340,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -344,6 +364,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -367,6 +388,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -390,6 +412,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -413,6 +436,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -436,6 +460,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -459,6 +484,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null
@@ -481,6 +507,7 @@
 						title: title,
 						shortDesc: shortDesc,
 						longDesc: longDesc,
+						status: "active",
 						size: size,
 						md5hash: md5hash,
 						primaryCategoryKey: null

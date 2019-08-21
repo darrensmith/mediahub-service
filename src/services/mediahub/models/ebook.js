@@ -18,6 +18,7 @@
 		    author: 			{ type: schema.String, limit: 255 },
 		    shortDesc: 			{ type: schema.String, limit: 2000 },
 		    longDesc: 			{ type: schema.String, limit: 10000 },
+		    status: 			{ type: schema.String, limit: 255 },
 		    publisher: 			{ type: schema.String, limit: 255 },
 		    datePublished: 		{ type: schema.String, limit: 255 },
 		    language: 			{ type: schema.String, limit: 255 },

@@ -31,7 +31,7 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web";
-		GameModel.find({ "where": { }}, function(err, games){
+		GameModel.find({ where: { status: "active" }}, function(err, games){
 			context.games = games;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){

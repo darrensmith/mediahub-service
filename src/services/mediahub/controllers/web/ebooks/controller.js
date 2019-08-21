@@ -31,7 +31,7 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web";
-		eBookModel.find({ "where": { }}, function(err,ebooks){
+		eBookModel.find({ where: { status: "active" }}, function(err,ebooks){
 			context.ebooks = ebooks;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){

@@ -1,5 +1,5 @@
 /*!
-* connector/models/image.js
+* connector/models/objectStats.js
 *
 * Copyright (c) 2019 Darren Smith and Zip Co
 */
@@ -9,17 +9,15 @@
 	var model = function() {}
 
 	model.define = function(isnode, schema) {
-		return schema.define('Image', {
+		return schema.define('ObjectStats', {
 			key: 				{ type: schema.String, limit: 255 },
+		    objectType: 		{ type: schema.String, limit: 255 },
+		    objectKey: 			{ type: schema.String, limit: 255 },
 		    dateCreated: 		{ type: schema.String, limit: 255 },
 		    dateLastModified: 	{ type: schema.String, limit: 255 },
-		    title: 				{ type: schema.String, limit: 255 },
-		    shortDesc: 			{ type: schema.String, limit: 255 },
-		    longDesc: 			{ type: schema.String, limit: 255 },
-		    status: 			{ type: schema.String, limit: 255 },
 		    size: 				{ type: schema.String, limit: 255 },
-		    fileKey: 			{ type: schema.String, limit: 255 },
-		    md5hash: 			{ type: schema.String, limit: 255 }
+		    md5hash: 			{ type: schema.String, limit: 255 },
+		    status: 			{ type: schema.String, limit: 255 }
 		});
 	}
 

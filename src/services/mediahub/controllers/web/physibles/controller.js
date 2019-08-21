@@ -31,7 +31,7 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web";
-		PhysibleModel.find({ "where": { }}, function(err, physibles){
+		PhysibleModel.find({ where: { status: "active" }}, function(err, physibles){
 			context.physibles = physibles;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){

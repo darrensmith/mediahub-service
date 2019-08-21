@@ -17,6 +17,7 @@
 		    shortDesc: 			{ type: schema.String, limit: 255 },
 		    longDesc: 			{ type: schema.String, limit: 255 },
 		    size: 				{ type: schema.String, limit: 255 },
+		    status: 			{ type: schema.String, limit: 255 },
 		    fileKey: 			{ type: schema.String, limit: 255 },
 		    md5hash: 			{ type: schema.String, limit: 255 }
 		});

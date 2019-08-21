@@ -31,7 +31,7 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web";
-		SoundByteModel.find({ "where": { }}, function(err, soundBytes){
+		SoundByteModel.find({ where: { status: "active" }}, function(err, soundBytes){
 			context.soundBytes = soundBytes;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){

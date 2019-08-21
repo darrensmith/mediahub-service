@@ -14,16 +14,22 @@
 	var interval = null;
 	var FileModel = null;
 	var FolderModel = null;
+	var DocumentaryModel = null;
 	var DocumentModel = null;
 	var eBookModel = null;
-	var SongModel = null;
 	var EpisodeModel = null;
-	var MovieModel = null;
 	var ImageModel = null;
-	var SoundByteModel = null;
-	var DocumentaryModel = null;
-	var MusicVideoModel = null;
 	var KaraokeClipModel = null;
+	var SongModel = null;
+	var MovieModel = null;
+	var MusicVideoModel = null;
+	var SoundByteModel = null;
+	var ApplicationModel = null;
+	var GameModel = null;
+	var OperatingSystemModel = null;
+	var PhysibleModel = null;
+	var VideoClipModel = null;
+	var ObjectStatsModel = null;
 	var log = null;
 
 	/**
@@ -50,6 +56,12 @@
 		DocumentaryModel = service.models.get("documentary");
 		MusicVideoModel = service.models.get("musicVideo");
 		KaraokeClipModel = service.models.get("karaokeClip");
+		ApplicationModel = service.models.get("application");
+		GameModel = service.models.get("game");
+		OperatingSystemModel = service.models.get("operatingSystem");
+		PhysibleModel = service.models.get("physible");
+		VideoClipModel = service.models.get("videoClip");
+		ObjectStatsModel = service.models.get("objectStats");
 		sync();
 		startReindexLoop();
 		return;
@@ -237,7 +249,11 @@
 						size: stats.size
 					}, function(err, updatedFile){
 						if(file[0].objectType != null && file[0].objectKey != null) {
-							updateHashAndSizeOnObject(file[0].objectType, file[0].objectKey, hash, stats.size);
+							var fields = {
+								md5hash: hash, 
+								size: stats.size
+							}
+							updateObject(file[0].objectType, file[0].objectKey, fields);
 						}
 					});
 				}
@@ -245,27 +261,8 @@
 			} else {
 				FileModel.find({ "where": { md5hash: hash, size: stats.size, type: ext }}, function(err2, files2){
 					if(!files2[0]) {
-						var key = isnode.module("utilities").uuid4();
-						FileModel.create({
-							key : key,
-							path : fullPath,
-							type: ext,
-							filename: name,
-							parentFolderKey: null,
-							md5hash: hash,
-							size: stats.size,
-							dateCreated: currentDate,
-							dateLastModified: currentDate
-						}, function(err, newFile){
-					    	if(err || !newFile) {
-					    		cb({error: err, key: key}, null);
-					    	} else {
-					    		cb(null, {
-					    			success: newFile,
-					    			key: key
-					    		});
-					    	}
-						});
+						var input = { hash: hash, stats: stats, ext: ext, fullPath: fullPath, name: name, currentDate: currentDate, cb: cb };
+						searchStatsAndCreateFile(input);
 					} else {
 						var missing = null;
 						for (var i = 0; i < files2.length; i++) {
@@ -296,27 +293,8 @@
 						    	}
 							});
 						} else {
-							var key = isnode.module("utilities").uuid4();
-							FileModel.create({
-								key : key,
-								path : fullPath,
-								type: ext,
-								filename: name,
-								parentFolderKey: null,
-								md5hash: hash,
-								size: stats.size,
-								dateCreated: currentDate,
-								dateLastModified: currentDate
-							}, function(err, newFile){
-						    	if(err || !newFile) {
-						    		cb({error: err, key: key}, null);
-						    	} else {
-						    		cb(null, {
-						    			success: newFile,
-						    			key: key
-						    		});
-						    	}
-							});
+							var input = { hash: hash, stats: stats, ext: ext, fullPath: fullPath, name: name, currentDate: currentDate, cb: cb };
+							searchStatsAndCreateFile(input);
 						}
 					}
 				});
@@ -325,59 +303,115 @@
 	}
 
 	/**
-	 * Update Hash and Size on Object
+	 * Update Fields on Object
 	 * @param {string} objectType - Type of Object
 	 * @param {string} objectKey - Key of Object Record
-	 * @param {string} hash - MD5 Hash from File to Set Against Object
-	 * @param {number} size - Size of file associated with this object
+	 * @param {string} fields - Fields to Update
 	 */
-	var updateHashAndSizeOnObject = function(objectType, objectKey, hash, size){
+	var updateObject = function(objectType, objectKey, fields){
 		var model = null;
 		switch(objectType) {
-			case "document":
-				model = DocumentModel;
-				break;
-			case "ebook":
-				model = eBookModel;
-				break;
-			case "song":
-				model = SongModel;
-				break;
-			case "soundByte":
-				model = SoundByteModel;
-				break;
-			case "episode":
-				model = EpisodeModel;
-				break;
-			case "movie":
-				model = MovieModel;
-				break;
-			case "documentary":
-				model = DocumentaryModel
-				break;
-			case "musicVideo":
-				model = MusicVideoModel;
-				break;
-			case "karaokeClip":
-				model = KaraokeClipModel;
-				break;
-			case "image":
-				model = ImageModel;
-				break;
-			default:
-				break;
+			case "document": model = DocumentModel; break;
+			case "ebook": model = eBookModel; break;
+			case "song": model = SongModel; break;
+			case "soundByte": model = SoundByteModel; break;
+			case "episode": model = EpisodeModel; break;
+			case "movie": model = MovieModel; break;
+			case "documentary": model = DocumentaryModel; break;
+			case "musicVideo": model = MusicVideoModel; break;
+			case "karaokeClip": model = KaraokeClipModel; break;
+			case "image": model = ImageModel; break;
+			case "application": model = ApplicationModel; break;
+			case "game": model = GameModel; break;
+			case "operatingSystem": model = OperatingSystemModel; break;
+			case "physible": model = PhysibleModel; break;
+			case "videoClip": model = VideoClipModel; break;
+			default: break;
 		}
 		if(model){
 			model.update({
 				where: { key: objectKey }
-			}, {
-				md5hash: hash,
-				size: size
-			}, function (err, updatedObj){
-				null;
-			});
+			}, fields, function (err, updatedObj){ });
+			var statFields = {};
+			if(fields.md5hash)
+				statFields.md5hash = fields.md5hash;
+			if(fields.size)
+				statFields.size = fields.size;
+			if(fields.status)
+				statFields.status = fields.status;
+			ObjectStatsModel.update({
+				where: { objectType: objectType, objectKey: objectKey }
+			}, statFields, function (err, updatedObj){ });
 		}
 		return;
+	}
+
+	/**
+	 * Search Object Stats & Create File
+	 * @param {object} input - Input Object
+	 */
+	var searchStatsAndCreateFile = function(input){
+		ObjectStatsModel.find({ "where": { md5hash: input.hash, size: input.stats.size, status: "inactive" }}, function(err2, objectStats){
+			if(!objectStats || !objectStats[0]) {
+				var key = isnode.module("utilities").uuid4();
+				FileModel.create({
+					key : key,
+					path : input.fullPath,
+					type: input.ext,
+					filename: input.name,
+					parentFolderKey: null,
+					md5hash: input.hash,
+					size: input.stats.size,
+					dateCreated: input.currentDate,
+					dateLastModified: input.currentDate
+				}, function(err, newFile){
+			    	if(err || !newFile) {
+			    		input.cb({error: err, key: key}, null);
+			    	} else {
+			    		input.cb(null, {
+			    			success: newFile,
+			    			key: key
+			    		});
+			    	}
+				});								
+			} else {
+				var key = isnode.module("utilities").uuid4();
+				FileModel.create({
+					key : key,
+					path : input.fullPath,
+					type: input.ext,
+					filename: input.name,
+					parentFolderKey: null,
+					md5hash: input.hash,
+					size: input.stats.size,
+					dateCreated: input.currentDate,
+					dateLastModified: input.currentDate,
+					objectType: objectStats[0].objectType,
+					objectKey: objectStats[0].objectKey
+				}, function(err, newFile){
+			    	if(err || !newFile) {
+			    		input.cb({error: err, key: key}, null);
+			    	} else {
+			    		input.cb(null, {
+			    			success: newFile,
+			    			key: key
+			    		});
+			    	}
+				});
+				ObjectStatsModel.update({
+					where: { 
+						objectType: objectStats[0].objectType, 
+						objectKey: objectStats[0].objectKey 
+					}
+				}, {
+					status: "active"
+				}, function (err, updatedObj){ });
+				updateObject(objectStats[0].objectType, objectStats[0].objectKey, {
+					fileKey: key,
+					status: "active"
+				});
+			}
+		});
 	}
 
 	/**
@@ -390,8 +424,16 @@
 		FolderModel.find({ where: {}}, function(err, dbFolders){
 			for (var i = 0; i < dbFolders.length; i++) {
 				if(!folders[dbFolders[i].path]) {
+					var objectType = dbFolders[i].objectType;
+					var objectKey = dbFolders[i].objectKey;
 					dbFolders[i].destroy(function(err2){
-						null;
+						if(objectType && objectKey){
+							updateObject(objectType, objectKey, {
+								status: "inactive",
+								objectType: "",
+								objectKey: ""
+							});
+						}
 					});
 				}
 			}
@@ -408,8 +450,16 @@
 		FileModel.find({ where: {}}, function(err, dbFiles){
 			for (var i = 0; i < dbFiles.length; i++) {
 				if(!files[dbFiles[i].path]) {
+					var objectType = dbFiles[i].objectType;
+					var objectKey = dbFiles[i].objectKey;
 					dbFiles[i].destroy(function(err2){
-						null;
+						if(objectType && objectKey){
+							updateObject(objectType, objectKey, {
+								status: "inactive",
+								objectType: "",
+								objectKey: ""
+							});
+						}
 					});
 				}
 			}

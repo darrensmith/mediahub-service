@@ -278,42 +278,36 @@
 							parametersUpdated ++;
 						});
 					}
-					if(req.body.systemSettingsPassword) {
-						SettingModel.updateOrCreate({ "setting": "systemSettingsPassword" }, 
-						{
-							"key": isnode.module("utilities").uuid4(),
-							"setting": "systemSettingsPassword",
-							"value": req.body.systemSettingsPassword,
-							"dateCreated": currentDate,
-							"dateLastModified": currentDate
-						}, function(err, setting){
-							parametersUpdated ++;
-						});
-					}
-					if(req.body.announcement) {
-						SettingModel.updateOrCreate({ "setting": "announcement" }, 
-						{
-							"key": isnode.module("utilities").uuid4(),
-							"setting": "announcement",
-							"value": req.body.announcement,
-							"dateCreated": currentDate,
-							"dateLastModified": currentDate
-						}, function(err, setting){
-							parametersUpdated ++;
-						});
-					}
-					if(req.body.homepageContent) {
-						SettingModel.updateOrCreate({ "setting": "homepageContent" }, 
-						{
-							"key": isnode.module("utilities").uuid4(),
-							"setting": "homepageContent",
-							"value": req.body.homepageContent,
-							"dateCreated": currentDate,
-							"dateLastModified": currentDate
-						}, function(err, setting){
-							parametersUpdated ++;
-						});
-					}
+					SettingModel.updateOrCreate({ "setting": "systemSettingsPassword" }, 
+					{
+						"key": isnode.module("utilities").uuid4(),
+						"setting": "systemSettingsPassword",
+						"value": req.body.systemSettingsPassword,
+						"dateCreated": currentDate,
+						"dateLastModified": currentDate
+					}, function(err, setting){
+						parametersUpdated ++;
+					});
+					SettingModel.updateOrCreate({ "setting": "announcement" }, 
+					{
+						"key": isnode.module("utilities").uuid4(),
+						"setting": "announcement",
+						"value": req.body.announcement,
+						"dateCreated": currentDate,
+						"dateLastModified": currentDate
+					}, function(err, setting){
+						parametersUpdated ++;
+					});
+					SettingModel.updateOrCreate({ "setting": "homepageContent" }, 
+					{
+						"key": isnode.module("utilities").uuid4(),
+						"setting": "homepageContent",
+						"value": req.body.homepageContent,
+						"dateCreated": currentDate,
+						"dateLastModified": currentDate
+					}, function(err, setting){
+						parametersUpdated ++;
+					});
 					SettingModel.updateOrCreate({ "setting": "showObjectTypes" }, 
 					{
 						"key": isnode.module("utilities").uuid4(),

@@ -31,7 +31,7 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web";
-		MusicVideoModel.find({ "where": { }}, function(err, musicVideos){
+		MusicVideoModel.find({ where: { status: "active" }}, function(err, musicVideos){
 			context.musicVideos = musicVideos;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){

@@ -31,7 +31,7 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web";
-		OperatingSystemModel.find({ "where": { }}, function(err, operatingSystems){
+		OperatingSystemModel.find({ where: { status: "active" }}, function(err, operatingSystems){
 			context.operatingSystems = operatingSystems;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
