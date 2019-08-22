@@ -11,7 +11,7 @@
 	model.define = function(isnode, schema) {
 		return schema.define('Folder', {
 			key: 				{ type: schema.String, limit: 255 },
-		    path: 				{ type: schema.String, limit: 255 },
+		    path: 				{ type: schema.String, limit: 3000 },
 		    folderName: 		{ type: schema.String, limit: 255 },
 		    parentFolder: 		{ type: schema.String, limit: 255 },
 		    parentFolderKey: 	{ type: schema.String, limit: 255 },

@@ -98,10 +98,12 @@
 	 */
 	var startReindexLoop = function() {
 		SettingModel.find({ "where": { "setting": "reindexFreq" }}, function(err,settings){
-			var reindexFreq = settings[0].value;
-			interval = setInterval(function(){
-				sync();
-			}, reindexFreq * 1000);
+			if(settings && settings[0] && settings[0].value) {
+				var reindexFreq = settings[0].value;
+				interval = setInterval(function(){
+					sync();
+				}, reindexFreq * 1000);
+			}
 		});
 	}
 
@@ -124,7 +126,7 @@
 			if(!err && settings[0]) {
 				var filewalker = require("../lib/filewalker.js");
 				var createHash = require('crypto').createHash;
-				filewalker(settings[0].value)
+				filewalker(settings[0].value, { maxPending: 10 })
 				  .on('dir', function(p) {
 				  	var fullPath = settings[0].value + "/" + p;
 				    checkAndCreateFolder(settings[0].value, p, function(err2, res){

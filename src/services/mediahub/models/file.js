@@ -11,7 +11,7 @@
 	model.define = function(isnode, schema) {
 		return schema.define('File', {
 			key: 				{ type: schema.String, limit: 255 },
-		    path: 				{ type: schema.String, limit: 255 },
+		    path: 				{ type: schema.String, limit: 3000 },
 		    type: 				{ type: schema.String, limit: 255 },
 		    filename: 			{ type: schema.String, limit: 255 },
 		    parentFolderKey:  	{ type: schema.String, limit: 255 },
