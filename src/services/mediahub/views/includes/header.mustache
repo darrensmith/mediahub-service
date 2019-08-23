@@ -2,5 +2,15 @@
     <div class="homeicon"><a href="/web"><i class="fas fa-home"></i></a></div> 
     <div class="backicon"><a href="{{backButtonLink}}"><i class="fas fa-arrow-left"></i></a></div> 
     <div class="searchcontainer"><input class="search" name="search" /></div> 
+    <div class="announcement" id="syncDesc" style="margin-right:350px; padding-left:20px; border: none;"></div>
     <div class="announcement">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{{announcement}}}</div>
 </div>
+
+<script>
+	var interval = setInterval(function(){
+		$.get("/api/files/sync-stats", function(data, status){
+			//console.log("Data: ", data);
+			$("#syncDesc").html(data.status + " (" + (data.folders.success + data.folders.failed) + " Folders, " + (data.files.success + data.files.failed) + " Files)");
+		});
+	}, 500);
+</script>

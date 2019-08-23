@@ -31,6 +31,27 @@
 	var VideoClipModel = null;
 	var ObjectStatsModel = null;
 	var log = null;
+	var folderQueue = [];
+	var fileQueue = [];
+	var syncStats = {
+		status: "Inactive",
+		folders: {
+			success: 0,
+			failed: 0
+		},
+		files: {
+			success: 0,
+			failed: 0
+		},
+		stages: {
+			index: "Not Started",
+			removeDeletedFoldersFromDB: "Not Started",
+			removeDeletedFilesFromDB: "Not Started",
+			setParentFolderOnFolders: "Not Started",
+			setParentFolderOnFiles: "Not Started"
+		},
+		lastIndexDate: null
+	}
 
 	/**
 	 * Initialises the controller
@@ -62,6 +83,7 @@
 		PhysibleModel = service.models.get("physible");
 		VideoClipModel = service.models.get("videoClip");
 		ObjectStatsModel = service.models.get("objectStats");
+		syncStats.status = "Inactive";
 		sync();
 		startReindexLoop();
 		return;
@@ -103,6 +125,9 @@
 				interval = setInterval(function(){
 					sync();
 				}, reindexFreq * 1000);
+			} else {
+				log("error","MediaHub Filesystem Sync > Cannot find reindexFreq setting...");
+				return;
 			}
 		});
 	}
@@ -111,81 +136,195 @@
 	 * Synchronises the Filesystem w/ the Database
 	 */
 	var sync = function(){
-		log("debug","MediaHub Filesystem Sync > Synchronising Filesystem w/ Database...");
-		var files = {};
-		var folders = {};
-		var createFiles = {
-			success: 0,
-			failed: 0
-		};
-		var createFolders = {
-			success: 0,
-			failed: 0
-		};
-		SettingModel.find({ "where": { "setting": "folder" }}, function(err,settings){
-			if(!err && settings[0]) {
-				var filewalker = require("../lib/filewalker.js");
-				var createHash = require('crypto').createHash;
-				filewalker(settings[0].value, { maxPending: 10 })
-				  .on('dir', function(p) {
-				  	var fullPath = settings[0].value + "/" + p;
-				    checkAndCreateFolder(settings[0].value, p, function(err2, res){
-				    	if(err2){
-				    		folders[fullPath] = err2.key;
-				    		createFolders.failed = createFolders.failed + 1;
-				    	} else {
-				    		folders[fullPath] = res.key;
-				    		createFolders.success = createFolders.success + 1;
-				    	}
-				    });
-				  })
-				  .on('stream', function(rs, p, s, completePath) {
-				  	var hash = createHash('md5');
-				  	rs.on('data', function(data) {
-				  		hash.update(data);
-				  	});
-				  	rs.on('end', function(data) {
-				  		var completeHash = hash.digest('hex');
+		if(syncStats.status == "Inactive" || syncStats.status == "Complete") {
+			log("debug","MediaHub Filesystem Sync > Synchronising Filesystem w/ Database...");
+			var files = {};
+			var folders = {};
+			var createFiles = {
+				success: 0,
+				failed: 0
+			};
+			var createFolders = {
+				success: 0,
+				failed: 0
+			};
+			syncStats.folders.success = 0;
+			syncStats.folders.failed = 0;
+			syncStats.files.success = 0;
+			syncStats.files.failed = 0;
+			syncStats.stages.index = "Not Started";
+			syncStats.stages.removeDeletedFoldersFromDB = "Not Started";
+			syncStats.stages.removeDeletedFilesFromDB = "Not Started";
+			syncStats.stages.setParentFolderOnFolders = "Not Started";
+			syncStats.stages.setParentFolderOnFiles = "Not Started";
+			SettingModel.find({ "where": { "setting": "folder" }}, function(err,settings){
+				if(!err && settings[0]) {
+					syncStats.status = "Indexing";
+					syncStats.stages.index = "Started";
+					isnode.globals.set("syncStats", syncStats);
+					var filewalker = require("../lib/filewalker.js");
+					var createHash = require('crypto').createHash;
+					filewalker(settings[0].value, { maxPending: 5 })
+					  .on('dir', function(p) {
 					  	var fullPath = settings[0].value + "/" + p;
-					    checkAndCreateFile(settings[0].value, p, s, completeHash, function(err2, res){
+					    queueCheckAndCreateFolder(settings[0].value, p, function(err2, res){
 					    	if(err2){
-					    		files[fullPath] = err2.key;
-					    		createFiles.failed = createFiles.failed + 1;
+					    		folders[fullPath] = err2.key;
+					    		createFolders.failed = createFolders.failed + 1;
+					    		syncStats.folders.failed = createFolders.failed;
+					    		isnode.globals.set("syncStats", syncStats);
 					    	} else {
-					    		files[fullPath] = res.key;
-					    		createFiles.success = createFiles.success + 1;
+					    		folders[fullPath] = res.key;
+					    		createFolders.success = createFolders.success + 1;
+					    		syncStats.folders.success = createFolders.success;
+					    		isnode.globals.set("syncStats", syncStats);
 					    	}
 					    });
-				  	});
-				  })
-				  .on('error', function(err) {
-				  	log("error","MediaHub Filesystem Sync > " + err);
-				  })
-				  .on('done', function() {
-				  	var folderCount = createFolders.success + createFolders.failed;
-				  	var fileCount = createFiles.success + createFiles.failed;
-				  	var interval = setInterval(function(){
-				  		if((createFolders.success + createFolders.failed) > folderCount || (createFiles.success + createFiles.failed) > fileCount) {
-				  			folderCount = createFolders.success + createFolders.failed;
-				  			fileCount = createFiles.success + createFiles.failed;
-				  		} else {
-				  			clearInterval(interval);
-						  	log("debug","MediaHub Filesystem Sync > Folders - " + createFolders.success + " created successfully, " + createFolders.failed + " failed.");
-						    log("debug","MediaHub Filesystem Sync > Files - " + createFiles.success + " created successfully, " + createFiles.failed + " failed.");
-						  	removeDeletedFoldersFromDB(folders);
-						  	removeDeletedFilesFromDB(files);
-						  	setParentFolderOnFolders(folders);
-						  	setParentFolderOnFiles(files, folders);
-						  	log("debug","MediaHub Filesystem Sync > " + this.dirs + " dirs, " + this.files + " files, " + this.bytes + " bytes");
-				  		}
-				  	}, 500);
-				  })
-				.walk();
-			} else {
-				log("error","MediaHub Filesystem Sync > Cannot find folder setting...");
-				return;
-			}
+					  })
+					  .on('stream', function(rs, p, s, completePath) {
+					  	var hash = createHash('md5');
+					  	rs.on('data', function(data) {
+					  		hash.update(data);
+					  	});
+					  	rs.on('end', function(data) {
+					  		var completeHash = hash.digest('hex');
+						  	var fullPath = settings[0].value + "/" + p;
+						    queueCheckAndCreateFile(settings[0].value, p, s, completeHash, function(err2, res){
+						    	if(err2){
+						    		files[fullPath] = err2.key;
+						    		createFiles.failed = createFiles.failed + 1;
+						    		syncStats.files.failed = createFiles.failed;
+						    		isnode.globals.set("syncStats", syncStats);
+						    	} else {
+						    		files[fullPath] = res.key;
+						    		createFiles.success = createFiles.success + 1;
+					  				syncStats.files.success = createFiles.success;
+					  				isnode.globals.set("syncStats", syncStats);
+						    	}
+						    });
+					  	});
+					  })
+					  .on('error', function(err) {
+					  	log("error","MediaHub Filesystem Sync > " + err);
+					  })
+					  .on('done', function() {
+					  	var folderCount = createFolders.success + createFolders.failed;
+					  	var fileCount = createFiles.success + createFiles.failed;
+					  	var interval = setInterval(function(){
+					  		if((createFolders.success + createFolders.failed) > folderCount || (createFiles.success + createFiles.failed) > fileCount) {
+					  			folderCount = createFolders.success + createFolders.failed;
+					  			fileCount = createFiles.success + createFiles.failed;
+					  			syncStats.folders.success = createFolders.success;
+					  			syncStats.folders.failed = createFolders.failed;
+					  			syncStats.files.success = createFiles.success;
+					  			syncStats.files.failed = createFiles.failed;
+					  			isnode.globals.set("syncStats", syncStats);
+					  		} else {
+					  			clearInterval(interval);
+					  			syncStats.status = "Processing";
+					  			syncStats.stages.index = "Complete";
+					  			isnode.globals.set("syncStats", syncStats);
+							  	log("debug","MediaHub Filesystem Sync > Folders - " + createFolders.success + " created successfully, " + createFolders.failed + " failed.");
+							    log("debug","MediaHub Filesystem Sync > Files - " + createFiles.success + " created successfully, " + createFiles.failed + " failed.");
+							  	removeDeletedFoldersFromDB(folders);
+							  	removeDeletedFilesFromDB(files);
+							  	setParentFolderOnFolders(folders);
+							  	setParentFolderOnFiles(files, folders);
+							  	log("debug","MediaHub Filesystem Sync > " + this.dirs + " dirs, " + this.files + " files, " + this.bytes + " bytes");
+					  		}
+					  	}, 500);
+					  })
+					.walk();
+					processFolderQueue();
+					processFileQueue();
+					var interval = setInterval(function(){
+						if(syncStats.stages.removeDeletedFoldersFromDB == "Complete" && syncStats.stages.removeDeletedFilesFromDB == "Complete" && syncStats.stages.setParentFolderOnFolders == "Complete" && syncStats.stages.setParentFolderOnFiles == "Complete") {
+							clearInterval(interval);
+							var currentDate = isnode.module("utilities").getCurrentDateInISO();
+							syncStats.status = "Complete";
+							syncStats.lastIndexDate = currentDate;
+							isnode.globals.set("syncStats", syncStats);
+							setTimeout(function(){
+								syncStats.status = "Inactive";
+								isnode.globals.set("syncStats", syncStats);
+							}, 5000)
+						}
+					}, 200);
+				} else {
+					log("error","MediaHub Filesystem Sync > Cannot find folder setting...");
+					return;
+				}
+			});
+			return;
+		} else {
+			log("error","MediaHub Filesystem Sync > Sync Is Already Running, Cannot Run Against Just Yet");
+			return;
+		}
+	}
+
+	/**
+	 * Queue Check And Create Folder
+	 * @param {string} base - The base path
+	 * @param {string} folder - The name of the folder
+	 * @param {function} cb - Callback Function
+	 */
+	var queueCheckAndCreateFolder = function(base, folder, cb){
+		folderQueue.push({
+			base: base,
+			folder: folder,
+			cb: cb
 		});
+		return;
+	}
+
+	/**
+	 * Queue Check And Create Fie
+	 * @param {string} base - The base path
+	 * @param {string} file - The name of the file
+	 * @param {object} stats - File Stats Object
+	 * @param {string} hash - The hash of the file
+	 * @param {function} cb - Callback Function
+	 */
+	var queueCheckAndCreateFile = function(base, file, stats, hash, cb){
+		fileQueue.push({
+			base: base,
+			file: file,
+			stats: stats,
+			hash: hash,
+			cb: cb
+		});
+		return;
+	}
+
+	/**
+	 * Process Folder Queue
+	 */
+	var processFolderQueue = function(){
+		var interval = setInterval(function(){
+			if(folderQueue.length > 0){
+				var folder = folderQueue.shift();
+				checkAndCreateFolder(folder.base, folder.folder, folder.cb);
+			} else {
+				if(syncStats.status == "Processing")
+					clearInterval(interval);
+			}
+		}, 20);
+		return;
+	}
+
+	/**
+	 * Process File Queue
+	 */
+	var processFileQueue = function(){
+		var interval = setInterval(function(){
+			if(fileQueue.length > 0){
+				var file = fileQueue.shift();
+				checkAndCreateFile(file.base, file.file, file.stats, file.hash, file.cb);
+			} else {
+				if(syncStats.status == "Processing")
+					clearInterval(interval);
+			}
+		}, 20);
 		return;
 	}
 
@@ -193,6 +332,7 @@
 	 * Check if Folder Exists in DB and Create if Not
 	 * @param {string} base - The base path
 	 * @param {string} folder - The name of the folder
+	 * @param {function} cb - Callback Function
 	 */
 	var checkAndCreateFolder = function(base, folder, cb){
 		var currentDate = isnode.module("utilities").getCurrentDateInISO();
@@ -211,7 +351,8 @@
 					folderName: name,
 					parentFolder: parentFolder,
 					dateCreated: currentDate,
-					dateLastModified: currentDate
+					dateLastModified: currentDate,
+					visible: false
 			    }, function(err, newFolder){
 			    	if(err || !newFolder) {
 			    		cb({error: err, key: key}, null);
@@ -230,6 +371,7 @@
 	 * Check if File Exists in DB and Create if Not
 	 * @param {string} base - The base path
 	 * @param {string} file - The name of the file
+	 * @param {function} cb - Callback Function
 	 */
 	var checkAndCreateFile = function(base, file, stats, hash, cb){
 		var fs = require("fs");
@@ -365,7 +507,8 @@
 					md5hash: input.hash,
 					size: input.stats.size,
 					dateCreated: input.currentDate,
-					dateLastModified: input.currentDate
+					dateLastModified: input.currentDate,
+					visible: false
 				}, function(err, newFile){
 			    	if(err || !newFile) {
 			    		input.cb({error: err, key: key}, null);
@@ -389,7 +532,8 @@
 					dateCreated: input.currentDate,
 					dateLastModified: input.currentDate,
 					objectType: objectStats[0].objectType,
-					objectKey: objectStats[0].objectKey
+					objectKey: objectStats[0].objectKey,
+					visible: false
 				}, function(err, newFile){
 			    	if(err || !newFile) {
 			    		input.cb({error: err, key: key}, null);
@@ -423,12 +567,18 @@
 	 * @param {array} folders - Array of folders in filesystem
 	 */
 	var removeDeletedFoldersFromDB = function(folders){
+		syncStats.stages.removeDeletedFoldersFromDB = "Started";
+		isnode.globals.set("syncStats", syncStats);
+		var foldersProcessed = 0;
+		var folderCount = 0;
 		FolderModel.find({ where: {}}, function(err, dbFolders){
+			folderCount = dbFolders.length;
 			for (var i = 0; i < dbFolders.length; i++) {
 				if(!folders[dbFolders[i].path]) {
 					var objectType = dbFolders[i].objectType;
 					var objectKey = dbFolders[i].objectKey;
 					dbFolders[i].destroy(function(err2){
+						foldersProcessed ++;
 						if(objectType && objectKey){
 							updateObject(objectType, objectKey, {
 								status: "inactive",
@@ -437,8 +587,17 @@
 							});
 						}
 					});
+				} else {
+					foldersProcessed ++;
 				}
 			}
+			var interval = setInterval(function(){
+				if(foldersProcessed >= folderCount) {
+					clearInterval(interval);
+					syncStats.stages.removeDeletedFoldersFromDB = "Complete";
+					isnode.globals.set("syncStats", syncStats);
+				}
+			}, 1000);
 		});
 	}
 
@@ -449,12 +608,18 @@
 	 * @param {array} files - Array of files in filesystem
 	 */
 	var removeDeletedFilesFromDB = function(files){
+		syncStats.stages.removeDeletedFilesFromDB = "Started";
+		isnode.globals.set("syncStats", syncStats);
+		var filesProcessed = 0;
+		var filesCount = 0;
 		FileModel.find({ where: {}}, function(err, dbFiles){
+			fileCount = dbFiles.length;
 			for (var i = 0; i < dbFiles.length; i++) {
 				if(!files[dbFiles[i].path]) {
 					var objectType = dbFiles[i].objectType;
 					var objectKey = dbFiles[i].objectKey;
 					dbFiles[i].destroy(function(err2){
+						filesProcessed ++;
 						if(objectType && objectKey){
 							updateObject(objectType, objectKey, {
 								status: "inactive",
@@ -463,8 +628,17 @@
 							});
 						}
 					});
+				} else {
+					filesProcessed ++;
 				}
 			}
+			var interval = setInterval(function(){
+				if(filesProcessed >= fileCount) {
+					clearInterval(interval);
+					syncStats.stages.removeDeletedFilesFromDB = "Complete";
+					isnode.globals.set("syncStats", syncStats);
+				}
+			}, 1000);
 		});
 	}
 
@@ -474,6 +648,11 @@
 	 * @param {array} files - Array of files in filesystem
 	 */
 	var setParentFolderOnFolders = function(folders){
+		syncStats.stages.setParentFolderOnFolders = "Started";
+		isnode.globals.set("syncStats", syncStats);
+		var foldersProcessed = 0;
+		var folderCount = 0;
+		folderCount = Object.keys(folders).length;
 		for(var path in folders) {
 			var pathSplit = path.split("/");
 			pathSplit.pop();
@@ -482,11 +661,19 @@
 			FolderModel.update({ 
 				where: { key: folders[path] }
 			}, {
-				parentFolderKey: parentFolderKey
+				parentFolderKey: parentFolderKey,
+				visible: true
 			}, function(err, updatedFolder){
-				null;
+				foldersProcessed ++;
 			});
 		}
+		var interval = setInterval(function(){
+			if(foldersProcessed >= folderCount) {
+				clearInterval(interval);
+				syncStats.stages.setParentFolderOnFolders = "Complete";
+				isnode.globals.set("syncStats", syncStats);
+			}
+		}, 1000);
 		return;
 	}
 
@@ -496,6 +683,11 @@
 	 * @param {array} files - Array of files in filesystem
 	 */
 	var setParentFolderOnFiles = function(files, folders){
+		syncStats.stages.setParentFolderOnFiles = "Started";
+		isnode.globals.set("syncStats", syncStats);
+		var filesProcessed = 0;
+		var fileCount = 0;
+		fileCount = Object.keys(files).length;
 		for(var path in files) {
 			var pathSplit = path.split("/");
 			pathSplit.pop();
@@ -504,11 +696,22 @@
 			FileModel.update({ 
 				where: { key: files[path] }
 			}, {
-				parentFolderKey: parentFolderKey
+				parentFolderKey: parentFolderKey,
+				visible: true
 			}, function(err, updatedFile){
-				null;
+				if(err) {
+					null;
+				}
+				filesProcessed ++;
 			});
 		}
+		var interval = setInterval(function(){
+			if(filesProcessed >= fileCount) {
+				clearInterval(interval);
+				syncStats.stages.setParentFolderOnFiles = "Complete";
+				isnode.globals.set("syncStats", syncStats);
+			}
+		}, 100);
 		return;
 	}
 

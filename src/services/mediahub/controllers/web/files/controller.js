@@ -41,18 +41,18 @@
 		if(!parentFolderKey) {
 			context.backButtonLink = "/web";
 		} else {
-			FolderModel.find({ "where": { objectKey: null, key: parentFolderKey }}, function(err,foldersReturned){
+			FolderModel.find({ "where": { objectKey: null, key: parentFolderKey, visible: true }}, function(err,foldersReturned){
 				if(!foldersReturned || !foldersReturned[0] || !foldersReturned[0].parentFolderKey)
 					context.backButtonLink = "/web/files";
 				else
 					context.backButtonLink = "/web/files?folder=" + foldersReturned[0].parentFolderKey;
 			});
 		}
-		FileModel.find({ "where": { objectKey: null, parentFolderKey: parentFolderKey }}, function(err,filesReturned){
+		FileModel.find({ "where": { objectKey: null, parentFolderKey: parentFolderKey, visible: true }}, function(err,filesReturned){
 			responseCount ++;
 			files = filesReturned;
 		});
-		FolderModel.find({ "where": { objectKey: null, parentFolderKey: parentFolderKey }}, function(err,foldersReturned){
+		FolderModel.find({ "where": { objectKey: null, parentFolderKey: parentFolderKey, visible: true }}, function(err,foldersReturned){
 			responseCount ++;
 			folders = foldersReturned;
 		});
