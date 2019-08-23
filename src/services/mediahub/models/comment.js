@@ -14,7 +14,7 @@
 		    dateCreated: 		{ type: schema.String, limit: 255 },
 		    dateLastModified: 	{ type: schema.String, limit: 255 },
 		    ownerUserKey: 		{ type: schema.String, limit: 255 },
-		    comment: 			{ type: schema.String, limit: 255 },
+		    comment: 			{ type: schema.Text },
 		    object: 			{ type: schema.String, limit: 255 },
 		    recordKey: 			{ type: schema.String, limit: 255 },
 		});

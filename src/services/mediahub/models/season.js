@@ -15,8 +15,8 @@
 		    dateLastModified: 	{ type: schema.String, limit: 255 },
 		    showKey: 			{ type: schema.String, limit: 255 },
 		    seasonNumber: 		{ type: schema.String, limit: 255 },
-		    shortDesc: 			{ type: schema.String, limit: 255 },
-		    longDesc: 			{ type: schema.String, limit: 255 }
+		    shortDesc: 			{ type: schema.Text },
+		    longDesc: 			{ type: schema.Text }
 		});
 	}
 

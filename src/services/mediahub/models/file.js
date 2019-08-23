@@ -20,7 +20,8 @@
 		    md5hash: 			{ type: schema.String, limit: 255 },
 		    size: 				{ type: schema.String, limit: 255 },
 		    objectType: 		{ type: schema.String, limit: 255 },
-		    objectKey: 			{ type: schema.String, limit: 255 }
+		    objectKey: 			{ type: schema.String, limit: 255 },
+		    visible: 			{ type: schema.Boolean }
 		});
 	}
 
