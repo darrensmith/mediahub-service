@@ -9,7 +9,6 @@
 <script>
 	var interval = setInterval(function(){
 		$.get("/api/files/sync-stats", function(data, status){
-			//console.log("Data: ", data);
 			$("#syncDesc").html(data.status + " (" + (data.folders.success + data.folders.failed) + " Folders, " + (data.files.success + data.files.failed) + " Files)");
 		});
 	}, 500);

@@ -30,6 +30,7 @@
 			var hideSystemSettings = "no";
 			var hideSignOutLink = "no";
 			var hideFilesLink = "no";
+			var hideCategoriesLink = "no";
 			var announcement = "";
 			for (var i = 0; i < settings.length; i++) {
 				if(settings[i].setting == "showObjectTypes"){
@@ -117,6 +118,9 @@
 			}
 			if(hideFilesLink == "no") {
 				context.leftnav += "<p><i class=\"fas fa-file\"></i><a href=\"/web/files\">Files</a></p>\n";
+			}
+			if(hideCategoriesLink == "no") {
+				context.leftnav += "<p><i class=\"fas fa-images\"></i><a href=\"/web/categories\">Categories</a></p>\n";
 			}
 			if(hideSystemSettings == "no") {
 				context.leftnav += "<p><i class=\"fas fa-cogs\"></i><a href=\"/web/system\">System Settings</a></p>\n";

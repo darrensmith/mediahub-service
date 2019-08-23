@@ -13,7 +13,8 @@
 			key: 				{ type: schema.String, limit: 255 },
 		    dateCreated: 		{ type: schema.String, limit: 255 },
 		    dateLastModified: 	{ type: schema.String, limit: 255 },
-		    categoryName: 		{ type: schema.String, limit: 255 },
+		    title: 				{ type: schema.String, limit: 255 },
+		    status: 			{ type: schema.String, limit: 255 },
 		    shortDesc: 			{ type: schema.Text },
 		    parentCategoryKey: 	{ type: schema.String, limit: 255 }
 		});
