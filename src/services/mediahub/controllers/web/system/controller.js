@@ -43,6 +43,8 @@
 			context.hideSignOutLinkNoSelected = "";
 			context.hideFilesLinkYesSelected = "";
 			context.hideFilesLinkNoSelected = "";
+			context.hideCategoriesLinkYesSelected = "";
+			context.hideCategoriesLinkNoSelected = "";
 			context.hideRevertToFileYesSelected = "";
 			context.hideRevertToFileNoSelected = "";
 			context.systemSettingsPassword = "";
@@ -122,6 +124,14 @@
 					context.hideFilesLinkYesSelected = "selected";
 					context.hideFilesLinkNoSelected = "";
 				}
+				if(settings[i] && settings[i].setting == "hideCategoriesLink" && (settings[i].value == "no" || settings[i].value == "")) {
+					context.hideCategoriesLinkYesSelected = "";
+					context.hideCategoriesLinkNoSelected = "selected";
+				}
+				if(settings[i] && settings[i].setting == "hideCategoriesLink" && settings[i].value == "yes") {
+					context.hideCategoriesLinkYesSelected = "selected";
+					context.hideCategoriessLinkNoSelected = "";
+				}
 				if(settings[i] && settings[i].setting == "hideRevertToFile" && (settings[i].value == "no" || settings[i].value == "")) {
 					context.hideRevertToFileYesSelected = "";
 					context.hideRevertToFileNoSelected = "selected";
@@ -177,6 +187,7 @@
 				if(req.body.hideSystemSettings) { parametersToUpdate ++; };
 				if(req.body.hideSignOutLink) { parametersToUpdate ++; };
 				if(req.body.hideFilesLink) { parametersToUpdate ++; };
+				if(req.body.hideCategoriesLink) { parametersToUpdate ++; };
 				if(req.body.hideRevertToFile) { parametersToUpdate ++; };
 				if(req.body.systemSettingsPassword) { parametersToUpdate ++; };
 				if(req.body.announcement) { parametersToUpdate ++; };
@@ -260,6 +271,18 @@
 							"key": isnode.module("utilities").uuid4(),
 							"setting": "hideFilesLink",
 							"value": req.body.hideFilesLink,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.hideCategoriesLink) {
+						SettingModel.updateOrCreate({ "setting": "hideCategoriesLink" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "hideCategoriesLink",
+							"value": req.body.hideCategoriesLink,
 							"dateCreated": currentDate,
 							"dateLastModified": currentDate
 						}, function(err, setting){
