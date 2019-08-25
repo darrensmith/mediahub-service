@@ -27,7 +27,10 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.category = req.query.category;
-		context.backButtonLink = "/web/categories?category=" + req.query.category;
+		context.level = req.query.level;
+		context.backButtonLink = "/web/categories";
+		if(req.query.category)
+			context.backButtonLink += "?category=" + req.query.category;
 		var leftnav = require("../../../../lib/leftnav.js");
 		leftnav(isnode, context, function(err, cxt){
 			res.render("category-create.mustache", cxt);

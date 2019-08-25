@@ -36,15 +36,17 @@
 			parentCategoryKey = req.query.category;
 			context.parentTag = "?category=" + parentCategoryKey;
 		if(!parentCategoryKey) {
-			context.parentTag = "";
+			context.showCreateCategory = true;
 			context.backButtonLink = "/web";
+			context.categoryLink = "/web/categories?category=";
 			responseCount ++;
 		} else {
 			CategoryModel.find({ "where": { key: parentCategoryKey, status: "active" }}, function(err,categoriesReturned){
 				if(!categoriesReturned || !categoriesReturned[0] || !categoriesReturned[0].parentCategoryKey) {
+					context.keyTag = "?category=" + req.query.category;
+					context.showCreateCategory = true;
 					context.backButtonLink = "/web/categories";
-				} else {
-					context.backButtonLink = "/web/categories?category=" + categoriesReturned[0].parentCategoryKey;
+					context.categoryLink = "";
 				}
 				responseCount ++;
 			});

@@ -24,9 +24,9 @@
 
 	<script>
 		var container = document.getElementById('container');
-		container.innerHTML += "<a href=\"/web/categories/create{{parentTag}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/add-new-tile.png\"/><p class=\"font2\"> Add New Category </p></div></div> </a>";
+		{{#showCreateCategory}}container.innerHTML += "<a href=\"/web/categories/create{{keyTag}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/add-new-tile.png\"/><p class=\"font2\"> Add New Category </p></div></div> </a>";{{/showCreateCategory}}
 		{{#categories}}
-			container.innerHTML += "<a href=\"/web/categories?category={{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/folder.png\"/><p class=\"font2\"> {{title}} </p></div></div> </a>";
+			container.innerHTML += "{{#categoryLink}}<a href=\"{{categoryLink}}{{key}}\">{{/categoryLink}} <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/folder.png\"/><p class=\"font2\"> {{title}} </p></div></div> {{#categoryLink}}</a>{{/categoryLink}}";
 		{{/categories}}
 	</script>
 
