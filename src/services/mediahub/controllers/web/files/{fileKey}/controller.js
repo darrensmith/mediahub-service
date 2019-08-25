@@ -68,40 +68,48 @@
 		FileModel.find({ "where": { key: req.params.fileKey}}, function(err,files){
 			SettingModel.find({ where: { setting: "showObjectTypes"}}, function(err, settings) {
 				context.filename = files[0].filename;
+				var extSplit = context.filename.split(".");
+				var ext = extSplit[extSplit.length - 1];
 				context.path = files[0].path;
 				context.fileKey = req.params.fileKey;
+				var docExts = ["pdf", "epub", "mobi", "docx", "xlsx", "pptx", "chm"];
+				var soundExts = ["mp3", "wav"];
+				var videoExts = ["m4v", "avi", "mp4"];
+				var imageExts = ["png", "gif", "jpg", "jpeg"];
+				var softwareExts = ["zip", "exe", "dmg", "rpm"];
+				var physibleExts = ["zip"];
 				context.objectList = "<option value=\"file\" selected>File</option>";
 				var setting = settings[0].value;
 				var objects = setting.split(" ");
-				if(objects.includes("applications"))
+				if(objects.includes("applications") && softwareExts.includes(ext))
 					context.objectList += "<option value=\"application\">Application</option>";
-				if(objects.includes("documents"))
+				if(objects.includes("documents") && docExts.includes(ext))
 					context.objectList += "<option value=\"document\">Document</option>";
-				if(objects.includes("documentaries"))
+				if(objects.includes("documentaries") && videoExts.includes(ext))
 					context.objectList += "<option value=\"documentary\">Documentary</option>";
-				if(objects.includes("ebooks"))
+				if(objects.includes("ebooks") && docExts.includes(ext))
 					context.objectList += "<option value=\"ebook\">eBook</option>";
-				if(objects.includes("games"))
+				if(objects.includes("games") && softwareExts.includes(ext))
 					context.objectList += "<option value=\"game\">Game</option>";
-				if(objects.includes("images"))
+				if(objects.includes("images") && imageExts.includes(ext))
 					context.objectList += "<option value=\"image\">Image</option>";
-				if(objects.includes("karaokeClips"))
+				if(objects.includes("karaokeClips") && videoExts.includes(ext))
 					context.objectList += "<option value=\"karaokeClip\">Karaoke Clip</option>";
-				if(objects.includes("movies"))
+				if(objects.includes("movies") && videoExts.includes(ext))
 					context.objectList += "<option value=\"movie\">Movie</option>";
-				if(objects.includes("music"))
+				if(objects.includes("music") && soundExts.includes(ext))
 					context.objectList += "<option value=\"music\">Music</option>";
-				if(objects.includes("musicVideos"))
+				if(objects.includes("musicVideos") && videoExts.includes(ext))
 					context.objectList += "<option value=\"musicVideo\">Music Video</option>";
-				if(objects.includes("operatingSystems"))
+				if(objects.includes("operatingSystems") && softwareExts.includes(ext))
 					context.objectList += "<option value=\"operatingSystem\">Operating System</option>";
-				if(objects.includes("physibles"))
+				if(objects.includes("physibles") && physibleExts.includes(ext))
 					context.objectList += "<option value=\"physible\">Physible</option>";
-				if(objects.includes("soundBytes"))
+				if(objects.includes("soundBytes") && soundExts.includes(ext))
 					context.objectList += "<option value=\"soundByte\">Sound Byte</option>";
-				if(objects.includes("television"))
+				if(objects.includes("television") && videoExts.includes(ext))
 					context.objectList += "<option value=\"television\">Television</option>";
-				if(objects.includes("videoClips"))
+				if(objects.includes("videoClips") && videoExts.includes(ext))
 					context.objectList += "<option value=\"videoClip\">Video Clip</option>";
 				var leftnav = require("../../../../lib/leftnav.js");
 				leftnav(isnode, context, function(err, cxt){
