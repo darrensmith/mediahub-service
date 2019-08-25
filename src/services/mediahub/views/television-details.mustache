@@ -19,7 +19,11 @@
 		<div class="main">
 			{{> leftbar}}
 			<div class="container2">
-				<iframe style="margin-left: 30px; width: 90%; height: 90%" src="/ViewerJS/index.html#../files/ebooks/audio/dj.pdf" allowfullscreen webkitallowfullscreen></iframe>
+				<div style="margin-top:30px; margin-left:30px;">
+					<h2 style="color:white;">{{episode.title}}</h2>
+					<p class="font" style="color:white; margin-bottom: 20px;">{{episode.shortDesc}}</p>
+					<p class="font" style="margin-bottom: 50px;"><a style="color:white;" href="/web/files/{{episode.fileKey}}/download">Download Now</a></p>
+				</div>
 				<div class="body-form">
 					<form action="/web/television/{{episode.key}}" method="post">
 						<div class="form-field">
