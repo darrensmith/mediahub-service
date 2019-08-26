@@ -29,16 +29,19 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.head = function(req, res){
-		var context = {};
-		context.backButtonLink = "/web/files";
+		var fs = require("fs");
 		FileModel.find({ "where": { key: req.params.fileKey}}, function(err,files){
 			if(files && files[0] && files[0].path) {
-				res.sendFile(files[0].path, function(err, fileRes){
-					null;
+				fs.stat(files[0].path, function(err, stats) {
+					var filenameSplit = files[0].path.split(".");
+					var ext = filenameSplit[filenameSplit.length - 1];
+					var mimeType = isnode.module("http", "interface").mime(ext);
+					res.set("Content-Type", mimeType);
+					res.send();
+					return;
 				});
-				return;
 			} else {
-				res.send({});
+				res.send();
 				return;
 			}
 		});
