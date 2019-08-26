@@ -35,6 +35,11 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web/video-clips";
+		if(req.query.revert && req.query.revert == "true") {
+			req.body.revert = "true";
+			ctrl.post(req, res);
+			return;
+		}
 		VideoClipModel.find({ "where": { key: req.params.videoClipKey }}, function(err, videoClips){
 			context.videoClip = videoClips[0];
 			var leftnav = require("../../../../lib/leftnav.js");
