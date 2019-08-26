@@ -10,7 +10,36 @@
 		{{> javascript}}
 	</head>
 
+	<style>
+		.bground {
+			padding: 0px;
+			background-image: url("/img/apps-background.png") !important;
+			width: 100%;
+			height:140%;
+			position:fixed;
+		}
+		.trans {
+			padding: 0px;
+			background-color: black;
+			width: 100%;
+			height:140%;
+			position:fixed;
+			opacity:0.8;
+		}
+		.main {
+			background:transparent;
+		}
+		.titlearea {
+			opacity:0.8;
+		}
+		.leftbar {
+			opacity:0.8;
+		}
+	</style>
+
 	<body class="home">
+		<div class="bground"></div>
+		<div class="trans"></div>
 		{{> header}}
 		<div class="titlearea"> 
 		    {{> title}}
