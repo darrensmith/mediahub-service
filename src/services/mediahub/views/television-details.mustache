@@ -43,26 +43,27 @@
 		{{> header}}
 		<div class="titlearea"> 
 		    {{> title}}
-		    <div class="righttag font"> <span style="font-size: 16px;">Television Show Details</span> </div>
+		    <div class="righttag font"> 
+		    	<span style="font-size: 16px;">Television Episode Details</span> 
+		    	<a href="/web/files/{{episode.fileKey}}/download">
+		    		<i class="fas fa-download" style="margin-left:20px; color: white;" title="Download This Television Episode"></i>
+		    	</a>
+		    	<a href="/web/television/{{episode.key}}/edit">
+		    		<i class="fas fa-edit" style="margin-left:10px; color: white;" title="Edit Television Episode Details"></i>
+		    	</a>
+		    	{{#showRevertToFile}}
+		    	<a href="/web/television/{{episode.key}}/revert">
+		    		<i class="fas fa-history" style="margin-left:10px; color: white;" title="Revert Television Episode To File"></i>
+		    	</a>
+		    	{{/showRevertToFile}}
+		    </div>
 		</div>
 		<div class="main">
 			{{> leftbar}}
 			<div class="container2">
-				<div style="margin-top:30px; margin-left:30px;">
-					<h2 style="color:white;">{{episode.title}}</h2>
-					<p class="font" style="color:white; margin-bottom: 20px;">{{episode.shortDesc}}</p>
-					<p class="font" style="margin-bottom: 50px;"><a style="color:white;" href="/web/files/{{episode.fileKey}}/download">Download Now</a></p>
-				</div>
-				<div class="body-form">
-					<form action="/web/television/{{episode.key}}" method="post">
-						<div class="form-field">
-							{{#showRevertToFile}}
-							<button class="save-button font" style="margin-right: 20px;" name="revert" value="true">REVERT TO FILE</button>
-							{{/showRevertToFile}}
-							<button class="save-button font" name="edit" value="true">EDIT</button>
-						</div>
-					</form>
-				</div>
+				<video id="videoPlayer" controls style="width:100%;"> 
+					<source src="/web/files/{{episode.fileKey}}/view" />
+				</video>
 			</div>
 		</div>
 
