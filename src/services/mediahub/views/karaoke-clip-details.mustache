@@ -43,26 +43,27 @@
 		{{> header}}
 		<div class="titlearea"> 
 		    {{> title}}
-		    <div class="righttag font"> <span style="font-size: 16px;">Karaoke Clip Details</span> </div>
+		    <div class="righttag font"> 
+		    	<span style="font-size: 16px;">Karaoke Clip Details</span> 
+		    	<a href="/web/files/{{karaokeClip.fileKey}}/download">
+		    		<i class="fas fa-download" style="margin-left:20px; color: white;" title="Download This Karaoke Clip"></i>
+		    	</a>
+		    	<a href="/web/karaoke-clips/{{karaokeClip.key}}/edit">
+		    		<i class="fas fa-edit" style="margin-left:10px; color: white;" title="Edit Karaoke Clip Details"></i>
+		    	</a>
+		    	{{#showRevertToFile}}
+		    	<a href="/web/karaoke-clips/{{karaokeClip.key}}/revert">
+		    		<i class="fas fa-history" style="margin-left:10px; color: white;" title="Revert Karaoke Clip To File"></i>
+		    	</a>
+		    	{{/showRevertToFile}}
+		    </div>
 		</div>
 		<div class="main">
 			{{> leftbar}}
 			<div class="container2">
-				<div style="margin-top:30px; margin-left:30px;">
-					<h2 style="color:white;">{{karaokeClip.title}}</h2>
-					<p class="font" style="color:white; margin-bottom: 20px;">{{karaokeClip.shortDesc}}</p>
-					<p class="font" style="margin-bottom: 50px;"><a style="color:white;" href="/web/files/{{karaokeClip.fileKey}}/download">Download Now</a></p>
-				</div>
-				<div class="body-form">
-					<form action="/web/karaoke-clips/{{karaokeClip.key}}" method="post">
-						<div class="form-field">
-							{{#showRevertToFile}}
-							<button class="save-button font" style="margin-right: 20px;" name="revert" value="true">REVERT TO FILE</button>
-							{{/showRevertToFile}}
-							<button class="save-button font" name="edit" value="true">EDIT</button>
-						</div>
-					</form>
-				</div>
+				<video id="videoPlayer" controls style="width:100%;"> 
+					<source src="/web/files/{{karaokeClip.fileKey}}/view" />
+				</video>
 			</div>
 		</div>
 
