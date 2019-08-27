@@ -43,26 +43,27 @@
 		{{> header}}
 		<div class="titlearea"> 
 		    {{> title}}
-		    <div class="righttag font"> <span style="font-size: 16px;">Operating System Details</span> </div>
+		    <div class="righttag font"> 
+		    	<span style="font-size: 16px;">Operating System Details</span> 
+		    	<a href="/web/files/{{operatingSystem.fileKey}}/download">
+		    		<i class="fas fa-download" style="margin-left:20px; color: white;" title="Download This Operating System"></i>
+		    	</a>
+		    	<a href="/web/operating-systems/{{operatingSystem.key}}/edit">
+		    		<i class="fas fa-edit" style="margin-left:10px; color: white;" title="Edit Operating System Details"></i>
+		    	</a>
+		    	{{#showRevertToFile}}
+		    	<a href="/web/operating-systems/{{operatingSystem.key}}/revert">
+		    		<i class="fas fa-history" style="margin-left:10px; color: white;" title="Revert Operating System To File"></i>
+		    	</a>
+		    	{{/showRevertToFile}}
+		    </div>
 		</div>
 		<div class="main">
 			{{> leftbar}}
 			<div class="container2">
-				<div style="margin-top:30px; margin-left:30px;">
-					<h2 style="color:white;">{{operatingSystem.title}}</h2>
-					<p class="font" style="color:white; margin-bottom: 20px;">{{operatingSystem.shortDesc}}</p>
-					<p class="font" style="margin-bottom: 50px;"><a style="color:white;" href="/web/files/{{operatingSystem.fileKey}}/download">Download Now</a></p>
-				</div>
-				<div class="body-form">
-					<form action="/web/operating-systems/{{operatingSystem.key}}" method="post">
-						<div class="form-field">
-							{{#showRevertToFile}}
-							<button class="save-button font" style="margin-right: 20px;" name="revert" value="true">REVERT TO FILE</button>
-							{{/showRevertToFile}}
-							<button class="save-button font" name="edit" value="true">EDIT</button>
-						</div>
-					</form>
-				</div>
+				<a href="/web/files/{{operatingSystem.fileKey}}/download">
+					<img src="/img/download-tile.png" title="Download This Operating System" style="margin-left:40%; margin-top:10%"/>
+				</a>
 			</div>
 		</div>
 
