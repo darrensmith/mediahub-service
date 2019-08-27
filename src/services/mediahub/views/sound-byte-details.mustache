@@ -43,26 +43,28 @@
 		{{> header}}
 		<div class="titlearea"> 
 		    {{> title}}
-		    <div class="righttag font"> <span style="font-size: 16px;">Sound Byte Details</span> </div>
+		    <div class="righttag font"> 
+		    	<span style="font-size: 16px;">Sound Byte Details</span> 
+		    	<a href="/web/files/{{soundByte.fileKey}}/download">
+		    		<i class="fas fa-download" style="margin-left:20px; color: white;" title="Download This Sound Byte"></i>
+		    	</a>
+		    	<a href="/web/sound-bytes/{{soundByte.key}}/edit">
+		    		<i class="fas fa-edit" style="margin-left:10px; color: white;" title="Edit Sound Byte Details"></i>
+		    	</a>
+		    	{{#showRevertToFile}}
+		    	<a href="/web/sound-bytes/{{soundByte.key}}/revert">
+		    		<i class="fas fa-history" style="margin-left:10px; color: white;" title="Revert Sound Byte To File"></i>
+		    	</a>
+		    	{{/showRevertToFile}}
+		    </div>
 		</div>
 		<div class="main">
 			{{> leftbar}}
 			<div class="container2">
-				<div style="margin-top:30px; margin-left:30px;">
-					<h2 style="color:white;">{{soundByte.title}}</h2>
-					<p class="font" style="color:white; margin-bottom: 20px;">{{soundByte.shortDesc}}</p>
-					<p class="font" style="margin-bottom: 50px;"><a style="color:white;" href="/web/files/{{soundByte.fileKey}}/download">Download Now</a></p>
-				</div>
-				<div class="body-form">
-					<form action="/web/sound-bytes/{{soundByte.key}}" method="post">
-						<div class="form-field">
-							{{#showRevertToFile}}
-							<button class="save-button font" style="margin-right: 20px;" name="revert" value="true">REVERT TO FILE</button>
-							{{/showRevertToFile}}
-							<button class="save-button font" name="edit" value="true">EDIT</button>
-						</div>
-					</form>
-				</div>
+				<audio controls style="margin-left: 400px; margin-top:210px;">
+					<source src="/web/files/{{soundByte.fileKey}}/view">
+					Your browser does not support the audio tag.
+				</audio>
 			</div>
 		</div>
 
