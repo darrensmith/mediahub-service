@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var DocumentaryModel = null;
+	var CategoryModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		DocumentaryModel = service.models.get("documentary");
+		CategoryModel = service.models.get("category");
 		return;
 	}
 
@@ -33,10 +35,40 @@
 		context.backButtonLink = "/web/documentaries/" + req.params.documentaryKey;
 		DocumentaryModel.find({ "where": { key: req.params.documentaryKey }}, function(err, documentaries){
 			context.documentary = documentaries[0];
-			var leftnav = require("../../../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("documentaries/documentary-edit.mustache", cxt);
-			});
+			if (context.documentary.primaryCategoryKey) {
+				CategoryModel.find({ where: { key: context.documentary.primaryCategoryKey }}, function(err2, categories) {
+					if(categories && categories[0] && categories[0].key) {
+						if(categories[0].parentCategoryKey) {
+							context.childCategoryKey = categories[0].key;
+							context.parentCategoryKey = categories[0].parentCategoryKey;
+						} else {
+							context.childCategoryKey = null;
+							context.parentCategoryKey = categories[0].key;
+						}
+						var leftnav = require("../../../../../lib/leftnav.js");
+						leftnav(isnode, context, function(err, cxt){
+							res.render("documentaries/documentary-edit.mustache", cxt);
+						});
+						return;		
+					} else {
+						context.childCategoryKey = null;
+						context.parentCategoryKey = null;
+						var leftnav = require("../../../../../lib/leftnav.js");
+						leftnav(isnode, context, function(err, cxt){
+							res.render("documentaries/documentary-edit.mustache", cxt);
+						});	
+						return;
+					}
+				});
+			} else {
+				context.childCategoryKey = null;
+				context.parentCategoryKey = null;
+				var leftnav = require("../../../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("documentaries/documentary-edit.mustache", cxt);
+				});		
+				return;		
+			}
 		});
 		return;
 	}
@@ -47,7 +79,22 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/web/documentaries/" + req.params.documentaryKey + "/edit");
+		if(req.body.parentCategory && !req.body.childCategory)
+			var primaryCategoryKey = req.body.parentCategory;
+		else if (req.body.parentCategory && req.body.childCategory)
+			var primaryCategoryKey = req.body.childCategory;
+		else
+			var primaryCategoryKey = null;
+		DocumentaryModel.update({
+			key: req.params.documentaryKey
+		}, {
+			title: req.body.title,
+			shortDesc: req.body.shortDesc,
+			longDesc: req.body.longDesc,
+			primaryCategoryKey: primaryCategoryKey
+		}, function(err, updatedDocumentary) {
+			res.redirect("/web/documentaries/" + req.params.documentaryKey + "/edit");
+		});
 		return;
 	}
 

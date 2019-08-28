@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var eBookModel = null;
+	var CategoryModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		eBookModel = service.models.get("ebook");
+		CategoryModel = service.models.get("category");
 		return;
 	}
 
@@ -33,10 +35,40 @@
 		context.backButtonLink = "/web/ebooks/" + req.params.ebookKey;
 		eBookModel.find({ "where": { key: req.params.ebookKey }}, function(err, ebooks){
 			context.ebook = ebooks[0];
-			var leftnav = require("../../../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("ebooks/ebook-edit.mustache", cxt);
-			});
+			if (context.ebook.primaryCategoryKey) {
+				CategoryModel.find({ where: { key: context.ebook.primaryCategoryKey }}, function(err2, categories) {
+					if(categories && categories[0] && categories[0].key) {
+						if(categories[0].parentCategoryKey) {
+							context.childCategoryKey = categories[0].key;
+							context.parentCategoryKey = categories[0].parentCategoryKey;
+						} else {
+							context.childCategoryKey = null;
+							context.parentCategoryKey = categories[0].key;
+						}
+						var leftnav = require("../../../../../lib/leftnav.js");
+						leftnav(isnode, context, function(err, cxt){
+							res.render("ebooks/ebook-edit.mustache", cxt);
+						});
+						return;		
+					} else {
+						context.childCategoryKey = null;
+						context.parentCategoryKey = null;
+						var leftnav = require("../../../../../lib/leftnav.js");
+						leftnav(isnode, context, function(err, cxt){
+							res.render("ebooks/ebook-edit.mustache", cxt);
+						});	
+						return;
+					}
+				});
+			} else {
+				context.childCategoryKey = null;
+				context.parentCategoryKey = null;
+				var leftnav = require("../../../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("ebooks/ebook-edit.mustache", cxt);
+				});		
+				return;		
+			}
 		});
 		return;
 	}
@@ -47,7 +79,30 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/web/ebooks/" + req.params.ebookKey + "/edit");
+		if(req.body.parentCategory && !req.body.childCategory)
+			var primaryCategoryKey = req.body.parentCategory;
+		else if (req.body.parentCategory && req.body.childCategory)
+			var primaryCategoryKey = req.body.childCategory;
+		else
+			var primaryCategoryKey = null;
+		eBookModel.update({
+			key: req.params.ebookKey
+		}, {
+			title: req.body.title,
+			shortDesc: req.body.shortDesc,
+			longDesc: req.body.longDesc,
+			primaryCategoryKey: primaryCategoryKey,
+			publisher: req.body.publisher,
+			datePublished: req.body.datePublished,
+			language: req.body.language,
+			series: req.body.series,
+			volumeNumber: req.body.volumeNumber,
+			ISBN10: req.body.ISBN10,
+			ISBN13: req.body.ISBN13,
+			mobiAsin: req.body.mobiAsin
+		}, function(err, updatedEBook) {
+			res.redirect("/web/ebooks/" + req.params.ebookKey + "/edit");
+		});
 		return;
 	}
 

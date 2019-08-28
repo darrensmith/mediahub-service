@@ -66,6 +66,25 @@
 
 						<div class="form-group">
 							<div class="form-field">
+								<div class="font">Parent Category</div>
+								<div class="searchcontainer">
+									<select id="parentCategories" class="search" name="parentCategory">
+										<option value=""></option>
+									</select>
+								</div>
+							</div>
+							<div class="form-field">
+								<div class="font">Child Category</div>
+								<div class="searchcontainer">
+									<select id="childCategories" class="search" name="childCategory">
+										<option value=""></option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="form-field">
 								<div class="font">Short Description:</div>
 								<div class="searchcontainer" style="height: 200px"><textarea style="height: 200px" class="search" name="shortDesc">{{ebook.shortDesc}}</textarea></div>
 							</div>
@@ -127,5 +146,39 @@
 			</div>
 		</div>
 	</body>
+
+	<script>
+		var parentCategoryKey = "{{parentCategoryKey}}";
+		var childCategoryKey = "{{childCategoryKey}}";
+		$.get("/api/categories?type=ebook", function(data, status){
+			for (var i = 0; i < data.length; i++) {
+				if(parentCategoryKey == data[i].key)
+					var selectedTag = " selected";
+				else
+					var selectedTag = "";
+				$("#parentCategories").append("<option value=\"" + data[i].key + "\"" + selectedTag + ">" + data[i].title + "</option>");
+			}
+			$.get("/api/categories?type=ebook&category=" + parentCategoryKey, function(data2, status2){
+				for (var j = 0; j < data2.length; j++) {
+					if(childCategoryKey == data2[j].key)
+						var selectedTag = " selected";
+					else
+						var selectedTag = "";
+					$("#childCategories").append("<option value=\"" + data2[j].key + "\"" + selectedTag + ">" + data2[j].title + "</option>");
+				}
+			});
+		});
+		$("#parentCategories").change(function(){
+			$("#childCategories").html("<option value=\"\"></option>");
+			var selectedValue = $('#parentCategories').find(":selected").val();
+			if(selectedValue) {
+				$.get("/api/categories?type=ebook&category=" + selectedValue, function(data, status){
+					for (var i = 0; i < data.length; i++) {
+						$("#childCategories").append("<option value=\"" + data[i].key + "\">" + data[i].title + "</option>");
+					}
+				});
+			}
+		});
+	</script>
 
 </html>

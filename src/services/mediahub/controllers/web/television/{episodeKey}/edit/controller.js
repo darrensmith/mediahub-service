@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var EpisodeModel = null;
+	var CategoryModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		EpisodeModel = service.models.get("episode");
+		CategoryModel = service.models.get("category");
 		return;
 	}
 
@@ -33,10 +35,40 @@
 		context.backButtonLink = "/web/television/" + req.params.episodeKey;
 		EpisodeModel.find({ "where": { key: req.params.episodeKey }}, function(err, episodes){
 			context.episode = episodes[0];
-			var leftnav = require("../../../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("television/television-edit.mustache", cxt);
-			});
+			if (context.episode.primaryCategoryKey) {
+				CategoryModel.find({ where: { key: context.episode.primaryCategoryKey }}, function(err2, categories) {
+					if(categories && categories[0] && categories[0].key) {
+						if(categories[0].parentCategoryKey) {
+							context.childCategoryKey = categories[0].key;
+							context.parentCategoryKey = categories[0].parentCategoryKey;
+						} else {
+							context.childCategoryKey = null;
+							context.parentCategoryKey = categories[0].key;
+						}
+						var leftnav = require("../../../../../lib/leftnav.js");
+						leftnav(isnode, context, function(err, cxt){
+							res.render("television/television-edit.mustache", cxt);
+						});
+						return;		
+					} else {
+						context.childCategoryKey = null;
+						context.parentCategoryKey = null;
+						var leftnav = require("../../../../../lib/leftnav.js");
+						leftnav(isnode, context, function(err, cxt){
+							res.render("television/television-edit.mustache", cxt);
+						});	
+						return;
+					}
+				});
+			} else {
+				context.childCategoryKey = null;
+				context.parentCategoryKey = null;
+				var leftnav = require("../../../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("television/television-edit.mustache", cxt);
+				});		
+				return;		
+			}
 		});
 		return;
 	}
@@ -47,7 +79,22 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/web/television/" + req.params.episodeKey + "/edit");
+		if(req.body.parentCategory && !req.body.childCategory)
+			var primaryCategoryKey = req.body.parentCategory;
+		else if (req.body.parentCategory && req.body.childCategory)
+			var primaryCategoryKey = req.body.childCategory;
+		else
+			var primaryCategoryKey = null;
+		EpisodeModel.update({
+			key: req.params.episodeKey
+		}, {
+			title: req.body.title,
+			shortDesc: req.body.shortDesc,
+			longDesc: req.body.longDesc,
+			primaryCategoryKey: primaryCategoryKey
+		}, function(err, updatedEpisode) {
+			res.redirect("/web/television/" + req.params.episodeKey + "/edit");
+		});
 		return;
 	}
 

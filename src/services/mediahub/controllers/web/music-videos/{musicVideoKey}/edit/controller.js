@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var MusicVideoModel = null;
+	var CategoryModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		MusicVideoModel = service.models.get("musicVideo");
+		CategoryModel = service.models.get("category");
 		return;
 	}
 
@@ -33,10 +35,40 @@
 		context.backButtonLink = "/web/music-videos/" + req.params.musicVideoKey;
 		MusicVideoModel.find({ "where": { key: req.params.musicVideoKey }}, function(err, musicVideos){
 			context.musicVideo = musicVideos[0];
-			var leftnav = require("../../../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("music-videos/music-video-edit.mustache", cxt);
-			});
+			if (context.musicVideo.primaryCategoryKey) {
+				CategoryModel.find({ where: { key: context.musicVideo.primaryCategoryKey }}, function(err2, categories) {
+					if(categories && categories[0] && categories[0].key) {
+						if(categories[0].parentCategoryKey) {
+							context.childCategoryKey = categories[0].key;
+							context.parentCategoryKey = categories[0].parentCategoryKey;
+						} else {
+							context.childCategoryKey = null;
+							context.parentCategoryKey = categories[0].key;
+						}
+						var leftnav = require("../../../../../lib/leftnav.js");
+						leftnav(isnode, context, function(err, cxt){
+							res.render("music-videos/music-video-edit.mustache", cxt);
+						});
+						return;		
+					} else {
+						context.childCategoryKey = null;
+						context.parentCategoryKey = null;
+						var leftnav = require("../../../../../lib/leftnav.js");
+						leftnav(isnode, context, function(err, cxt){
+							res.render("music-videos/music-video-edit.mustache", cxt);
+						});	
+						return;
+					}
+				});
+			} else {
+				context.childCategoryKey = null;
+				context.parentCategoryKey = null;
+				var leftnav = require("../../../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("music-videos/music-video-edit.mustache", cxt);
+				});		
+				return;		
+			}
 		});
 		return;
 	}
@@ -47,7 +79,22 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/web/music-videos/" + req.params.musicVideoKey + "/edit");
+		if(req.body.parentCategory && !req.body.childCategory)
+			var primaryCategoryKey = req.body.parentCategory;
+		else if (req.body.parentCategory && req.body.childCategory)
+			var primaryCategoryKey = req.body.childCategory;
+		else
+			var primaryCategoryKey = null;
+		MusicVideoModel.update({
+			key: req.params.musicVideoKey
+		}, {
+			title: req.body.title,
+			shortDesc: req.body.shortDesc,
+			longDesc: req.body.longDesc,
+			primaryCategoryKey: primaryCategoryKey
+		}, function(err, updatedMusicVideo) {
+			res.redirect("/web/music-videos/" + req.params.musicVideoKey + "/edit");
+		});
 		return;
 	}
 

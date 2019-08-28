@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var ApplicationModel = null;
+	var CategoryModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		ApplicationModel = service.models.get("application");
+		CategoryModel = service.models.get("category");
 		return;
 	}
 
@@ -31,12 +33,42 @@
 	ctrl.get = function(req, res){
 		var context = {};
 		context.backButtonLink = "/web/applications/" + req.params.applicationKey;
-		ApplicationModel.find({ "where": { key: req.params.applicationKey }}, function(err, applications){
+		ApplicationModel.find({ where: { key: req.params.applicationKey }}, function(err, applications){
 			context.application = applications[0];
-			var leftnav = require("../../../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("applications/application-edit.mustache", cxt);
-			});
+			if (context.application.primaryCategoryKey) {
+				CategoryModel.find({ where: { key: context.application.primaryCategoryKey }}, function(err2, categories) {
+					if(categories && categories[0] && categories[0].key) {
+						if(categories[0].parentCategoryKey) {
+							context.childCategoryKey = categories[0].key;
+							context.parentCategoryKey = categories[0].parentCategoryKey;
+						} else {
+							context.childCategoryKey = null;
+							context.parentCategoryKey = categories[0].key;
+						}
+						var leftnav = require("../../../../../lib/leftnav.js");
+						leftnav(isnode, context, function(err, cxt){
+							res.render("applications/application-edit.mustache", cxt);
+						});
+						return;		
+					} else {
+						context.childCategoryKey = null;
+						context.parentCategoryKey = null;
+						var leftnav = require("../../../../../lib/leftnav.js");
+						leftnav(isnode, context, function(err, cxt){
+							res.render("applications/application-edit.mustache", cxt);
+						});	
+						return;
+					}
+				});
+			} else {
+				context.childCategoryKey = null;
+				context.parentCategoryKey = null;
+				var leftnav = require("../../../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("applications/application-edit.mustache", cxt);
+				});		
+				return;		
+			}
 		});
 		return;
 	}
@@ -47,7 +79,22 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.post = function(req, res){
-		res.redirect("/web/applications/" + req.params.applicationKey + "/edit");
+		if(req.body.parentCategory && !req.body.childCategory)
+			var primaryCategoryKey = req.body.parentCategory;
+		else if (req.body.parentCategory && req.body.childCategory)
+			var primaryCategoryKey = req.body.childCategory;
+		else
+			var primaryCategoryKey = null;
+		ApplicationModel.update({
+			key: req.params.applicationKey
+		}, {
+			title: req.body.title,
+			shortDesc: req.body.shortDesc,
+			longDesc: req.body.longDesc,
+			primaryCategoryKey: primaryCategoryKey
+		}, function(err, updatedApplication) {
+			res.redirect("/web/applications/" + req.params.applicationKey + "/edit");
+		});
 		return;
 	}
 

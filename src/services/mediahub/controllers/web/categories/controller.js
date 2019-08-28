@@ -41,7 +41,7 @@
 				{label: "eBooks", url: "/web/categories?type=ebook"},
 				{label: "Games", url: "/web/categories?type=game"},
 				{label: "Images", url: "/web/categories?type=image"},
-				{label: "Karaoke Clips", url: "/web/categories?type=karaoke-clip"},
+				{label: "Karaoke Clips", url: "/web/categories?type=karaokeClip"},
 				{label: "Movies", url: "/web/categories?type=movie"},
 				{label: "Music", url: "/web/categories?type=music"},
 				{label: "Music Videos", url: "/web/categories?type=musicVideo"},

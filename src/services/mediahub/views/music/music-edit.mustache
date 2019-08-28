@@ -51,12 +51,31 @@
 				<div class="body-title"><strong>Edit Song</strong></div>
 				<div class="body-strip"></div>
 				<div class="body-form">
-					<form action="/web/images/{{song.key}}/edit" method="post">
+					<form action="/web/music/{{song.key}}/edit" method="post">
 
 						<div class="form-group">
 							<div class="form-field">
 								<div class="font">Title:</div>
 								<div class="searchcontainer"><input class="search" name="title" value="{{song.title}}" /></div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Parent Category</div>
+								<div class="searchcontainer">
+									<select id="parentCategories" class="search" name="parentCategory">
+										<option value=""></option>
+									</select>
+								</div>
+							</div>
+							<div class="form-field">
+								<div class="font">Child Category</div>
+								<div class="searchcontainer">
+									<select id="childCategories" class="search" name="childCategory">
+										<option value=""></option>
+									</select>
+								</div>
 							</div>
 						</div>
 
@@ -79,5 +98,39 @@
 			</div>
 		</div>
 	</body>
+
+	<script>
+		var parentCategoryKey = "{{parentCategoryKey}}";
+		var childCategoryKey = "{{childCategoryKey}}";
+		$.get("/api/categories?type=music", function(data, status){
+			for (var i = 0; i < data.length; i++) {
+				if(parentCategoryKey == data[i].key)
+					var selectedTag = " selected";
+				else
+					var selectedTag = "";
+				$("#parentCategories").append("<option value=\"" + data[i].key + "\"" + selectedTag + ">" + data[i].title + "</option>");
+			}
+			$.get("/api/categories?type=music&category=" + parentCategoryKey, function(data2, status2){
+				for (var j = 0; j < data2.length; j++) {
+					if(childCategoryKey == data2[j].key)
+						var selectedTag = " selected";
+					else
+						var selectedTag = "";
+					$("#childCategories").append("<option value=\"" + data2[j].key + "\"" + selectedTag + ">" + data2[j].title + "</option>");
+				}
+			});
+		});
+		$("#parentCategories").change(function(){
+			$("#childCategories").html("<option value=\"\"></option>");
+			var selectedValue = $('#parentCategories').find(":selected").val();
+			if(selectedValue) {
+				$.get("/api/categories?type=music&category=" + selectedValue, function(data, status){
+					for (var i = 0; i < data.length; i++) {
+						$("#childCategories").append("<option value=\"" + data[i].key + "\">" + data[i].title + "</option>");
+					}
+				});
+			}
+		});
+	</script>
 
 </html>
