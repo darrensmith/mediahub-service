@@ -35,7 +35,7 @@
 			context.documents = documents;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("documents.mustache", cxt);
+				res.render("documents/documents.mustache", cxt);
 			});
 		});
 		return;

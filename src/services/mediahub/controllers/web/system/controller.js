@@ -164,7 +164,7 @@
 			leftnav(isnode, context, function(err, cxt){
 				if(req.body.password)
 					cxt.password = req.body.password;
-				res.render("system.mustache", cxt);
+				res.render("system/system.mustache", cxt);
 			});
 		});
 		return;

@@ -44,7 +44,7 @@
 						cxt.showRevertToFile = true;
 					else
 						cxt.showRevertToFile = false;
-					res.render("image-details.mustache", cxt);
+					res.render("images/image-details.mustache", cxt);
 				});
 			});
 		});

@@ -38,7 +38,7 @@
 				});
 				return;
 			} else {
-				res.send({});
+				res.send();
 				return;
 			}
 		});

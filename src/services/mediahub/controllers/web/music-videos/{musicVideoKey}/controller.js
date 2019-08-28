@@ -44,7 +44,7 @@
 						cxt.showRevertToFile = true;
 					else
 						cxt.showRevertToFile = false;
-					res.render("music-video-details.mustache", cxt);
+					res.render("music-videos/music-video-details.mustache", cxt);
 				});
 			});
 		});

@@ -44,7 +44,7 @@
 						cxt.showRevertToFile = true;
 					else
 						cxt.showRevertToFile = false;
-					res.render("application-details.mustache", cxt);
+					res.render("applications/application-details.mustache", cxt);
 				});
 			});
 		});

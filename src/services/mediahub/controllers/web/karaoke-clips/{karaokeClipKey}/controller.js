@@ -44,7 +44,7 @@
 						cxt.showRevertToFile = true;
 					else
 						cxt.showRevertToFile = false;
-					res.render("karaoke-clip-details.mustache", cxt);
+					res.render("karaoke-clips/karaoke-clip-details.mustache", cxt);
 				});
 			});
 		});

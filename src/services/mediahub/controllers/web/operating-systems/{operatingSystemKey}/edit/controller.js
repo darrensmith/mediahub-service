@@ -35,7 +35,7 @@
 			context.operatingSystem = operatingSystems[0];
 			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("operating-system-edit.mustache", cxt);
+				res.render("operating-systems/operating-system-edit.mustache", cxt);
 			});
 		});
 		return;

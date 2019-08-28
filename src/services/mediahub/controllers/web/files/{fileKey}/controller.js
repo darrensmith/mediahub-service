@@ -113,7 +113,7 @@
 					context.objectList += "<option value=\"videoClip\">Video Clip</option>";
 				var leftnav = require("../../../../lib/leftnav.js");
 				leftnav(isnode, context, function(err, cxt){
-					res.render("convert-file-to-object.mustache", cxt);
+					res.render("files/convert-file-to-object.mustache", cxt);
 				});
 			});
 		});
@@ -139,6 +139,12 @@
 		var ISBN13 = req.body.ISBN13;
 		var mobiAsin = req.body.mobiAsin;
 		var language = req.body.language;
+
+		var primaryCategoryKey = null;
+		if (req.body.childCategory)
+			primaryCategoryKey = req.body.childCategory;
+		else if (req.body.parentCategory)
+			primaryCategoryKey = req.body.parentCategory;
 
 		var object = req.body.object;
 		var fileKey = req.body.fileKey;
@@ -174,7 +180,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, document){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -207,7 +213,7 @@
 						language: language,
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, ebook){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -231,7 +237,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, song){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -255,7 +261,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, soundByte){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -279,7 +285,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, episode){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -303,7 +309,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, movie){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -327,7 +333,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, documentary){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -351,7 +357,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, musicVideo){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -375,7 +381,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, karaokeClip){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -399,7 +405,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, videoClip){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -423,7 +429,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, application){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -447,7 +453,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, game){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -471,7 +477,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, operatingSystem){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -495,7 +501,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, physible){
 						FileModel.update({ 
 							where: { key: fileKey } 
@@ -518,7 +524,7 @@
 						status: "active",
 						size: size,
 						md5hash: md5hash,
-						primaryCategoryKey: null
+						primaryCategoryKey: primaryCategoryKey
 					}, function(err2, image){
 						FileModel.update({ 
 							where: { key: fileKey } 

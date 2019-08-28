@@ -44,7 +44,7 @@
 						cxt.showRevertToFile = true;
 					else
 						cxt.showRevertToFile = false;
-					res.render("physible-details.mustache", cxt);
+					res.render("physibles/physible-details.mustache", cxt);
 				});
 			});
 		});

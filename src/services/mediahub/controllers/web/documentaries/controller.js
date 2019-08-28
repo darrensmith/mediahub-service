@@ -35,7 +35,7 @@
 			context.documentaries = documentaries;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("documentaries.mustache", cxt);
+				res.render("documentaries/documentaries.mustache", cxt);
 			});
 		});
 		return;

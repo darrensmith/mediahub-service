@@ -1,5 +1,5 @@
 /*!
-* /web/system/controller.js
+* system/api/categories/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -9,6 +9,7 @@
 
 	var ctrl = {};
 	var isnode = null;
+	var CategoryModel = null;
 
 	/**
 	 * Initialises the controller
@@ -16,6 +17,8 @@
 	 */
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
+		service = isnode.module("services").service("mediahub");
+		CategoryModel = service.models.get("category");
 		return;
 	}
 
@@ -25,11 +28,27 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.get = function(req, res){
-		var context = {};
-		context.backButtonLink = "/web";
-		var leftnav = require("../../../lib/leftnav.js");
-		leftnav(isnode, context, function(err, cxt){
-			res.render("read.mustache", cxt);
+		var parentCategory = req.query.category;
+		var query = { where: {} };
+		if(parentCategory)
+			query.where.parentCategoryKey = parentCategory;
+		else
+			query.where.parentCategoryKey = null;
+		if(req.query.type){
+			var type = req.query.type;
+			query.where.objectType = type;
+		}
+		CategoryModel.find(query, function(err, categories){
+			var output = [];
+			for (var i = 0; i < categories.length; i++) {
+				output.push({
+					key: categories[i].key,
+					title: categories[i].title,
+					parentCategoryKey: categories[i].parentCategoryKey,
+					type: categories[i].objectType
+				});
+			}
+			res.send(output);
 		});
 		return;
 	}

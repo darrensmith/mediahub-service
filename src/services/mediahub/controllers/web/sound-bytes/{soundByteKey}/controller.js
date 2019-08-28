@@ -44,7 +44,7 @@
 						cxt.showRevertToFile = true;
 					else
 						cxt.showRevertToFile = false;
-					res.render("sound-byte-details.mustache", cxt);
+					res.render("sound-bytes/sound-byte-details.mustache", cxt);
 				});
 			});
 		});

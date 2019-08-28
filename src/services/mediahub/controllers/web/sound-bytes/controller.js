@@ -35,7 +35,7 @@
 			context.soundBytes = soundBytes;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("sound-bytes.mustache", cxt);
+				res.render("sound-bytes/sound-bytes.mustache", cxt);
 			});
 		});
 		return;

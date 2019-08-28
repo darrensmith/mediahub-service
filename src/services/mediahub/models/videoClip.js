@@ -19,7 +19,8 @@
 		    size: 				{ type: schema.String, limit: 255 },
 		    status: 			{ type: schema.String, limit: 255 },
 		    fileKey: 			{ type: schema.String, limit: 255 },
-		    md5hash: 			{ type: schema.String, limit: 255 }
+		    md5hash: 			{ type: schema.String, limit: 255 },
+		    primaryCategoryKey: { type: schema.String, limit: 255 }
 		});
 	}
 

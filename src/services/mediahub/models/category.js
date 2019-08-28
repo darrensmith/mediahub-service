@@ -17,7 +17,8 @@
 		    status: 			{ type: schema.String, limit: 255 },
 		    shortDesc: 			{ type: schema.Text },
 		    level: 				{ type: schema.Number },
-		    parentCategoryKey: 	{ type: schema.String, limit: 255 }
+		    parentCategoryKey: 	{ type: schema.String, limit: 255 },
+		    objectType: 		{ type: schema.String, limit: 255 }
 		});
 	}
 

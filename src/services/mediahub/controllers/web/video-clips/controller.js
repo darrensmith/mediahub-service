@@ -35,7 +35,7 @@
 			context.videoClips = videoClips;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("video-clips.mustache", cxt);
+				res.render("video-clips/video-clips.mustache", cxt);
 			});
 		});
 		return;

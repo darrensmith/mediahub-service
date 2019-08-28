@@ -43,7 +43,17 @@
 		{{> header}}
 		<div class="titlearea"> 
 		    {{> title}}
-		    <div class="righttag font"> <span style="font-size: 16px;">Categories</span> </div>
+		    <div class="righttag font"> 
+		    	<span style="font-size: 16px;">Categories</span> 
+		    	{{#showEdit}}
+		    	<a href="/web/categories/{{category.key}}/edit{{typeTag}}">
+		    		<i class="fas fa-edit" style="margin-left:10px; color: white;" title="Edit Category"></i>
+		    	</a>
+		    	<a href="/web/categories/{{category.key}}/delete{{typeTag}}">
+		    		<i class="fas fa-trash" style="margin-left:10px; color: white;" title="Delete Category"></i>
+		    	</a>
+		    	{{/showEdit}}
+		    </div>
 		</div>
 		<div class="main">
 			{{> leftbar}}
@@ -54,8 +64,11 @@
 	<script>
 		var container = document.getElementById('container');
 		{{#showCreateCategory}}container.innerHTML += "<a href=\"/web/categories/create{{keyTag}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/add-new-tile.png\"/><p class=\"font2\"> Add New Category </p></div></div> </a>";{{/showCreateCategory}}
+		{{#types}}
+			container.innerHTML += "<a href=\"{{url}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/folder.png\"/><p class=\"font2\"> {{label}} </p></div></div></a>";
+		{{/types}}
 		{{#categories}}
-			container.innerHTML += "{{#categoryLink}}<a href=\"{{categoryLink}}{{key}}\">{{/categoryLink}} <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/folder.png\"/><p class=\"font2\"> {{title}} </p></div></div> {{#categoryLink}}</a>{{/categoryLink}}";
+			container.innerHTML += "{{#categoryLink}}<a href=\"{{categoryLink}}{{key}}{{endCategoryLink}}\">{{/categoryLink}} <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/folder.png\"/><p class=\"font2\"> {{title}} </p></div></div> {{#categoryLink}}</a>{{/categoryLink}}";
 		{{/categories}}
 	</script>
 

@@ -35,7 +35,7 @@
 			context.episode = episodes[0];
 			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("television-edit.mustache", cxt);
+				res.render("television/television-edit.mustache", cxt);
 			});
 		});
 		return;

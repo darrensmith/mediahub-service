@@ -29,11 +29,14 @@
 		context.category = req.query.category;
 		context.level = req.query.level;
 		context.backButtonLink = "/web/categories";
+		context.type = req.query.type;
 		if(req.query.category)
-			context.backButtonLink += "?category=" + req.query.category;
+			context.backButtonLink += "?type=" + context.type + "&category=" + req.query.category;
+		else
+			context.backButtonLink += "?type=" + context.type;
 		var leftnav = require("../../../../lib/leftnav.js");
 		leftnav(isnode, context, function(err, cxt){
-			res.render("category-create.mustache", cxt);
+			res.render("categories/category-create.mustache", cxt);
 		});
 		return;
 	}

@@ -74,8 +74,28 @@
 									</select>
 								</div>
 							</div>
+							<div class="form-field" style="visibility:hidden;">
+								<div class="font"></div>
+								<div class="searchcontainer"><input class="search" name="placeholder" value="" disabled /></div>
+							</div>
 						</div>
-
+						<div class="form-group">
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip videoClip application game operatingSystem physible">
+								<div class="font">Parent Category</div>
+								<div class="searchcontainer">
+									<select id="parentCategories" class="search" name="parentCategory">
+										<option value=""></option>
+									</select>
+								</div>
+							</div>
+							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip videoClip application game operatingSystem physible">
+								<div class="font">Child Category</div>
+								<div class="searchcontainer">
+									<select id="childCategories" class="search" name="childCategory">
+									</select>
+								</div>
+							</div>
+						</div>
 						<div class="form-group">
 							<div class="form-field fields document ebook music television image movie soundByte documentary musicVideo karaokeClip videoClip application game operatingSystem physible">
 								<div class="font">Title:</div>
@@ -162,6 +182,8 @@
 		$(".save-button").css("border-color", "#555555");
 		$(".save-button").css("cursor", "not-allowed");
 		$("#objects").change(function(){
+			$("#parentCategories").html("<option value=\"\"></option>");
+			$("#childCategories").html("<option value=\"\"></option>");
 			if($('#objects').find(":selected").val() != "file"){
 				$(".save-button").attr("disabled", false);
 				$(".save-button").css("background-color", "#cc7b19");
@@ -240,7 +262,24 @@
 				$(".fields").hide();
 				$(".image").show();
 			}
+			$.get("/api/categories?type=" + $('#objects').find(":selected").val(), function(data, status){
+				for (var i = 0; i < data.length; i++) {
+					$("#parentCategories").append("<option value=\"" + data[i].key + "\">" + data[i].title + "</option>");
+				}
+			});
 		});
+		$("#parentCategories").change(function(){
+			$("#childCategories").html("<option value=\"\"></option>");
+			var selectedValue = $('#parentCategories').find(":selected").val();
+			if(selectedValue) {
+				$.get("/api/categories?category=" + selectedValue, function(data, status){
+					for (var i = 0; i < data.length; i++) {
+						$("#childCategories").append("<option value=\"" + data[i].key + "\">" + data[i].title + "</option>");
+					}
+				});
+			}
+		});
+
 	</script>
 
 </html>

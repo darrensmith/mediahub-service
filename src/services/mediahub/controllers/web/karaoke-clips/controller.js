@@ -35,7 +35,7 @@
 			context.karaokeClips = karaokeClips;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("karaoke-clips.mustache", cxt);
+				res.render("karaoke-clips/karaoke-clips.mustache", cxt);
 			});
 		});
 		return;

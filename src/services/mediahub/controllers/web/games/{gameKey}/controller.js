@@ -44,7 +44,7 @@
 						cxt.showRevertToFile = true;
 					else
 						cxt.showRevertToFile = false;
-					res.render("game-details.mustache", cxt);
+					res.render("games/game-details.mustache", cxt);
 				});
 			});
 		});

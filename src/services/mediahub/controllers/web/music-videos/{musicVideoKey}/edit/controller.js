@@ -35,7 +35,7 @@
 			context.musicVideo = musicVideos[0];
 			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("music-video-edit.mustache", cxt);
+				res.render("music-videos/music-video-edit.mustache", cxt);
 			});
 		});
 		return;

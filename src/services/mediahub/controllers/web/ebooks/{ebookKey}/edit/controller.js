@@ -35,7 +35,7 @@
 			context.ebook = ebooks[0];
 			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("ebook-edit.mustache", cxt);
+				res.render("ebooks/ebook-edit.mustache", cxt);
 			});
 		});
 		return;

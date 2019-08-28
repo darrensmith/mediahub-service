@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Create New Category | Media Hub</title>
+		<title>Edit Category | Media Hub</title>
 		<meta name="description" content="Media Hub">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		{{> styles}}
@@ -43,30 +43,37 @@
 		{{> header}}
 		<div class="titlearea"> 
 		    {{> title}}
-		    <div class="righttag font"> <span style="font-size: 16px;">Create New Category</span> </div>
+		    <div class="righttag font"> 
+		    	<span style="font-size: 16px;">Categories</span> 
+		    	<a href="/web/categories/{{category.key}}/delete{{typeTag}}{{categoryTag}}">
+		    		<i class="fas fa-trash" style="margin-left:10px; color: white;" title="Delete Category"></i>
+		    	</a>
+		    </div>
 		</div>
 		<div class="main">
 			{{> leftbar}}
 			<div class="container2">
-				<div class="body-title"><strong>Create New Category</strong></div>
+				<div class="body-title"><strong>Edit Category</strong></div>
 				<div class="body-strip"></div>
 				<div class="body-form">
-					<form action="/web/categories" method="post">
-						<input type="hidden" name="parentCategoryKey" value="{{category}}"/>
+					<form action="/web/categories/{{category.key}}/edit" method="post">
+						<input type="hidden" name="category" value="{{category.key}}"/>
+						<input type="hidden" name="searchCategory" value="{{categoryKey}}"/>
+						<input type="hidden" name="type" value="{{type}}"/>
 						<div class="form-group">
 							<div class="form-field">
 								<div class="font">Category Label:</div>
-								<div class="searchcontainer" style="width: 830px;"><input style="width: 830px;" class="search" name="title" value="" /></div>
+								<div class="searchcontainer" style="width: 830px;"><input style="width: 830px;" class="search" name="title" value="{{category.title}}" /></div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-field">
 								<div class="font">Short Description:</div>
-								<div class="searchcontainer" style="height:200px; width:830px; padding-right:0px;"><textarea style="z-index:20; width: 830px; height: 200px;" class="search" name="shortDesc"></textarea></div>
+								<div class="searchcontainer" style="height:200px; width:830px; padding-right:0px;"><textarea style="z-index:20; width: 830px; height: 200px;" class="search" name="shortDesc">{{category.shortDesc}}</textarea></div>
 							</div>
 						</div>
 						<div class="form-field">
-							<button class="save-button font" style="margin-right: 20px;" name="save" value="true">CREATE CATEGORY</button>
+							<button class="save-button font" style="margin-right: 20px;" name="save" value="true">UPDATE CATEGORY</button>
 						</div>
 					</form>
 				</div>

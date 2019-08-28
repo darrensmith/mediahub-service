@@ -49,7 +49,7 @@
 						cxt.showRevertToFile = true;
 					else
 						cxt.showRevertToFile = false;
-					res.render("video-clip-details.mustache", cxt);
+					res.render("video-clips/video-clip-details.mustache", cxt);
 				});
 			});
 		});

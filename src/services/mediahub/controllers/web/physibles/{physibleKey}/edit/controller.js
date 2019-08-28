@@ -35,7 +35,7 @@
 			context.physible = physibles[0];
 			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("physible-edit.mustache", cxt);
+				res.render("physibles/physible-edit.mustache", cxt);
 			});
 		});
 		return;

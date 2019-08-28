@@ -35,7 +35,7 @@
 			context.application = applications[0];
 			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("application-edit.mustache", cxt);
+				res.render("applications/application-edit.mustache", cxt);
 			});
 		});
 		return;

@@ -25,7 +25,7 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.get = function(req, res){
-		res.render("system-authorise.mustache");
+		res.render("system/system-authorise.mustache");
 		return;
 	}
 

@@ -35,7 +35,7 @@
 			context.image = images[0];
 			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("image-edit.mustache", cxt);
+				res.render("images/image-edit.mustache", cxt);
 			});
 		});
 		return;

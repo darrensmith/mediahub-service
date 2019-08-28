@@ -44,7 +44,7 @@
 						cxt.showRevertToFile = true;
 					else
 						cxt.showRevertToFile = false;
-					res.render("operating-system-details.mustache", cxt);
+					res.render("operating-systems/operating-system-details.mustache", cxt);
 				});
 			});
 		});

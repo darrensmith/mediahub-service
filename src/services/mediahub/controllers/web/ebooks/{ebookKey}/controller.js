@@ -44,7 +44,7 @@
 						cxt.showRevertToFile = true;
 					else
 						cxt.showRevertToFile = false;
-					res.render("ebook-details.mustache", cxt);
+					res.render("ebooks/ebook-details.mustache", cxt);
 				});
 			});
 		});

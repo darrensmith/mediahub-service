@@ -35,7 +35,7 @@
 			context.games = games;
 			var leftnav = require("../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("games.mustache", cxt);
+				res.render("games/games.mustache", cxt);
 			});
 		});
 		return;

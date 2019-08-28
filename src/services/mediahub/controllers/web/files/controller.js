@@ -63,7 +63,7 @@
 				context.folders = folders;
 				var leftnav = require("../../../lib/leftnav.js");
 				leftnav(isnode, context, function(err, cxt){
-					res.render("files.mustache", cxt);
+					res.render("files/files.mustache", cxt);
 				});				
 			}
 		}, 100);
