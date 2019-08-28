@@ -140,6 +140,8 @@
 			log("debug","MediaHub Filesystem Sync > Synchronising Filesystem w/ Database...");
 			var files = {};
 			var folders = {};
+			var filesArray = [];
+			var foldersArray = [];
 			var createFiles = {
 				success: 0,
 				failed: 0
@@ -170,11 +172,13 @@
 					    queueCheckAndCreateFolder(settings[0].value, p, function(err2, res){
 					    	if(err2){
 					    		folders[fullPath] = err2.key;
+					    		foldersArray.push(fullPath);
 					    		createFolders.failed = createFolders.failed + 1;
 					    		syncStats.folders.failed = createFolders.failed;
 					    		isnode.globals.set("syncStats", syncStats);
 					    	} else {
 					    		folders[fullPath] = res.key;
+					    		foldersArray.push(fullPath);
 					    		createFolders.success = createFolders.success + 1;
 					    		syncStats.folders.success = createFolders.success;
 					    		isnode.globals.set("syncStats", syncStats);
@@ -192,11 +196,13 @@
 						    queueCheckAndCreateFile(settings[0].value, p, s, completeHash, function(err2, res){
 						    	if(err2){
 						    		files[fullPath] = err2.key;
+						    		filesArray.push(fullPath);
 						    		createFiles.failed = createFiles.failed + 1;
 						    		syncStats.files.failed = createFiles.failed;
 						    		isnode.globals.set("syncStats", syncStats);
 						    	} else {
 						    		files[fullPath] = res.key;
+						    		filesArray.push(fullPath);
 						    		createFiles.success = createFiles.success + 1;
 					  				syncStats.files.success = createFiles.success;
 					  				isnode.globals.set("syncStats", syncStats);
@@ -228,8 +234,8 @@
 							    log("debug","MediaHub Filesystem Sync > Files - " + createFiles.success + " created successfully, " + createFiles.failed + " failed.");
 							  	removeDeletedFoldersFromDB(folders);
 							  	removeDeletedFilesFromDB(files);
-							  	setParentFolderOnFolders(folders);
-							  	setParentFolderOnFiles(files, folders);
+							  	setParentFolderOnFolders(folders, foldersArray);
+							  	setParentFolderOnFiles(files, folders, filesArray);
 							  	log("debug","MediaHub Filesystem Sync > " + this.dirs + " dirs, " + this.files + " files, " + this.bytes + " bytes");
 					  		}
 					  	}, 500);
@@ -308,7 +314,7 @@
 				if(syncStats.status == "Processing")
 					clearInterval(interval);
 			}
-		}, 20);
+		}, 10);
 		return;
 	}
 
@@ -324,7 +330,7 @@
 				if(syncStats.status == "Processing")
 					clearInterval(interval);
 			}
-		}, 20);
+		}, 10);
 		return;
 	}
 
@@ -573,31 +579,31 @@
 		var folderCount = 0;
 		FolderModel.find({ where: {}}, function(err, dbFolders){
 			folderCount = dbFolders.length;
-			for (var i = 0; i < dbFolders.length; i++) {
-				if(!folders[dbFolders[i].path]) {
-					var objectType = dbFolders[i].objectType;
-					var objectKey = dbFolders[i].objectKey;
-					dbFolders[i].destroy(function(err2){
-						foldersProcessed ++;
-						if(objectType && objectKey){
-							updateObject(objectType, objectKey, {
-								status: "inactive",
-								objectType: "",
-								objectKey: ""
-							});
-						}
-					});
-				} else {
-					foldersProcessed ++;
-				}
-			}
 			var interval = setInterval(function(){
-				if(foldersProcessed >= folderCount) {
+				var folder = dbFolders.shift();
+				if(folder) {
+					if(!folders[folder.path]) {
+						var objectType = folder.objectType;
+						var objectKey = folder.objectKey;
+						folder.destroy(function(err2){
+							foldersProcessed ++;
+							if(objectType && objectKey){
+								updateObject(objectType, objectKey, {
+									status: "inactive",
+									objectType: "",
+									objectKey: ""
+								});
+							}
+						});
+					} else {
+						foldersProcessed ++;
+					}
+				} else {
 					clearInterval(interval);
 					syncStats.stages.removeDeletedFoldersFromDB = "Complete";
 					isnode.globals.set("syncStats", syncStats);
 				}
-			}, 1000);
+			}, 10);
 		});
 	}
 
@@ -614,31 +620,31 @@
 		var filesCount = 0;
 		FileModel.find({ where: {}}, function(err, dbFiles){
 			fileCount = dbFiles.length;
-			for (var i = 0; i < dbFiles.length; i++) {
-				if(!files[dbFiles[i].path]) {
-					var objectType = dbFiles[i].objectType;
-					var objectKey = dbFiles[i].objectKey;
-					dbFiles[i].destroy(function(err2){
-						filesProcessed ++;
-						if(objectType && objectKey){
-							updateObject(objectType, objectKey, {
-								status: "inactive",
-								objectType: "",
-								objectKey: ""
-							});
-						}
-					});
-				} else {
-					filesProcessed ++;
-				}
-			}
 			var interval = setInterval(function(){
-				if(filesProcessed >= fileCount) {
+				var file = dbFiles.shift();
+				if(file) {
+					if(!files[file.path]) {
+						var objectType = file.objectType;
+						var objectKey = file.objectKey;
+						file.destroy(function(err2){
+							filesProcessed ++;
+							if(objectType && objectKey){
+								updateObject(objectType, objectKey, {
+									status: "inactive",
+									objectType: "",
+									objectKey: ""
+								});
+							}
+						});
+					} else {
+						filesProcessed ++;
+					}
+				} else {
 					clearInterval(interval);
 					syncStats.stages.removeDeletedFilesFromDB = "Complete";
 					isnode.globals.set("syncStats", syncStats);
 				}
-			}, 1000);
+			}, 10);
 		});
 	}
 
@@ -647,33 +653,33 @@
 	 *
 	 * @param {array} files - Array of files in filesystem
 	 */
-	var setParentFolderOnFolders = function(folders){
+	var setParentFolderOnFolders = function(folders, foldersArray){
 		syncStats.stages.setParentFolderOnFolders = "Started";
 		isnode.globals.set("syncStats", syncStats);
 		var foldersProcessed = 0;
 		var folderCount = 0;
-		folderCount = Object.keys(folders).length;
-		for(var path in folders) {
-			var pathSplit = path.split("/");
-			pathSplit.pop();
-			var parentFolder = pathSplit.join("/");
-			var parentFolderKey = folders[parentFolder];
-			FolderModel.update({ 
-				where: { key: folders[path] }
-			}, {
-				parentFolderKey: parentFolderKey,
-				visible: true
-			}, function(err, updatedFolder){
-				foldersProcessed ++;
-			});
-		}
+		folderCount = foldersArray.length;
 		var interval = setInterval(function(){
-			if(foldersProcessed >= folderCount) {
+			if(foldersArray.length >= 1) {
+				var path = foldersArray.shift();
+				var pathSplit = path.split("/");
+				pathSplit.pop();
+				var parentFolder = pathSplit.join("/");
+				var parentFolderKey = folders[parentFolder];
+				FolderModel.update({ 
+					where: { key: folders[path] }
+				}, {
+					parentFolderKey: parentFolderKey,
+					visible: true
+				}, function(err, updatedFolder){
+					foldersProcessed ++;
+				});
+			} else {
 				clearInterval(interval);
 				syncStats.stages.setParentFolderOnFolders = "Complete";
 				isnode.globals.set("syncStats", syncStats);
 			}
-		}, 1000);
+		}, 10);
 		return;
 	}
 
@@ -682,36 +688,36 @@
 	 *
 	 * @param {array} files - Array of files in filesystem
 	 */
-	var setParentFolderOnFiles = function(files, folders){
+	var setParentFolderOnFiles = function(files, folders, filesArray){
 		syncStats.stages.setParentFolderOnFiles = "Started";
 		isnode.globals.set("syncStats", syncStats);
 		var filesProcessed = 0;
 		var fileCount = 0;
-		fileCount = Object.keys(files).length;
-		for(var path in files) {
-			var pathSplit = path.split("/");
-			pathSplit.pop();
-			var parentFolder = pathSplit.join("/");
-			var parentFolderKey = folders[parentFolder];
-			FileModel.update({ 
-				where: { key: files[path] }
-			}, {
-				parentFolderKey: parentFolderKey,
-				visible: true
-			}, function(err, updatedFile){
-				if(err) {
-					null;
-				}
-				filesProcessed ++;
-			});
-		}
+		fileCount = filesArray.length;
 		var interval = setInterval(function(){
-			if(filesProcessed >= fileCount) {
+			if(filesArray.length >= 1) {
+				var path = filesArray.shift();
+				var pathSplit = path.split("/");
+				pathSplit.pop();
+				var parentFolder = pathSplit.join("/");
+				var parentFolderKey = folders[parentFolder];
+				FileModel.update({ 
+					where: { key: files[path] }
+				}, {
+					parentFolderKey: parentFolderKey,
+					visible: true
+				}, function(err, updatedFile){
+					if(err) {
+						null;
+					}
+					filesProcessed ++;
+				});
+			} else {
 				clearInterval(interval);
 				syncStats.stages.setParentFolderOnFiles = "Complete";
 				isnode.globals.set("syncStats", syncStats);
 			}
-		}, 100);
+		}, 10);
 		return;
 	}
 
