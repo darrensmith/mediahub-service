@@ -32,6 +32,7 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		context.breadcrumbs = "<a href=\"/web\" style=\"color:white;\">Home</a>";
 		var responseCount = 0;
 		var parentCategoryKey = null;
 		context.backButtonLink = "/web";
@@ -44,6 +45,8 @@
 		if(!parentCategoryKey) {
 			context.keyTag = "?type=" + type;
 			context.categoryLink = "/web/video-clips?category=";
+			context.breadcrumbs += " > Video Clips";
+			responseCount ++;
 			responseCount ++;
 		} else {
 			CategoryModel.find({ "where": { key: parentCategoryKey, status: "active" }}, function(err,categoriesReturned){
@@ -51,8 +54,14 @@
 					context.keyTag = "?category=" + req.query.category;
 					context.backButtonLink = "/web/video-clips";
 					context.categoryLink = "/web/video-clips?category=";
+					context.breadcrumbs += " > <a href=\"/web/video-clips\" style=\"color:white;\">Video Clips</a> > " + categoriesReturned[0].title;
+					responseCount ++;
 				} else {
 					context.backButtonLink = "/web/video-clips?category=" + categoriesReturned[0].parentCategoryKey;
+					CategoryModel.find({ "where": { key: categoriesReturned[0].parentCategoryKey, status: "active" }}, function(err2,categoriesReturned2){
+						context.breadcrumbs += " > <a href=\"/web/video-clips\" style=\"color:white;\">Video Clips</a> > <a href=\"/web/video-clips?category=" + categoriesReturned2[0].key + "\" style=\"color:white;\">" + categoriesReturned2[0].title + "</a> > " + categoriesReturned[0].title;
+						responseCount ++;
+					});
 				}
 				responseCount ++;
 			});
@@ -66,14 +75,14 @@
 			responseCount ++;
 		});
 		var interval = setInterval(function(){
-			if(responseCount >= 3){
+			if(responseCount >= 4){
 				clearInterval(interval);
 				var leftnav = require("../../../lib/leftnav.js");
 				leftnav(isnode, context, function(err, cxt){
 					res.render("video-clips/video-clips.mustache", cxt);
 				});	
 			}
-		}, 100);
+		}, 10);
 		return;
 	}
 
