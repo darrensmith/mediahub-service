@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/physibles";
 		PhysibleModel.find({ "where": { key: req.params.physibleKey }}, function(err,physibles){
 			context.physible = physibles[0];
+			if(context.physible.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.physible.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
