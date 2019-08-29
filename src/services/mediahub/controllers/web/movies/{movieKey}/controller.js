@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/movies";
 		MovieModel.find({ "where": { key: req.params.movieKey }}, function(err,movies){
 			context.movie = movies[0];
+			if(context.movie.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.movie.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
