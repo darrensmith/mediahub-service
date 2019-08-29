@@ -42,6 +42,8 @@
 		}
 		VideoClipModel.find({ "where": { key: req.params.videoClipKey }}, function(err, videoClips){
 			context.videoClip = videoClips[0];
+			if(context.videoClip.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.videoClip.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){

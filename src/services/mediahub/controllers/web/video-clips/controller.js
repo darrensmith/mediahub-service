@@ -10,7 +10,8 @@
 	var ctrl = {};
 	var isnode = null;
 	var service = null;
-	var SoundByteModel = null;
+	var VideoClipModel = null;
+	var CategoryModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		VideoClipModel = service.models.get("videoClip");
+		CategoryModel = service.models.get("category");
 		return;
 	}
 
@@ -30,14 +32,48 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		var responseCount = 0;
+		var parentCategoryKey = null;
 		context.backButtonLink = "/web";
-		VideoClipModel.find({ where: { status: "active" }}, function(err, videoClips){
-			context.videoClips = videoClips;
-			var leftnav = require("../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("video-clips/video-clips.mustache", cxt);
+		var type = "videoClip";
+		context.typeTag = "?type=" + type;
+		if(req.query.category) {
+			parentCategoryKey = req.query.category;
+			context.parentTag = "?category=" + parentCategoryKey;
+		}
+		if(!parentCategoryKey) {
+			context.keyTag = "?type=" + type;
+			context.categoryLink = "/web/video-clips?category=";
+			responseCount ++;
+		} else {
+			CategoryModel.find({ "where": { key: parentCategoryKey, status: "active" }}, function(err,categoriesReturned){
+				if(!categoriesReturned || !categoriesReturned[0] || !categoriesReturned[0].parentCategoryKey) {
+					context.keyTag = "?category=" + req.query.category;
+					context.backButtonLink = "/web/video-clips";
+					context.categoryLink = "/web/video-clips?category=";
+				} else {
+					context.backButtonLink = "/web/video-clips?category=" + categoriesReturned[0].parentCategoryKey;
+				}
+				responseCount ++;
 			});
+		}
+		CategoryModel.find({ where: { status: "active", parentCategoryKey: parentCategoryKey, objectType: type }}, function(err, categories){
+			context.categories = categories;
+			responseCount ++;
 		});
+		VideoClipModel.find({ where: { status: "active", primaryCategoryKey: parentCategoryKey }}, function(err, videoClips){
+			context.videoClips = videoClips;
+			responseCount ++;
+		});
+		var interval = setInterval(function(){
+			if(responseCount >= 3){
+				clearInterval(interval);
+				var leftnav = require("../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("video-clips/video-clips.mustache", cxt);
+				});	
+			}
+		}, 100);
 		return;
 	}
 
