@@ -52,6 +52,9 @@
 
 	<script>
 		var container = document.getElementById('container');
+		{{#categories}}
+			container.innerHTML += "{{#categoryLink}}<a href=\"{{categoryLink}}{{key}}{{endCategoryLink}}\">{{/categoryLink}} <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 75px;\" src=\"/img/folder.png\"/><p class=\"font2\"> {{title}} </p></div></div> {{#categoryLink}}</a>{{/categoryLink}}";
+		{{/categories}}
 		{{#images}}
 			container.innerHTML += "<a href=\"/web/images/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 100px;\" src=\"/img/image.jpg\"/><p class=\"font2\"> {{title}} </p></div></div> </a>";
 		{{/images}}

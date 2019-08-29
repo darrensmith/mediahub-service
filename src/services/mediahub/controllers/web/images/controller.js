@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var ImageModel = null;
+	var CategoryModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		ImageModel = service.models.get("image");
+		CategoryModel = service.models.get("category");
 		return;
 	}
 
@@ -30,15 +32,48 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		var responseCount = 0;
+		var parentCategoryKey = null;
 		context.backButtonLink = "/web";
-		ImageModel.find({ where: { status: "active" }}, function(err, images){
-			context.images = images;
-			var leftnav = require("../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("images/images.mustache", cxt);
+		var type = "image";
+		context.typeTag = "?type=" + type;
+		if(req.query.category) {
+			parentCategoryKey = req.query.category;
+			context.parentTag = "?category=" + parentCategoryKey;
+		}
+		if(!parentCategoryKey) {
+			context.keyTag = "?type=" + type;
+			context.categoryLink = "/web/images?category=";
+			responseCount ++;
+		} else {
+			CategoryModel.find({ "where": { key: parentCategoryKey, status: "active" }}, function(err,categoriesReturned){
+				if(!categoriesReturned || !categoriesReturned[0] || !categoriesReturned[0].parentCategoryKey) {
+					context.keyTag = "?category=" + req.query.category;
+					context.backButtonLink = "/web/images";
+					context.categoryLink = "/web/images?category=";
+				} else {
+					context.backButtonLink = "/web/images?category=" + categoriesReturned[0].parentCategoryKey;
+				}
+				responseCount ++;
 			});
+		}
+		CategoryModel.find({ where: { status: "active", parentCategoryKey: parentCategoryKey, objectType: type }}, function(err, categories){
+			context.categories = categories;
+			responseCount ++;
 		});
-		return;
+		ImageModel.find({ where: { status: "active", primaryCategoryKey: parentCategoryKey }}, function(err, images){
+			context.images = images;
+			responseCount ++;
+		});
+		var interval = setInterval(function(){
+			if(responseCount >= 3){
+				clearInterval(interval);
+				var leftnav = require("../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("images/images.mustache", cxt);
+				});	
+			}
+		}, 100);
 	}
 
 	/**

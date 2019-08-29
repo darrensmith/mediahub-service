@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/images";
 		ImageModel.find({ "where": { key: req.params.imageKey }}, function(err,images){
 			context.image = images[0];
+			if(context.image.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.image.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
