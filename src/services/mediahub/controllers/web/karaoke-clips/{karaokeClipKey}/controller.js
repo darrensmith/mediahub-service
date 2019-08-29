@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/karaoke-clips";
 		KaraokeClipModel.find({ "where": { key: req.params.karaokeClipKey }}, function(err, karaokeClips){
 			context.karaokeClip = karaokeClips[0];
+			if(context.karaokeClip.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.karaokeClip.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
