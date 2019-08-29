@@ -32,6 +32,7 @@
 			var hideFilesLink = "no";
 			var hideCategoriesLink = "no";
 			var hideCategoriesLink = "no";
+			var hideProjectsLink = "no";
 			var announcement = "";
 			for (var i = 0; i < settings.length; i++) {
 				if(settings[i].setting == "showObjectTypes"){
@@ -48,6 +49,9 @@
 				}
 				if(settings[i].setting == "hideCategoriesLink"){
 					hideCategoriesLink = settings[i].value;
+				}
+				if(settings[i].setting == "hideProjectsLink"){
+					hideProjectsLink = settings[i].value;
 				}
 				if(settings[i].setting == "announcement"){
 					announcement = settings[i].value;
@@ -115,7 +119,7 @@
 				context.leftnav += "<p><i class=\"fas fa-images\"></i><a href=\"/web/images\">Images</a></p>\n";
 			}
 
-			if(hideFilesLink == "yes" && hideCategoriesLink == "yes" && hideSystemSettings == "yes" && hideSignOutLink == "yes") {
+			if(hideFilesLink == "yes" && hideCategoriesLink == "yes" && hideSystemSettings == "yes" && hideSignOutLink == "yes" && hideProjectsLink == "yes") {
 				null;
 			} else {
 				context.leftnav += "<p style=\"margin-top:50px;\"><strong>System</strong></p>\n";
@@ -125,6 +129,9 @@
 			}
 			if(hideCategoriesLink == "no") {
 				context.leftnav += "<p><i class=\"fas fa-images\"></i><a href=\"/web/categories\">Categories</a></p>\n";
+			}
+			if(hideProjectsLink == "no") {
+				context.leftnav += "<p><i class=\"fas fa-project-diagram\"></i><a href=\"/web/projects\">Projects</a></p>\n";
 			}
 			if(hideSystemSettings == "no") {
 				context.leftnav += "<p><i class=\"fas fa-cogs\"></i><a href=\"/web/system\">System Settings</a></p>\n";

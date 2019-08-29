@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Projects | Media Hub</title>
+		<meta name="description" content="Media Hub">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		{{> styles}}
+		{{> javascript}}
+	</head>
+
+	<style>
+		.bground {
+			padding: 0px;
+			background-image: url("/img/project-background.jpg") !important;
+			width: 100%;
+			height:140%;
+			position:fixed;
+		}
+		.trans {
+			padding: 0px;
+			background-color: black;
+			width: 100%;
+			height:140%;
+			position:fixed;
+			opacity:0.8;
+		}
+		.main {
+			background:transparent;
+		}
+		.titlearea {
+			opacity:0.8;
+		}
+		.leftbar {
+			opacity:0.8;
+		}
+	</style>
+
+	<body class="home">
+		<div class="bground"></div>
+		<div class="trans"></div>
+		{{> header}}
+		<div class="titlearea"> 
+		    {{> title}}
+		    <div class="righttag font"> <span style="font-size: 16px;">{{{breadcrumbs}}}</span> </div>
+		</div>
+		<div class="main">
+			{{> leftbar}}
+			<div class="container" id="container"></div>
+		</div>
+	</body>
+
+	<script>
+		var container = document.getElementById('container');
+		{{#projects}}
+			container.innerHTML += "<a href=\"/web/projects/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 100px;\" src=\"/img/project.png\"/><p class=\"font2\"> {{title}} </p></div></div> </a>";
+		{{/projects}}
+	</script>
+
+</html>

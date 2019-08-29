@@ -49,6 +49,8 @@
 			context.hideRevertToFileNoSelected = "";
 			context.disableRecurringSyncYesSelected = "";
 			context.disableRecurringSyncNoSelected = "";
+			context.hideProjectsLinkYesSelected = "";
+			context.hideProjectsLinkNoSelected = "";
 			context.systemSettingsPassword = "";
 			context.announcement = "";
 			context.homepageContent = "";
@@ -142,6 +144,14 @@
 					context.hideRevertToFileYesSelected = "selected";
 					context.hideRevertToFileNoSelected = "";
 				}
+				if(settings[i] && settings[i].setting == "hideProjectsLink" && (settings[i].value == "no" || settings[i].value == "")) {
+					context.hideProjectsLinkYesSelected = "";
+					context.hideProjectsLinkNoSelected = "selected";
+				}
+				if(settings[i] && settings[i].setting == "hideProjectsLink" && settings[i].value == "yes") {
+					context.hideProjectsLinkYesSelected = "selected";
+					context.hideProjectsLinkNoSelected = "";
+				}
 				if(settings[i] && settings[i].setting == "disableRecurringSync" && (settings[i].value == "no" || settings[i].value == "")) {
 					context.disableRecurringSyncYesSelected = "";
 					context.disableRecurringSyncNoSelected = "selected";
@@ -199,6 +209,7 @@
 				if(req.body.hideFilesLink) { parametersToUpdate ++; };
 				if(req.body.hideCategoriesLink) { parametersToUpdate ++; };
 				if(req.body.hideRevertToFile) { parametersToUpdate ++; };
+				if(req.body.hideProjectsLink) { parametersToUpdate ++; };
 				if(req.body.disableRecurringSync) { parametersToUpdate ++; };
 				if(req.body.systemSettingsPassword) { parametersToUpdate ++; };
 				if(req.body.announcement) { parametersToUpdate ++; };
@@ -306,6 +317,18 @@
 							"key": isnode.module("utilities").uuid4(),
 							"setting": "hideRevertToFile",
 							"value": req.body.hideRevertToFile,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.hideProjectsLink) {
+						SettingModel.updateOrCreate({ "setting": "hideProjectsLink" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "hideProjectsLink",
+							"value": req.body.hideProjectsLink,
 							"dateCreated": currentDate,
 							"dateLastModified": currentDate
 						}, function(err, setting){

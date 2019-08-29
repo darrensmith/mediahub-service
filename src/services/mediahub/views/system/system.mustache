@@ -169,11 +169,20 @@
 						</div>
 						<div class="form-group">
 							<div class="form-field">
-								<div class="font">System Settings Password:</div>
-								<div class="searchcontainer"><input style="width: 830px;" class="search" name="systemSettingsPassword" value="{{systemSettingsPassword}}" /></div>
+								<div class="font">Hide Projects Link</div>
+								<div class="searchcontainer">
+									<select class="search" name="hideProjectsLink">
+										<option {{hideProjectsLinkNoSelected}} value="no">No</option>
+										<option {{hideProjectsLinkYesSelected}} value="yes">Yes</option>
+									</select>
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
+							<div class="form-field">
+								<div class="font">System Settings Password:</div>
+								<div class="searchcontainer"><input style="width: 830px;" class="search" name="systemSettingsPassword" value="{{systemSettingsPassword}}" /></div>
+							</div>
 							<div class="form-field">
 								<div class="font">Annnouncement:</div>
 								<div class="searchcontainer"><input style="width: 830px;" class="search" name="announcement" value="{{announcement}}" /></div>
