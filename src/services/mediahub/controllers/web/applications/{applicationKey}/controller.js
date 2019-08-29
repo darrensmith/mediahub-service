@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/applications";
 		ApplicationModel.find({ "where": { key: req.params.applicationKey }}, function(err, applications){
 			context.application = applications[0];
+			if(context.application.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.application.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
