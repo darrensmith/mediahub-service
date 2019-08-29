@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/ebooks";
 		eBookModel.find({ "where": { key: req.params.ebookKey }}, function(err,ebooks){
 			context.ebook = ebooks[0];
+			if(context.ebook.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.ebook.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
