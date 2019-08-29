@@ -69,8 +69,8 @@
 
 	/**
 	 * Update Objects to Remove Category Reference
-	 * @param {object} req - Request object
-	 * @param {object} res - Response object
+	 * @param {array} categories - Array of category IDs
+	 * @param {cb} function - Callback Function
 	 */
 	var updateObjects = function(categories, cb){
 		var objectTypes = ["document", "ebook", "song", "soundByte", "episode",
@@ -101,28 +101,8 @@
 			}
 			if(model) {
 				for (var j = 0; j < categories.length; j++) {
-					model.find({where: {primaryCategoryKey: categories[j]}}, function(err, objects) {
-						if(objects.length <= 0) {
-							updatesComplete ++;
-						} else {
-							var innerObjectCount = objects.length;
-							var innerObjectsUpdated = 0;
-							for (var k = 0; k < objects.length; k++) {
-								objects[k].update({
-									key: objects[i].key
-								}, {
-									parentCategoryKey: null
-								}, function(err2, deletedObj){
-									innerObjectsUpdated ++;
-								});
-							}
-							var interval2 = setInterval(function(){
-								if(innerObjectsUpdated >= innerObjectCount) {
-									clearInterval(interval2);
-									updatesComplete ++;
-								}
-							}, 100);
-						}
+					findAndUpdateCategories(model, categories[j], function(err, res) {
+						updatesComplete ++;
 					});
 				}
 			} else {
@@ -135,6 +115,37 @@
 				}
 			}, 100);
 		}
+	}
+
+	/**
+	 * Find And Update Categories
+	 * @param {array} categories - Array of category IDs
+	 * @param {cb} function - Callback Function
+	 */
+	var findAndUpdateCategories = function(model, category, cb){
+		model.find({where: {primaryCategoryKey: category}}, function(err, objects) {
+			if(objects.length <= 0) {
+				cb({success: false, code: "NO_OBJECTS", message: "No objects found with specified category"}, null);
+			} else {
+				var innerObjectCount = objects.length;
+				var innerObjectsUpdated = 0;
+				for (var k = 0; k < objects.length; k++) {
+					model.update({
+						key: objects[k].key
+					}, {
+						primaryCategoryKey: null
+					}, function(err2, deletedObj){
+						innerObjectsUpdated ++;
+					});
+				}
+				var interval2 = setInterval(function(){
+					if(innerObjectsUpdated >= innerObjectCount) {
+						clearInterval(interval2);
+						cb(null, {success: true, message: "Object Updated to Remove Category"});
+					}
+				}, 100);
+			}
+		});
 	}
 
 	/**

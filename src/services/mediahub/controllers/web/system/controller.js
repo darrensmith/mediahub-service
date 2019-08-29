@@ -47,6 +47,8 @@
 			context.hideCategoriesLinkNoSelected = "";
 			context.hideRevertToFileYesSelected = "";
 			context.hideRevertToFileNoSelected = "";
+			context.disableRecurringSyncYesSelected = "";
+			context.disableRecurringSyncNoSelected = "";
 			context.systemSettingsPassword = "";
 			context.announcement = "";
 			context.homepageContent = "";
@@ -140,6 +142,14 @@
 					context.hideRevertToFileYesSelected = "selected";
 					context.hideRevertToFileNoSelected = "";
 				}
+				if(settings[i] && settings[i].setting == "disableRecurringSync" && (settings[i].value == "no" || settings[i].value == "")) {
+					context.disableRecurringSyncYesSelected = "";
+					context.disableRecurringSyncNoSelected = "selected";
+				}
+				if(settings[i] && settings[i].setting == "disableRecurringSync" && settings[i].value == "yes") {
+					context.disableRecurringSyncYesSelected = "selected";
+					context.disableRecurringSyncNoSelected = "";
+				}
 				/*
 				if(settings[i].setting == "watch" && settings[i].value == "No") {
 					context.watchNoSelected = "selected";
@@ -189,6 +199,7 @@
 				if(req.body.hideFilesLink) { parametersToUpdate ++; };
 				if(req.body.hideCategoriesLink) { parametersToUpdate ++; };
 				if(req.body.hideRevertToFile) { parametersToUpdate ++; };
+				if(req.body.disableRecurringSync) { parametersToUpdate ++; };
 				if(req.body.systemSettingsPassword) { parametersToUpdate ++; };
 				if(req.body.announcement) { parametersToUpdate ++; };
 				if(req.body.homepageContent) { parametersToUpdate ++; };
@@ -295,6 +306,18 @@
 							"key": isnode.module("utilities").uuid4(),
 							"setting": "hideRevertToFile",
 							"value": req.body.hideRevertToFile,
+							"dateCreated": currentDate,
+							"dateLastModified": currentDate
+						}, function(err, setting){
+							parametersUpdated ++;
+						});
+					}
+					if(req.body.disableRecurringSync) {
+						SettingModel.updateOrCreate({ "setting": "disableRecurringSync" }, 
+						{
+							"key": isnode.module("utilities").uuid4(),
+							"setting": "disableRecurringSync",
+							"value": req.body.disableRecurringSync,
 							"dateCreated": currentDate,
 							"dateLastModified": currentDate
 						}, function(err, setting){
