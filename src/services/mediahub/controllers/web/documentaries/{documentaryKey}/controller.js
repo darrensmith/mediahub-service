@@ -34,9 +34,11 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		context.backButtonLink = "/web/documents";
+		context.backButtonLink = "/web/documentaries";
 		DocumentaryModel.find({ "where": { key: req.params.documentaryKey }}, function(err, documentaries){
 			context.documentary = documentaries[0];
+			if(context.documentary.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.documentary.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
