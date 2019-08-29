@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/games";
 		GameModel.find({ "where": { key: req.params.gameKey }}, function(err, games){
 			context.game = games[0];
+			if(context.game.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.game.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
