@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var MusicVideoModel = null;
+	var CategoryModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		MusicVideoModel = service.models.get("musicVideo");
+		CategoryModel = service.models.get("category");
 		return;
 	}
 
@@ -30,14 +32,48 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		var responseCount = 0;
+		var parentCategoryKey = null;
 		context.backButtonLink = "/web";
-		MusicVideoModel.find({ where: { status: "active" }}, function(err, musicVideos){
-			context.musicVideos = musicVideos;
-			var leftnav = require("../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("music-videos/music-videos.mustache", cxt);
+		var type = "musicVideo";
+		context.typeTag = "?type=" + type;
+		if(req.query.category) {
+			parentCategoryKey = req.query.category;
+			context.parentTag = "?category=" + parentCategoryKey;
+		}
+		if(!parentCategoryKey) {
+			context.keyTag = "?type=" + type;
+			context.categoryLink = "/web/music-videos?category=";
+			responseCount ++;
+		} else {
+			CategoryModel.find({ "where": { key: parentCategoryKey, status: "active" }}, function(err,categoriesReturned){
+				if(!categoriesReturned || !categoriesReturned[0] || !categoriesReturned[0].parentCategoryKey) {
+					context.keyTag = "?category=" + req.query.category;
+					context.backButtonLink = "/web/music-videos";
+					context.categoryLink = "/web/music-videos?category=";
+				} else {
+					context.backButtonLink = "/web/music-videos?category=" + categoriesReturned[0].parentCategoryKey;
+				}
+				responseCount ++;
 			});
+		}
+		CategoryModel.find({ where: { status: "active", parentCategoryKey: parentCategoryKey, objectType: type }}, function(err, categories){
+			context.categories = categories;
+			responseCount ++;
 		});
+		MusicVideoModel.find({ where: { status: "active", primaryCategoryKey: parentCategoryKey }}, function(err, musicVideos){
+			context.musicVideos = musicVideos;
+			responseCount ++;
+		});
+		var interval = setInterval(function(){
+			if(responseCount >= 3){
+				clearInterval(interval);
+				var leftnav = require("../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("music-videos/music-videos.mustache", cxt);
+				});
+			}
+		}, 100);
 		return;
 	}
 
