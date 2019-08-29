@@ -11,6 +11,7 @@
 	var isnode = null;
 	var service = null;
 	var ApplicationModel = null;
+	var CategoryModel = null;
 
 	/**
 	 * Initialises the controller
@@ -20,6 +21,7 @@
 		isnode = isnodeObj;
 		service = isnode.module("services").service("mediahub");
 		OperatingSystemModel = service.models.get("operatingSystem");
+		CategoryModel = service.models.get("category");
 		return;
 	}
 
@@ -30,14 +32,49 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
+		var responseCount = 0;
+		var parentCategoryKey = null;
 		context.backButtonLink = "/web";
-		OperatingSystemModel.find({ where: { status: "active" }}, function(err, operatingSystems){
-			context.operatingSystems = operatingSystems;
-			var leftnav = require("../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("operating-systems/operating-systems.mustache", cxt);
+		var type = "operatingSystem";
+		context.typeTag = "?type=" + type;
+		if(req.query.category) {
+			parentCategoryKey = req.query.category;
+			context.parentTag = "?category=" + parentCategoryKey;
+		}
+		if(!parentCategoryKey) {
+			context.keyTag = "?type=" + type;
+			context.categoryLink = "/web/operating-systems?category=";
+			responseCount ++;
+		} else {
+			CategoryModel.find({ "where": { key: parentCategoryKey, status: "active" }}, function(err,categoriesReturned){
+				if(!categoriesReturned || !categoriesReturned[0] || !categoriesReturned[0].parentCategoryKey) {
+					context.keyTag = "?category=" + req.query.category;
+					context.backButtonLink = "/web/operating-systems";
+					context.categoryLink = "/web/operating-systems?category=";
+				} else {
+					context.backButtonLink = "/web/operating-systems?category=" + categoriesReturned[0].parentCategoryKey;
+				}
+				responseCount ++;
 			});
+		}
+		CategoryModel.find({ where: { status: "active", parentCategoryKey: parentCategoryKey, objectType: type }}, function(err, categories){
+			context.categories = categories;
+			responseCount ++;
 		});
+		OperatingSystemModel.find({ where: { status: "active", primaryCategoryKey: parentCategoryKey }}, function(err, operatingSystems){
+			context.operatingSystems = operatingSystems;
+			responseCount ++;
+		});
+		var interval = setInterval(function(){
+			if(responseCount >= 3){
+				clearInterval(interval);
+				var leftnav = require("../../../lib/leftnav.js");
+				leftnav(isnode, context, function(err, cxt){
+					res.render("operating-systems/operating-systems.mustache", cxt);
+				});	
+			}
+		}, 100);
+		return;
 		return;
 	}
 

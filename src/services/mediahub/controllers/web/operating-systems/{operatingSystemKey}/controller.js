@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/operating-systems";
 		OperatingSystemModel.find({ "where": { key: req.params.operatingSystemKey }}, function(err,operatingSystems){
 			context.operatingSystem = operatingSystems[0];
+			if(context.operatingSystem.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.operatingSystem.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
