@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/sound-bytes";
 		SoundByteModel.find({ "where": { key: req.params.soundByteKey }}, function(err,soundBytes){
 			context.soundByte = soundBytes[0];
+			if(context.soundByte.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.soundByte.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
