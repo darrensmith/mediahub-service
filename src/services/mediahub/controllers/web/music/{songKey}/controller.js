@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/music";
 		SongModel.find({ "where": { key: req.params.songKey }}, function(err,songs){
 			context.song = songs[0];
+			if(context.song.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.song.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
