@@ -43,7 +43,12 @@
 		{{> header}}
 		<div class="titlearea"> 
 		    {{> title}}
-		    <div class="righttag font"> <span style="font-size: 16px;">{{{breadcrumbs}}}</span> </div>
+		    <div class="righttag font"> 
+		    	<span style="font-size: 16px;">{{{breadcrumbs}}}</span> 
+		    	<a href="/web/projects/create">
+		    		<i class="fas fa-plus-square" style="margin-left:20px; color: white;" title="Create New Project"></i>
+		    	</a>
+		    </div>
 		</div>
 		<div class="main">
 			{{> leftbar}}

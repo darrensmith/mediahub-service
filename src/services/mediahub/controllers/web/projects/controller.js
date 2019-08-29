@@ -50,6 +50,31 @@
 	}
 
 	/**
+	 * POST
+	 * @param {object} req - Request object
+	 * @param {object} res - Response object
+	 */
+	ctrl.post = function(req, res){
+		var title = req.body.title;
+		var shortDesc = req.body.shortDesc;
+		var currentDate = isnode.module("utilities").getCurrentDateInISO();
+		ProjectModel.create({
+			key: isnode.module("utilities").uuid4(),
+			dateCreated: currentDate,
+			dateLastModified: currentDate,
+			title: title,
+			shortDesc: shortDesc
+		}, function(err, newProject) {
+			if(err) {
+				res.redirect("/web/projects?message=error-creating-project");
+			} else {
+				res.redirect("/web/projects?message=project-created-successfully");
+			}
+			return;
+		});
+	}
+
+	/**
 	 * Shutdown Controller
 	 * @param {function} cb - Callback function
 	 */

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Create New Project | Media Hub</title>
+		<meta name="description" content="Media Hub">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		{{> styles}}
+		{{> javascript}}
+	</head>
+
+	<style>
+		.bground {
+			padding: 0px;
+			background-image: url("/img/project-background.jpg") !important;
+			width: 100%;
+			height:140%;
+			position:fixed;
+		}
+		.trans {
+			padding: 0px;
+			background-color: black;
+			width: 100%;
+			height:140%;
+			position:fixed;
+			opacity:0.9;
+		}
+		.main {
+			background:transparent;
+		}
+		.titlearea {
+			opacity:0.9;
+		}
+		.leftbar {
+			opacity:0.8;
+		}
+	</style>
+
+	<body class="home">
+		<div class="bground"></div>
+		<div class="trans"></div>
+		{{> header}}
+		<div class="titlearea"> 
+		    {{> title}}
+		    <div class="righttag font"> <span style="font-size: 16px;">Create New Project</span> </div>
+		</div>
+		<div class="main">
+			{{> leftbar}}
+			<div class="container2">
+				<div class="body-title"><strong>Create New Project</strong></div>
+				<div class="body-strip"></div>
+				<div class="body-form">
+					<form action="/web/projects" method="post">
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Project Name:</div>
+								<div class="searchcontainer" style="width: 830px;"><input style="width: 830px;" class="search" name="title" value="" /></div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-field">
+								<div class="font">Short Description:</div>
+								<div class="searchcontainer" style="height:200px; width:830px; padding-right:0px;"><textarea style="z-index:20; width: 830px; height: 200px;" class="search" name="shortDesc"></textarea></div>
+							</div>
+						</div>
+						<div class="form-field">
+							<button class="save-button font" style="margin-right: 20px;" name="save" value="true">CREATE PROJECT</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
