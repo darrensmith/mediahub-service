@@ -37,6 +37,8 @@
 		context.backButtonLink = "/web/television";
 		EpisodeModel.find({ "where": { key: req.params.episodeKey }}, function(err,episodes){
 			context.episode = episodes[0];
+			if(context.episode.primaryCategoryKey)
+				context.backButtonLink += "?category=" + context.episode.primaryCategoryKey;
 			var leftnav = require("../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
 				SettingModel.find({where: {setting: "hideRevertToFile"}}, function(err2, settings){
