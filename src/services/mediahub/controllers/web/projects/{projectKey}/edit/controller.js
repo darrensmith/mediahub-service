@@ -1,5 +1,5 @@
 /*!
-* /web/projects/{projectKey}/controller.js
+* /web/projects/{projectKey}/edit/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -30,24 +30,32 @@
 	 */
 	ctrl.get = function(req, res){
 		var context = {};
-		context.backButtonLink = "/web/projects";
-		var toggle = req.cookies.activeProject;
-		if(toggle && toggle == req.params.projectKey) {
-			context.toggleMsg = "Deactivate This Project";
-			context.toggleState = "on";
-		} else {
-			context.toggleMsg = "Set as Active Project";
-			context.toggleState = "off";
-		}
+		context.backButtonLink = "/web/projects/" + req.params.projectKey;
 		ProjectModel.find({ "where": { key: req.params.projectKey }}, function(err,projects){
 			context.project = projects[0];
-			context.breadcrumbs = "<a href=\"/web\" style=\"color:white;\">Home</a> &gt; <a href=\"/web/projects\" style=\"color:white;\">Projects</a> &gt; " + context.project.title;
-			var leftnav = require("../../../../lib/leftnav.js");
+			context.breadcrumbs = "<a href=\"/web\" style=\"color:white;\">Home</a> > <a href=\"/web/projects\" style=\"color:white;\">Projects</a> > <a href=\"/web/projects/"+req.params.projectKey+"\" style=\"color:white;\">" + context.project.title + "</a> > Edit";
+			var leftnav = require("../../../../../lib/leftnav.js");
 			leftnav(isnode, context, function(err, cxt){
-				res.render("projects/project-details.mustache", cxt);
+				res.render("projects/project-edit.mustache", cxt);
 			});
 		});
 		return;
+	}
+
+	/**
+	 * POST
+	 * @param {object} req - Request object
+	 * @param {object} res - Response object
+	 */
+	ctrl.post = function(req, res){
+		ProjectModel.update({
+			key: req.params.projectKey
+		}, {
+			title: req.body.title,
+			shortDesc: req.body.shortDesc
+		}, function(err, updatedProject) {
+			res.redirect("/web/projects/" + req.params.projectKey);
+		});
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*!
-* /web/projects/{projectKey}/controller.js
+* /web/projects/{projectKey}/toggle/controller.js
 *
 * Copyright (c) 2019 Darren Smith
 * Licensed under the LGPL license.
@@ -9,8 +9,6 @@
 
 	var ctrl = {};
 	var isnode = null;
-	var service = null;
-	var ProjectModel = null;
 
 	/**
 	 * Initialises the controller
@@ -18,8 +16,6 @@
 	 */
 	ctrl.init = function(isnodeObj){
 		isnode = isnodeObj;
-		service = isnode.module("services").service("mediahub");
-		ProjectModel = service.models.get("project");
 		return;
 	}
 
@@ -29,25 +25,20 @@
 	 * @param {object} res - Response object
 	 */
 	ctrl.get = function(req, res){
-		var context = {};
-		context.backButtonLink = "/web/projects";
-		var toggle = req.cookies.activeProject;
-		if(toggle && toggle == req.params.projectKey) {
-			context.toggleMsg = "Deactivate This Project";
-			context.toggleState = "on";
+		var cookie = req.cookies.activeProject;
+		if(cookie == req.params.projectKey) {
+			res.clearCookie("activeProject");
+			res.redirect("/web/projects/" + req.params.projectKey);
+			return;
+		} else if (cookie) {
+			res.cookie("activeProject", req.params.projectKey);
+			res.redirect("/web/projects/" + req.params.projectKey);
+			return;
 		} else {
-			context.toggleMsg = "Set as Active Project";
-			context.toggleState = "off";
+			res.cookie("activeProject", req.params.projectKey);
+			res.redirect("/web/projects/" + req.params.projectKey);
+			return;
 		}
-		ProjectModel.find({ "where": { key: req.params.projectKey }}, function(err,projects){
-			context.project = projects[0];
-			context.breadcrumbs = "<a href=\"/web\" style=\"color:white;\">Home</a> &gt; <a href=\"/web/projects\" style=\"color:white;\">Projects</a> &gt; " + context.project.title;
-			var leftnav = require("../../../../lib/leftnav.js");
-			leftnav(isnode, context, function(err, cxt){
-				res.render("projects/project-details.mustache", cxt);
-			});
-		});
-		return;
 	}
 
 	/**

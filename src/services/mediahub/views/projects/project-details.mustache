@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Projects | Media Hub</title>
+		<title>Project Details | Media Hub</title>
 		<meta name="description" content="Media Hub">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		{{> styles}}
@@ -45,22 +45,23 @@
 		    {{> title}}
 		    <div class="righttag font"> 
 		    	<span style="font-size: 16px;">{{{breadcrumbs}}}</span> 
-		    	<a href="/web/projects/create">
-		    		<i class="fas fa-plus-square" style="margin-left:30px; color: white;" title="Create New Project"></i>
-		    	</a>
+		    	<a href="/web/projects/{{project.key}}/edit"><i class="fas fa-edit" style="margin-left:30px; color: white;" title="Edit Project Details"></i></a>
+
+		    	<a href="/web/projects/{{project.key}}/delete"><i class="fas fa-trash" style="margin-left:2px; color: white;" title="Delete Project"></i></a>
+
+		    	<a href="/web/projects/{{project.key}}/toggle"><i class="fas fa-toggle-{{toggleState}}" style="margin-left:2px; color: white;" title="{{toggleMsg}}"></i></a>
 		    </div>
 		</div>
 		<div class="main">
 			{{> leftbar}}
-			<div class="container" id="container"></div>
+			<div class="container2">
+				<h1 style="color:white; margin-left:30px;">{{project.title}}</h1>
+				<p style="color:white; margin-left:30px;">{{project.shortDesc}}</p>
+			</div>
 		</div>
-	</body>
 
-	<script>
-		var container = document.getElementById('container');
-		{{#projects}}
-			container.innerHTML += "<a href=\"/web/projects/{{key}}\"> <div class=\"bigbox\"><div class=\"logo\"><img style=\"width: 100px;\" src=\"/img/project.png\"/><p class=\"font2\"> {{title}} </p></div></div> </a>";
-		{{/projects}}
-	</script>
+
+
+	</body>
 
 </html>
